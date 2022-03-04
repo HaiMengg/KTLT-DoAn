@@ -4,12 +4,14 @@
 #include <string>
 using namespace std;
 
+// Struct for staffs
 struct STAFF
 {
     string staffusr, staffpwd, firstname, lastname, dob, gender;
     STAFF* next;
 };
 
+// Struct for students
 struct STUDENT
 {
     string studentusr, studentpwd, studentID, firstname, lastname, dob, gender, socialID, startyear, classID, CoursesID;
@@ -67,19 +69,23 @@ void deleteData(STAFF* &fHead, STUDENT* &tHead)
 
 int main()
 {
+    // Open CSV files
     fstream staff, student;
     staff.open("staff.csv", ios::in);
     student.open("student.csv", ios::in);
 
+    // Create (singly) linked lists
     STAFF* fHead = new STAFF;
     STAFF* fCur = fHead;
     STUDENT* tHead = new STUDENT;
     STUDENT* tCur = tHead;
 
+    // Ignore first line of CSV files
     string str;
     getline(staff, str);
     getline(student, str);
 
+    // Get data from staff.csv
     while (!staff.eof())
     {
         getline(staff, fCur -> staffusr, ',');
@@ -94,6 +100,7 @@ int main()
     }
     fCur = nullptr;
 
+    // Get data from student.csv
     while (!student.eof())
     {
         getline(student, tCur -> studentusr, ',');
@@ -113,7 +120,10 @@ int main()
     }
     tCur = nullptr;
 
+    // Output linked lists (only for testing)
     outputStaff(fHead);
     outputStudent(tHead);
+
+    // Delete linked lists
     deleteData(fHead, tHead);
 }
