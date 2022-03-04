@@ -1,4 +1,4 @@
-studentusr,studentpwd,studentID,firstname, lastname,gender,dob, socialID,startyear,classID, Courses' IDs (format: [courseID1]-[courseID2]-[courseID3]-...)
-student1,pwd1,21127517,Nguyen,Anh Khoa,Nam,10/24/2003,0123456789,CSC10002-BAA00101
-student2,pwd2,21127561,Nguyen,Quang Tuan,Nam,06/17/2003,0123456789,CSC10002-BAA00101
-student3,pwd3,21127683,Doan, Nguyen Tan Sang,Nam,01/16/2003,0123456789,CSC10002-BAA00101
+studentusr,studentpwd,studentID,firstname,lastname,dob,gender,socialID,startyear,classID,CoursesID
+student1,pwd1,21127517,Nguyen,Anh Khoa,10/24/2003,Nam,0123456789,CSC10002-BAA00101,temp,temp
+student2,pwd2,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,CSC10002-BAA00101,temp,temp
+student3,pwd3,21127683,Doan,Nguyen Tan Sang,01/16/2003,Nam,0123456789,CSC10002-BAA00101,temp,temp
