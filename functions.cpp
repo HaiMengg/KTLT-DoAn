@@ -74,8 +74,7 @@ void readCSV(STAFF* &staffData, STUDENT* &studentData)
 // Log in to the system
 void loginCheck(STAFF* staffData, STUDENT* studentData, string &username, string &password, int &identity)
 {
-    cout << "[1] Login as Staff\n[2] Login as Student\n"
-    << "----------------\n";
+    cout << "[1] Login as Staff\n[2] Login as Student\n" << "----------------\n";
 
     string option;
     cin >> option;

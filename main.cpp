@@ -13,12 +13,10 @@ int main()
     STUDENT* studentData = new STUDENT;
     readCSV(staffData, studentData);
 
-    cout << "----------------\n"
-    << "Welcome!\nPlease login to continue.\n\n";
-
-    string username, password;
+    // Log in to the system
     int identity = 0;
-
+    string username, password;
+    cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
     loginCheck(staffData, studentData, username, password, identity);
 
     // Output linked lists (only for testing)
