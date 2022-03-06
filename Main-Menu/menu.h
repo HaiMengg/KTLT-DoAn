@@ -9,4 +9,4 @@
 //void login(void*);
 
 void create();
-void createSchoolYear();
+void createSchoolYear(std::ofstream& schoolYearData);

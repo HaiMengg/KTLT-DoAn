@@ -44,7 +44,15 @@ void create() {
 	}
 }
 
-void createSchoolYear() {
+void createSchoolYear(std::ifstream& schoolYearData) {
 	std::cout << "Currently existing school year:\n";
+	while (!schoolYearData.eof()) {
+		std::string currentSchoolYear;
+		schoolYearData >> currentSchoolYear;
+		std::cout << currentSchoolYear << std::endl;
+	}
+	std::cout << "Enter the start of the new school year (you can't create an existing school year): ";
+	int start;
+	std::cin >> start;
 	
 }
