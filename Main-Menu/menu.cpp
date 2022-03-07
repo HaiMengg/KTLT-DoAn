@@ -30,29 +30,3 @@
 // 	std::cout << "ga`";
 // 	return action;
 // }
-
-void create() {
-	std::cout << "What do you want to create: " << std::endl;
-	std::cout << "1. School year\n2. Semester\nInput: ";
-	int choice;
-	std::cin >> choice;
-
-	switch(choice) {
-		case 1:
-		createSchoolYear();
-		break;
-	}
-}
-
-void createSchoolYear(std::ifstream& schoolYearData) {
-	std::cout << "Currently existing school year:\n";
-	while (!schoolYearData.eof()) {
-		std::string currentSchoolYear;
-		schoolYearData >> currentSchoolYear;
-		std::cout << currentSchoolYear << std::endl;
-	}
-	std::cout << "Enter the start of the new school year (you can't create an existing school year): ";
-	int start;
-	std::cin >> start;
-	
-}

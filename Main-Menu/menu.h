@@ -1,12 +1,12 @@
 #pragma once
 
-#include "baseDeclare.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <direct.h>
 
 // void root();
 // void* emptyFunc(void*, std::string&);
 // void* createMenu(void*, std::string&);
 // void* createSchoolYear(void*, std::string&);
-//void login(void*);
-
-void create();
-void createSchoolYear(std::ofstream& schoolYearData);
+// void login(void*);
