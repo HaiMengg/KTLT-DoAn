@@ -21,6 +21,21 @@ struct CNode {
     CNode* nodeNext;
 };
 
-SNode* createList(SNode*& nodeHead, std::ifstream& finData);
-DNode* createList(DNode*& nodeHead, std::ifstream& finData);
-CNode* createList(CNode*& nodeFirst, std::ifstream& finData);
+struct Node {
+    Node* nodePrev;
+    std::string value;
+    Node* nodeNext;
+};
+
+void createList(SNode*& nodeHead, std::ifstream& finData);
+void createList(DNode*& nodeHead, std::ifstream& finData);
+void createList(CNode*& nodeFirst, std::ifstream& finData);
+void createList(Node*& nodeHead, std::ifstream& finData);
+
+bool appendList(SNode* nodeHead);
+
+void printListSingle(Node* nodeHead, bool reverse);
+
+int listLength(Node* nodeHead);
+
+void destructList(Node*& nodeHead);

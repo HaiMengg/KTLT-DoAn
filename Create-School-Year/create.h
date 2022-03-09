@@ -6,5 +6,5 @@
 #include <direct.h>
 #include "../Linked-List/linkedlist.h"
 
-void create(SNode*&);
-void createSchoolYear(SNode*&);
+void create(Node*&);
+void createSchoolYear(Node*&);

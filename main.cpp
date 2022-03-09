@@ -7,8 +7,9 @@
 #include "Create-School-Year/create.h"
 
 int main() {
-	SNode* schoolYears = nullptr;
+	Node* schoolYears = nullptr;
 	create(schoolYears);
+	destructList(schoolYears);
 
 	system("pause");
 	return 0;
