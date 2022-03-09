@@ -26,16 +26,22 @@ void createList(SNode*& nodeHead, std::fstream& dataFile) {
 
 //This appends a new line (containing new value) to the file
 bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataFile) {
-    if (nodeHead == nullptr) return 0;
-    
     Node* nodeNew = new Node;
     nodeNew->value = newValue;
-    //Connects new node to the head and tail of the list
-    nodeNew->nodeNext = nodeHead;
-    nodeNew->nodePrev = nodeHead->nodePrev;
-    //Connects the head and tail of the list to the new node
-    nodeHead->nodePrev->nodeNext = nodeNew;
-    nodeHead->nodePrev = nodeNew;
+
+    if (nodeHead != nullptr) {
+        //Connects new node to the head and tail of the list
+        nodeNew->nodeNext = nodeHead;
+        nodeNew->nodePrev = nodeHead->nodePrev;
+        //Connects the head and tail of the list to the new node
+        nodeHead->nodePrev->nodeNext = nodeNew;
+        nodeHead->nodePrev = nodeNew;
+    }
+    else {
+        nodeNew->nodeNext = nodeNew;
+        nodeNew->nodePrev = nodeNew;
+        nodeHead = nodeNew;
+    }
 
     dataFile.clear();       //Resets dataFile's EOF state flag
     dataFile << std::endl << newValue;
@@ -45,8 +51,6 @@ bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataF
 //This appends multiple new lines to the file the file
 //"batch" must not be nullptr
 bool appendListBatch(Node*& nodeHead, SNode* batch, std::fstream& dataFile) {
-    if (nodeHead == nullptr) return 0;
-
     SNode* batchCurr = batch;
     
     while (batchCurr != nullptr) {
@@ -62,11 +66,11 @@ bool listSearchBool(Node* nodeHead, std::string searchValue) {
     if (nodeHead == nullptr) return 0;
 
     Node* nodeCurr = nodeHead;
-    while (nodeHead->value.find(searchValue) == -1) {
+    while (nodeCurr->value.find(searchValue, 0) == std::string::npos) {
         nodeCurr = nodeCurr->nodeNext;
         if (nodeCurr == nodeHead) break;        //Break loop if there's the end of list is reached
     }
-    if (nodeHead->value.find(searchValue) != -1) return 1;
+    if (nodeCurr->value.find(searchValue, 0) != std::string::npos) return 1;
 
     return 0;
 }
