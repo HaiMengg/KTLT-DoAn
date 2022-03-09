@@ -7,4 +7,4 @@
 #include "../Linked-List/linkedlist.h"
 
 void create(Node*&);
-void createSchoolYear(Node*&);
+void createSchoolYear(Node*&, std::fstream& dataFile);

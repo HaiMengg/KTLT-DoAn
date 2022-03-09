@@ -8,14 +8,14 @@ void create(Node*& schoolYears) {
 
 	switch(choice) {
 		case 1:
-		std::ifstream finSchoolYears("schoolyears.txt");
+		std::fstream finSchoolYears("Create-School-Year/data/schoolyears.txt", std::ios::in | std::ios::app);
 		createList(schoolYears, finSchoolYears);
-		createSchoolYear(schoolYears);
+		createSchoolYear(schoolYears, finSchoolYears);
 		break;
 	}
 }
 
-void createSchoolYear(Node*& nodeHead) {
+void createSchoolYear(Node*& nodeHead, std::fstream& dataFile) {
     //Print currently existing school years
 	std::cout << "Currently existing school year:\n";
     Node* nodeCurr = nodeHead;
@@ -23,13 +23,15 @@ void createSchoolYear(Node*& nodeHead) {
 		std::cout << std::stoi(nodeCurr->value) << "-" << std::stoi(nodeCurr->value) + 1 << std::endl;
         nodeCurr = nodeCurr->nodeNext;
 	} while (nodeCurr != nodeHead);
+
 	std::cout << "Enter the start of the new school year (you can't create an existing school year): ";
-	int start;
-	std::cin >> start;
+	std::string start = "";
+	do {
+		//Display this message if "start" is already input but is invalid
+		if (start != "") std::cout << "You can't create an existing school year. Enter another school year: ";
+		std::cin >> start;
+	} while (!listSearchBool(nodeHead, start));
 
     //Create and append the new school year to the current list
-	Node* nodeNew = new Node;
-    nodeNew->value = start;
-    nodeNew->nodeNext = nullptr;
-    nodeCurr->nodeNext = nodeNew;
+	appendListSingle(nodeHead, start, dataFile);
 }

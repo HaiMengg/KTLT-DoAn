@@ -27,12 +27,15 @@ struct Node {
     Node* nodeNext;
 };
 
-void createList(SNode*& nodeHead, std::ifstream& finData);
-void createList(DNode*& nodeHead, std::ifstream& finData);
-void createList(CNode*& nodeFirst, std::ifstream& finData);
-void createList(Node*& nodeHead, std::ifstream& finData);
+void createList(SNode*& nodeHead, std::fstream& dataFile);
+void createList(DNode*& nodeHead, std::fstream& dataFile);
+void createList(CNode*& nodeFirst, std::fstream& dataFile);
+void createList(Node*& nodeHead, std::fstream& dataFile);
 
-bool appendList(SNode* nodeHead);
+bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataFile);
+bool appendListBatch(Node*& nodeHead, SNode* batch, std::fstream& dataFile);
+
+bool listSearchBool(Node* nodeHead, std::string searchValue);
 
 void printListSingle(Node* nodeHead, bool reverse);
 
