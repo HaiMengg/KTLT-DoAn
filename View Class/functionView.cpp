@@ -20,10 +20,10 @@ void ReadClass(Class*& pClass, fstream& fin) { //fin ->  LList
 	{
 
 		pCur->pNext = new Class;
+		pCur = pCur->pNext;
 		getline(fin, pCur->ClassID, ',');
 		fin >> pCur->startyear;
 		pCur->ClassID.erase(0, 1);
-		pCur = pCur->pNext;
 	}
 }
 
