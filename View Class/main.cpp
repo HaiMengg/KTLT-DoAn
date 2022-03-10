@@ -4,7 +4,7 @@
 #include<string>
 using namespace std;
 
-int main() {
+void ViewClass() {
 	fstream fin("class.csv");
 	Class* pClass = nullptr;
 	ReadClass(pClass, fin);
