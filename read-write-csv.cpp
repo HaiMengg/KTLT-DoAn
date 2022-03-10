@@ -4,26 +4,7 @@
 #include <string>
 using namespace std;
 
-// Struct for staff
-struct STAFF
-{
-    string staffusr, staffpwd, firstname, lastname, dob, gender;
-    STAFF* next;
-};
-
-// Struct for teacher
-struct TEACHER
-{
-    string teachusr, teachpwd, firstname, lastname, dob, gender;
-    TEACHER* next;
-};
-
-// Struct for student
-struct STUDENT
-{
-    string studentusr, studentpwd, studentID, firstname, lastname, dob, gender, socialID, startyear, classID, CoursesID;
-    STUDENT* next;
-};
+#include "header.h"
 
 // Read staff.csv
 void readStaff(STAFF* &data, fstream &input)

@@ -4,17 +4,8 @@
 #include <string>
 using namespace std;
 
+#include "header.h"
 #include "read-write-csv.cpp"
-
-// Active data
-struct LOGIN
-{
-    STAFF* staff;
-    TEACHER* teacher;
-    STUDENT* student;
-    string username, password;
-    int identity = 0;
-};
 
 // Login
 void loginCheck(LOGIN &data)
@@ -82,6 +73,7 @@ void loginCheck(LOGIN &data)
             "You're logged in as " << data.username << "\n\n"
             << "[1] View Info\n[2] Change Password\n[3] Log Out\n[4] Exit Program\n"
             << "----------------\n";
+            loginMenu(data);
         }
 
         else
@@ -100,4 +92,102 @@ void loginCheck(LOGIN &data)
         data.identity = -1;
         return loginCheck(data);
     }
+}
+
+// Basic menu
+void loginMenu(LOGIN &data)
+{
+    string option;
+    cin >> option;
+
+    if (option == "1") viewInfo(data);
+    else if (option == "2") return;
+    else if (option == "3") logOut(data);
+    else if (option == "4") return;
+    else
+    {
+        cout << "Invalid input. Please try again.\n\n";
+        return loginMenu(data);
+    }
+}
+
+// 1. View info
+void viewInfo(LOGIN data)
+{
+    if (data.identity == 1)
+    {
+        STAFF* cur = data.staff;
+        while (cur != nullptr)
+        {
+            if (data.username == cur -> staffusr && data.password == cur -> staffpwd)
+            {
+                cout << "----------------\n";
+                cout << "Username: " << cur -> staffusr << endl;
+                cout << "First Name: " << cur -> firstname << endl;
+                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Date of Birth: " << cur -> dob << endl;
+                cout << "Gender: " << cur -> gender << endl;
+                cout << "----------------\n";
+                return loginMenu(data);
+            }
+            cur = cur -> next;
+        }
+        cout << endl;
+    }
+
+    else if (data.identity == 2)
+    {
+        TEACHER* cur = data.teacher;
+        while (cur != nullptr)
+        {
+            if (data.username == cur -> teachusr && data.password == cur -> teachpwd)
+            {
+                cout << "----------------\n";
+                cout << "Username: " << cur -> teachusr << endl;
+                cout << "First Name: " << cur -> firstname << endl;
+                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Date of Birth: " << cur -> dob << endl;
+                cout << "Gender: " << cur -> gender << endl;
+                cout << "----------------\n";
+                return loginMenu(data);
+            }
+            cur = cur -> next;
+        }
+        cout << endl;
+    }
+
+    else
+    {
+        STUDENT* cur = data.student;
+        while (cur != nullptr)
+        {
+            if (data.username == cur -> studentusr && data.password == cur -> studentpwd)
+            {
+                cout << "----------------\n";
+                cout << "Username: " << cur -> studentusr << endl;
+                cout << "Student ID: " << cur -> studentID << endl;
+                cout << "First Name: " << cur -> firstname << endl;
+                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Date of Birth: " << cur -> dob << endl;
+                cout << "Gender: " << cur -> gender << endl;
+                cout << "Social ID: " << cur -> socialID << endl;
+                cout << "Start Year: " << cur -> startyear << endl;
+                cout << "Class ID: " << cur -> classID << endl;
+                cout << "Courses' ID: " << cur -> CoursesID << endl;
+                cout << "----------------\n";
+                return loginMenu(data);
+            }
+            cur = cur -> next;
+        }
+        cout << endl;
+    }
+}
+
+// 3. Log out
+void logOut(LOGIN &data)
+{
+    data.username = "";
+    data.password = "";
+    data.identity = 0;
+    loginCheck(data);
 }
