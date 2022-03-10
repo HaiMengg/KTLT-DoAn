@@ -4,7 +4,6 @@
 #include <string>
 using namespace std;
 
-#include "read-write-csv.cpp"
 #include "login-logout.cpp"
 
 int main()
@@ -26,10 +25,11 @@ int main()
     readStudent(studentData, student);
 
     // Log in to the system
-    int identity = 0;
-    string username, password;
-    cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    loginCheck(staffData, studentData, username, password, identity);
+    LOGIN data;
+    data.staff = staffData;
+    data.teacher = teacherData;
+    data.student = studentData;
+    loginCheck(data);
 
     // Delete linked lists
     deleteData(staffData, teacherData, studentData);
