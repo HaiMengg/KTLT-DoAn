@@ -4,14 +4,26 @@
 #include <string>
 using namespace std;
 
-#include "functions.cpp"
+#include "read-write-csv.cpp"
+#include "login-logout.cpp"
 
 int main()
 {
-    // Read CSV files into linked lists
+    // Open CSV files
+    fstream staff, teacher, student;
+    staff.open("staff.csv", ios::in);
+    teacher.open("teacher.csv", ios::in);
+    student.open("student.csv", ios::in);
+
+    // Linked lists
     STAFF* staffData = new STAFF;
+    TEACHER* teacherData = new TEACHER;
     STUDENT* studentData = new STUDENT;
-    readCSV(staffData, studentData);
+
+    // Read CSV files
+    readStaff(staffData, staff);
+    readTeacher(teacherData, teacher);
+    readStudent(studentData, student);
 
     // Log in to the system
     int identity = 0;
@@ -19,10 +31,6 @@ int main()
     cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
     loginCheck(staffData, studentData, username, password, identity);
 
-    // Output linked lists (only for testing)
-    // displayStaff(staffData);
-    // displayStudent(studentData);
-
     // Delete linked lists
-    deleteData(staffData, studentData);
+    deleteData(staffData, teacherData, studentData);
 }
