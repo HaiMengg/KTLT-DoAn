@@ -114,15 +114,20 @@ void printListSingle(Node* nodeHead, bool reverse) {
     while (nodeHead != nullptr) {
         if (reverse) {
             nodeCurr = nodeCurr->nodePrev;        //Move nodeCurr to last node in the list before printing starts
-            std::cout << nodeCurr->value << " ";
+            std::cout << nodeCurr->value << std::endl;
         }
         else {
-            std::cout << nodeCurr->value << " ";
+            std::cout << nodeCurr->value << std::endl;
             nodeCurr = nodeCurr->nodeNext;
         }
         if (nodeCurr == nodeHead) break;
     }
     std::cout << std::endl;
+}
+
+//Print a segment of a given string
+void printStringSegment(std::string str, int segmentStart, int segmentEnd) {
+
 }
 
 int listLength(Node* nodeHead) {

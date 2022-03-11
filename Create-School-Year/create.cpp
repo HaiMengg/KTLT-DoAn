@@ -8,7 +8,7 @@ void create(Node*& schoolYears) {
 
 	switch(choice) {
 		case 1:
-		std::fstream finSchoolYears("Create-School-Year/data/schoolyears.txt", std::ios::in | std::ios::app);
+		std::fstream finSchoolYears("data/schoolyears.txt", std::ios::in | std::ios::app);
 		createList(schoolYears, finSchoolYears);
 		createSchoolYear(schoolYears, finSchoolYears);
 		break;

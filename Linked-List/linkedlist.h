@@ -38,6 +38,7 @@ bool appendListBatch(Node*& nodeHead, SNode* batch, std::fstream& dataFile);
 bool listSearchBool(Node* nodeHead, std::string searchValue);
 
 void printListSingle(Node* nodeHead, bool reverse);
+void printStringSegment(std::string str, int segmentStart, int segmentEnd);
 
 int listLength(Node* nodeHead);
 
