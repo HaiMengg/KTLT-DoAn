@@ -101,7 +101,7 @@ void loginMenu(LOGIN &data)
     cin >> option;
 
     if (option == "1") viewInfo(data);
-    else if (option == "2") return;
+    else if (option == "2") changePassword(data);
     else if (option == "3") logOut(data);
     else if (option == "4") return;
     else
@@ -181,6 +181,12 @@ void viewInfo(LOGIN data)
         }
         cout << endl;
     }
+}
+
+// 2. Change password
+void changePassword(LOGIN &data)
+{
+
 }
 
 // 3. Log out
