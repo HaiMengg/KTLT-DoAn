@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-    // Open CSV files
+    // Get CSV files
     fstream staff, teacher, student;
     staff.open("staff.csv", ios::in);
     teacher.open("teacher.csv", ios::in);

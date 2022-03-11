@@ -1,4 +1,5 @@
 #include <string>
+#include <fstream>
 #pragma once
 
 struct STAFF
@@ -31,4 +32,5 @@ struct LOGIN
 void loginCheck(LOGIN &data);
 void loginMenu(LOGIN &data);
 void viewInfo(LOGIN data);
+void changePassword(LOGIN &data);
 void logOut(LOGIN &data);

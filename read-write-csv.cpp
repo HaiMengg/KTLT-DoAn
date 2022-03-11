@@ -17,7 +17,7 @@ void readStaff(STAFF* &data, fstream &input)
     getline(input, str);
 
     // Get data
-    while (!input.eof())
+    while (true)
     {
         getline(input, cur -> staffusr, ',');
         getline(input, cur -> staffpwd, ',');
@@ -25,6 +25,12 @@ void readStaff(STAFF* &data, fstream &input)
         getline(input, cur -> lastname, ',');
         getline(input, cur -> dob, ',');
         getline(input, cur -> gender);
+
+        if (input.eof())
+        {
+            cur -> next = nullptr;
+            break;
+        }
 
         cur -> next = new STAFF;
         cur = cur -> next;   
@@ -43,7 +49,7 @@ void readTeacher(TEACHER* &data, fstream &input)
     getline(input, str);
 
     // Get data
-    while (!input.eof())
+    while (true)
     {
         getline(input, cur -> teacherusr, ',');
         getline(input, cur -> teacherpwd, ',');
@@ -51,6 +57,12 @@ void readTeacher(TEACHER* &data, fstream &input)
         getline(input, cur -> lastname, ',');
         getline(input, cur -> dob, ',');
         getline(input, cur -> gender);
+
+        if (input.eof())
+        {
+            cur -> next = nullptr;
+            break;
+        }
 
         cur -> next = new TEACHER;
         cur = cur -> next;   
@@ -69,7 +81,7 @@ void readStudent(STUDENT* &data, fstream &input)
     getline(input, str);
 
     // Get data from student.csv
-    while (!input.eof())
+    while (true)
     {
         getline(input, cur -> studentusr, ',');
         getline(input, cur -> studentpwd, ',');
@@ -83,6 +95,12 @@ void readStudent(STUDENT* &data, fstream &input)
         getline(input, cur -> classID, ',');
         getline(input, cur -> CoursesID);
 
+        if (input.eof())
+        {
+            cur -> next = nullptr;
+            break;
+        }
+
         cur -> next = new STUDENT;
         cur = cur -> next;
     }
@@ -90,11 +108,13 @@ void readStudent(STUDENT* &data, fstream &input)
 }
 
 // Write to staff.csv
-void writeStaff(STAFF* data, fstream &output)
+void writeStaff(STAFF* data)
 {
+    fstream output;
+    output.open("staff.csv", ios::out);
     output << "staffusr,staffpwd,firstname,lastname,dob,gender\n";
-    STAFF* cur = data;
 
+    STAFF* cur = data;
     while (cur != nullptr)
     {
         output << cur -> staffusr << ","
@@ -102,17 +122,23 @@ void writeStaff(STAFF* data, fstream &output)
         << cur -> firstname << ","
         << cur -> lastname << ","
         << cur -> dob << ","
-        << cur -> gender << endl;
+        << cur -> gender;
+
+        if (cur -> next != nullptr)
+        output << endl;
+
         cur = cur -> next;
     }
 }
 
 // Write to teacher.csv
-void writeTeacher(TEACHER* data, fstream &output)
+void writeTeacher(TEACHER* data)
 {
+    fstream output;
+    output.open("teacher.csv", ios::out);
     output << "teacherusr,teacherpwd,firstname,lastname,dob,gender\n";
-    TEACHER* cur = data;
 
+    TEACHER* cur = data;
     while (cur != nullptr)
     {
         output << cur -> teacherusr << ","
@@ -120,17 +146,23 @@ void writeTeacher(TEACHER* data, fstream &output)
         << cur -> firstname << ","
         << cur -> lastname << ","
         << cur -> dob << ","
-        << cur -> gender << endl;
+        << cur -> gender;
+
+        if (cur -> next != nullptr)
+        output << endl;
+
         cur = cur -> next;
     }
 }
 
 // Write to student.csv
-void writeStudent(STUDENT* data, fstream &output)
+void writeStudent(STUDENT* data)
 {
+    fstream output;
+    output.open("student.csv", ios::out);
     output << "studentusr,studentpwd,studentID,firstname,lastname,dob,gender,socialID,startyear,classID,CoursesID\n";
-    STUDENT* cur = data;
 
+    STUDENT* cur = data;
     while (cur != nullptr)
     {
         output << cur -> studentusr << ","
@@ -143,7 +175,11 @@ void writeStudent(STUDENT* data, fstream &output)
         << cur -> socialID << ","
         << cur -> startyear << ","
         << cur -> classID << ","
-        << cur -> CoursesID << endl;
+        << cur -> CoursesID;
+
+        if (cur -> next != nullptr)
+        output << endl;
+
         cur = cur -> next;
     }
 }
