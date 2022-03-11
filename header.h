@@ -9,7 +9,7 @@ struct STAFF
 
 struct TEACHER
 {
-    string teachusr, teachpwd, firstname, lastname, dob, gender;
+    string teacherusr, teacherpwd, firstname, lastname, dob, gender;
     TEACHER* next;
 };
 
