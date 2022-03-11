@@ -45,8 +45,8 @@ void readTeacher(TEACHER* &data, fstream &input)
     // Get data
     while (!input.eof())
     {
-        getline(input, cur -> teachusr, ',');
-        getline(input, cur -> teachpwd, ',');
+        getline(input, cur -> teacherusr, ',');
+        getline(input, cur -> teacherpwd, ',');
         getline(input, cur -> firstname, ',');
         getline(input, cur -> lastname, ',');
         getline(input, cur -> dob, ',');
@@ -87,6 +87,65 @@ void readStudent(STUDENT* &data, fstream &input)
         cur = cur -> next;
     }
     cur = nullptr;
+}
+
+// Write to staff.csv
+void writeStaff(STAFF* data, fstream &output)
+{
+    output << "staffusr,staffpwd,firstname,lastname,dob,gender\n";
+    STAFF* cur = data;
+
+    while (cur != nullptr)
+    {
+        output << cur -> staffusr << ","
+        << cur -> staffpwd << ","
+        << cur -> firstname << ","
+        << cur -> lastname << ","
+        << cur -> dob << ","
+        << cur -> gender << endl;
+        cur = cur -> next;
+    }
+}
+
+// Write to teacher.csv
+void writeTeacher(TEACHER* data, fstream &output)
+{
+    output << "teacherusr,teacherpwd,firstname,lastname,dob,gender\n";
+    TEACHER* cur = data;
+
+    while (cur != nullptr)
+    {
+        output << cur -> teacherusr << ","
+        << cur -> teacherpwd << ","
+        << cur -> firstname << ","
+        << cur -> lastname << ","
+        << cur -> dob << ","
+        << cur -> gender << endl;
+        cur = cur -> next;
+    }
+}
+
+// Write to student.csv
+void writeStudent(STUDENT* data, fstream &output)
+{
+    output << "studentusr,studentpwd,studentID,firstname,lastname,dob,gender,socialID,startyear,classID,CoursesID\n";
+    STUDENT* cur = data;
+
+    while (cur != nullptr)
+    {
+        output << cur -> studentusr << ","
+        << cur -> studentpwd << ","
+        << cur -> studentID << ","
+        << cur -> firstname << ","
+        << cur -> lastname << ","
+        << cur -> dob << ","
+        << cur -> gender << ","
+        << cur -> socialID << ","
+        << cur -> startyear << ","
+        << cur -> classID << ","
+        << cur -> CoursesID << endl;
+        cur = cur -> next;
+    }
 }
 
 // Delete data
