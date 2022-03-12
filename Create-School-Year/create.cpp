@@ -8,7 +8,7 @@ void create(Node*& schoolYears) {
 
 	switch(choice) {
 		case 1:
-		std::fstream finSchoolYears("data/schoolyears.csv", std::ios::in | std::ios::app);
+		std::fstream finSchoolYears("data/schoolyear.csv", std::ios::in | std::ios::app);
 		createList(schoolYears, finSchoolYears);
 		createSchoolYear(schoolYears, finSchoolYears);
 		break;
@@ -33,8 +33,8 @@ void createSchoolYear(Node*& nodeHead, std::fstream& dataFile) {
 		//Display this message if "start" is already input but is invalid
 		if (start != "") std::cout << "You can't create an existing school year. Enter another school year: ";
 		std::cin >> start;
+		std::cin.ignore(10000, '\n');
 	} while (listSearchBool(nodeHead, start));
-	std::cin.ignore(10000, '\n');
 
     //Create and append the new school year to the current list
 	appendListSingle(nodeHead, start, dataFile);

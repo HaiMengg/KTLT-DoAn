@@ -8,15 +8,15 @@
 #include "Create-Classes/create.h"
 
 int main() {
-	// Node* schoolYears = nullptr;
-	// create(schoolYears);
+	Node* schoolYears = nullptr;
+	create(schoolYears);
 
 	Node* classes = nullptr;
 	std::fstream classData("data/2021/class.csv", std::ios::app);
 	createList(classes, classData);
-	createClass(classes, classData);
+	createClass(classes, classData, 2021);
 	
-	// destructList(schoolYears);
+	destructList(schoolYears);
 	destructList(classes);
 
 	system("pause");

@@ -7,5 +7,4 @@
 #include <regex>
 #include "../Linked-List/linkedlist.h"
 
-void createClass(Node*& nodeHead, std::fstream& dataFile, int startYear);
 void addFirstYearStudents(Node*& nodeHead, std::fstream& dataFile);
