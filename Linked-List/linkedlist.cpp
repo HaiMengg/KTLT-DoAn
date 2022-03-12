@@ -6,10 +6,10 @@ void createList(SNode*& nodeHead, std::fstream& dataFile) {
         SNode* nodeCurr = nullptr;
         int currentValue;
         std::string categories;
-        dataFile >> categories;
+        std::getline(dataFile, categories);
         while (!dataFile.eof()) {
             std::string currentLine;
-            dataFile >> currentLine;
+            std::getline(dataFile, currentLine);
             if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
                 if (nodeHead == nullptr) {
                     nodeHead = new SNode;
@@ -33,12 +33,12 @@ void createList(Node*& nodeHead, std::fstream& dataFile) {
     if (nodeHead == nullptr) {
         Node* curr = nullptr;
         std::string categories;
-        dataFile >> categories;
+        std::getline(dataFile, categories);
 
         Node* prev = nullptr;
         while (!dataFile.eof()) {
             std::string currentLine;
-            dataFile >> currentLine;
+            std::getline(dataFile, currentLine);
             if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
                 if (nodeHead == nullptr) {
                     nodeHead = new Node;
@@ -66,7 +66,7 @@ void createList(Node*& nodeHead, std::fstream& dataFile) {
 }
 
 //This appends a new line (containing new value) to the file
-bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataFile) {
+bool appendListSingle(Node*& nodeHead, std::string newValue) {
     Node* nodeNew = new Node;
     nodeNew->value = newValue;
 
@@ -84,22 +84,34 @@ bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataF
         nodeHead = nodeNew;
     }
 
-    dataFile.clear();       //Resets dataFile's EOF state flag
-    dataFile << std::endl << newValue;
     return 1;
 }
 
 //This appends multiple new lines to the file the file
 //"batch" must not be nullptr
-bool appendListBatch(Node*& nodeHead, SNode* batch, std::fstream& dataFile) {
+bool appendListBatch(Node*& nodeHead, SNode* batch) {
     SNode* batchCurr = batch;
     
     while (batchCurr != nullptr) {
-        appendListSingle(nodeHead, batchCurr->value, dataFile);
+        appendListSingle(nodeHead, batchCurr->value);
         batchCurr = batchCurr->nodeNext;
     }
 
     return 1;
+}
+
+void appendFileSingle(std::string newValue, std::fstream& dataFile) {
+    if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
+    dataFile << std::endl << newValue;
+}
+
+void appendFileBatch(SNode* batch, std::fstream& dataFile) {
+    SNode* batchCurr = batch;
+
+    while (batchCurr != nullptr) {
+        appendFileSingle(batchCurr->value, dataFile);
+        batchCurr = batchCurr->nodeNext;
+    }
 }
 
 //Returns true on search value found, false otherwise

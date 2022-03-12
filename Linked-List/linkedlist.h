@@ -32,8 +32,10 @@ void createList(DNode*& nodeHead, std::fstream& dataFile);
 void createList(CNode*& nodeFirst, std::fstream& dataFile);
 void createList(Node*& nodeHead, std::fstream& dataFile);
 
-bool appendListSingle(Node*& nodeHead, std::string newValue, std::fstream& dataFile);
-bool appendListBatch(Node*& nodeHead, SNode* batch, std::fstream& dataFile);
+bool appendListSingle(Node*& nodeHead, std::string newValue);
+bool appendListBatch(Node*& nodeHead, SNode* batch);
+void appendFileSingle(std::string newValue, std::fstream& dataFile);
+void appendFileBatch(SNode* batch, std::fstream& dataFile);
 
 bool listSearchBool(Node* nodeHead, std::string searchValue);
 

@@ -37,7 +37,8 @@ void createSchoolYear(Node*& nodeHead, std::fstream& dataFile) {
 	} while (listSearchBool(nodeHead, start));
 
     //Create and append the new school year to the current list
-	appendListSingle(nodeHead, start, dataFile);
+	appendListSingle(nodeHead, start);
+	appendFileSingle(start, dataFile);
 	std::string newDir = "data/" + start;
 	mkdir(newDir.c_str());
 	newDir = "data/" + start + "/classes";
