@@ -8,18 +8,59 @@ void createList(SNode*& nodeHead, std::fstream& dataFile) {
         std::string categories;
         dataFile >> categories;
         while (!dataFile.eof()) {
-            if (nodeHead == nullptr) {
-                nodeHead = new SNode;
-                dataFile >> nodeHead->value;
-                nodeHead->nodeNext = nullptr;
-                nodeCurr = nodeHead;
+            std::string currentLine;
+            dataFile >> currentLine;
+            if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
+                if (nodeHead == nullptr) {
+                    nodeHead = new SNode;
+                    nodeHead->value = currentLine;
+                    nodeHead->nodeNext = nullptr;
+                    nodeCurr = nodeHead;
+                }
+                else {
+                    nodeCurr->nodeNext = new SNode;
+                    nodeCurr = nodeCurr->nodeNext;
+                    nodeCurr->value = currentLine;
+                    nodeCurr->nodeNext = nullptr;
+                }
             }
-            else {
-                nodeCurr->nodeNext = new SNode;
-                nodeCurr = nodeCurr->nodeNext;
-                dataFile >> nodeCurr->value;
-                nodeCurr->nodeNext = nullptr;
+        }
+    }
+}
+
+//A combination of circular linked list and doubly linked list
+void createList(Node*& nodeHead, std::fstream& dataFile) {
+    if (nodeHead == nullptr) {
+        Node* curr = nullptr;
+        std::string categories;
+        dataFile >> categories;
+
+        Node* prev = nullptr;
+        while (!dataFile.eof()) {
+            std::string currentLine;
+            dataFile >> currentLine;
+            if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
+                if (nodeHead == nullptr) {
+                    nodeHead = new Node;
+                    nodeHead->value = currentLine;
+                    nodeHead->nodePrev = prev;
+                    nodeHead->nodeNext = nullptr;
+                    curr = nodeHead;
+                }
+                else {
+                    curr->nodeNext = new Node;
+                    prev = curr;
+                    curr = curr->nodeNext;
+                    curr->value = currentLine;
+                    prev->nodeNext = curr;
+                    curr->nodePrev = prev;
+                }
             }
+        }
+        //Check if the list is still empty (in case there's no node)
+        if (nodeHead != nullptr) {
+            curr->nodeNext = nodeHead;
+            nodeHead->nodePrev = curr;
         }
     }
 }
@@ -75,39 +116,6 @@ bool listSearchBool(Node* nodeHead, std::string searchValue) {
     return 0;
 }
 
-//A combination of circular linked list and doubly linked list
-void createList(Node*& nodeHead, std::fstream& dataFile) {
-    if (nodeHead == nullptr) {
-        Node* curr = nullptr;
-        std::string categories;
-        dataFile >> categories;
-
-        Node* prev = nullptr;
-        while (!dataFile.eof()) {
-            if (nodeHead == nullptr) {
-                nodeHead = new Node;
-                dataFile >> nodeHead->value;
-                nodeHead->nodePrev = prev;
-                nodeHead->nodeNext = nullptr;
-                curr = nodeHead;
-            }
-            else {
-                curr->nodeNext = new Node;
-                prev = curr;
-                curr = curr->nodeNext;
-                dataFile >> curr->value;
-                prev->nodeNext = curr;
-                curr->nodePrev = prev;
-            }
-        }
-        //Check if the list is still empty (in case there's no node)
-        if (nodeHead != nullptr) {
-            curr->nodeNext = nodeHead;
-            nodeHead->nodePrev = curr;
-        }
-    }
-}
-
 //Print the entire string contained in each node of the list
 void printListSingle(Node* nodeHead, bool reverse) {
     Node* nodeCurr = nodeHead;
@@ -153,4 +161,11 @@ void destructList(Node*& nodeHead) {
         delete nodeRmv;
     }
     nodeHead = nullptr;
+}
+void destructList(SNode*& nodeHead) {
+    while (nodeHead != nullptr) {
+        SNode* temp = nodeHead;
+        nodeHead = nodeHead->nodeNext;
+        delete temp;
+    }
 }

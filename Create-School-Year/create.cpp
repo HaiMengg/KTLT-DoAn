@@ -8,7 +8,7 @@ void create(Node*& schoolYears) {
 
 	switch(choice) {
 		case 1:
-		std::fstream finSchoolYears("data/schoolyears.txt", std::ios::in | std::ios::app);
+		std::fstream finSchoolYears("data/schoolyears.csv", std::ios::in | std::ios::app);
 		createList(schoolYears, finSchoolYears);
 		createSchoolYear(schoolYears, finSchoolYears);
 		break;
@@ -34,7 +34,14 @@ void createSchoolYear(Node*& nodeHead, std::fstream& dataFile) {
 		if (start != "") std::cout << "You can't create an existing school year. Enter another school year: ";
 		std::cin >> start;
 	} while (listSearchBool(nodeHead, start));
+	std::cin.ignore(10000, '\n');
 
     //Create and append the new school year to the current list
 	appendListSingle(nodeHead, start, dataFile);
+	std::string newDir = "data/" + start;
+	mkdir(newDir.c_str());
+	newDir = "data/" + start + "/classes";
+	mkdir(newDir.c_str());
+	newDir = "data/" + start + "/courses";
+	mkdir(newDir.c_str());
 }

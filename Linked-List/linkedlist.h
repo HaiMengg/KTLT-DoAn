@@ -43,3 +43,4 @@ void printStringSegment(std::string str, int segmentStart, int segmentEnd);
 int listLength(Node* nodeHead);
 
 void destructList(Node*& nodeHead);
+void destructList(SNode*& nodeHead);
