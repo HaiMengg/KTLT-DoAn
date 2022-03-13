@@ -235,6 +235,7 @@ void changePassword(LOGIN &data)
         }
     }
 
+    data.password = pass;
     cout << "Password changed successfully!\n" << "----------------\n";
     loginMenu(data);
 }
