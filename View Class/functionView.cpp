@@ -37,7 +37,7 @@ void DisplayClass(Class*& pClass)
 	}
 }
 
-void DeleteNode(Class* pClass)
+void DeleteNode(Class* &pClass)
 {
 	Class* pRemove;
 	while (pClass != nullptr)
