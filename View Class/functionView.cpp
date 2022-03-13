@@ -48,3 +48,11 @@ void DeleteNode(Class* &pClass)
 	}
 }
 
+void ViewClass() {
+	fstream fin("class.csv");
+	Class* pClass = nullptr;
+	ReadClass(pClass, fin);
+	DisplayClass(pClass);
+	DeleteNode(pClass);
+}
+
