@@ -13,3 +13,4 @@ bool addListStudentSingle(Node*& totalStudentHead, std::string newValue, int sch
 bool addListStudentBatch(Node*& totalStudentHead, SNode* batch, int schoolYear, std::string currentClass);
 void addFileStudentSingle(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass);
 void addFileStudentBatch(SNode* batch, std::fstream& dataFile, int schoolYear, std::string currentClass);
+std::string getStudentDOB(std::string studentInfo);

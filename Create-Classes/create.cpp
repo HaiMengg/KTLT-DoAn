@@ -60,7 +60,7 @@ void addStudentsToClass(Node*& totalStudentHead, std::fstream& totalFile, int sc
     while (cont == 'y') {
         std::cout << "Enter the information of the individual student to be added\n"
         << "or enter the directory of a \"input.csv\" file that contains a list of more than one student's information\n"
-        << "(format: \"Student ID, First name, Last name, Gender, Date of Birth, Social ID\"):\n";
+        << "(format: \"Student ID,First name,Last name,Gender,Date of Birth,Social ID\"):\n";
         std::string classStudentInput;
         std::getline(std::cin, classStudentInput, '\n');
 
@@ -109,7 +109,7 @@ void addStudentsToClass(Node*& totalStudentHead, std::fstream& totalFile, int sc
 bool addListStudentSingle(Node*& totalStudentHead, std::string newValue, int schoolYear, std::string currentClass) {
     Node* nodeNew = new Node;
     int afterComma = newValue.find_first_of(',');
-    nodeNew->value = newValue.substr(afterComma + 1, newValue.size()) + "," + std::to_string(schoolYear) + "," + currentClass + ",";
+    nodeNew->value = newValue.substr(0, 8) + "," + getStudentDOB(newValue) + "," + newValue.substr(afterComma + 1, newValue.size()) + "," + std::to_string(schoolYear) + "," + currentClass + ",";
 
     if (totalStudentHead != nullptr) {
         //Connects new node to the head and tail of the list
@@ -144,7 +144,7 @@ bool addListStudentBatch(Node*& totalStudentHead, SNode* batch, int schoolYear, 
 void addFileStudentSingle(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass) {
     if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
     int afterComma = newValue.find_first_of(',');
-    dataFile << std::endl << newValue.substr(afterComma + 1, newValue.size()) << "," << std::to_string(schoolYear) << "," << currentClass << ",";
+    dataFile << std::endl << newValue.substr(0, 8) << "," << getStudentDOB(newValue) << "," << newValue.substr(afterComma + 1, newValue.size()) << "," << std::to_string(schoolYear) << "," << currentClass << ",";
 }
 
 void addFileStudentBatch(SNode* batch, std::fstream& dataFile, int schoolYear, std::string currentClass) {
@@ -154,4 +154,20 @@ void addFileStudentBatch(SNode* batch, std::fstream& dataFile, int schoolYear, s
         addFileStudentSingle(batchCurr->value, dataFile, schoolYear, currentClass);
         batchCurr = batchCurr->nodeNext;
     }
+}
+
+std::string getStudentDOB(std::string studentInfo) {
+    int count = 0;
+    for (int i = 0; i < studentInfo.size(); i++) {
+        if (isdigit(studentInfo[i]) != 0) {
+            for (int j = i + 1; j < studentInfo.size(); j++) {
+                if (studentInfo[j] == '-' && j == i + 2) count++;
+                if (studentInfo[j] == '-' && j == i + 5) count++;
+            }
+            if (count == 2) {
+                return studentInfo.substr(i, 10);
+            }
+        }
+    }
+    return "";
 }
