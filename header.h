@@ -4,21 +4,21 @@
 
 struct STAFF
 {
-    STAFF* nodePrev;
+    STAFF* nodePrev = nullptr;
     std::string usr, pwd, firstName, lastName, gender, dob;
     STAFF* nodeNext;
 };
 
 struct TEACHER
 {
-    TEACHER* nodePrev;
+    TEACHER* nodePrev = nullptr;
     std::string usr, pwd, firstName, lastName, gender, dob;
     TEACHER* nodeNext;
 };
 
 struct STUDENT
 {
-    STUDENT* nodePrev;
+    STUDENT* nodePrev = nullptr;
     std::string usr, pwd, firstName, lastName, gender, dob, socialID, startYear, classID;
     STUDENT* nodeNext;
 };

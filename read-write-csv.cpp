@@ -33,6 +33,7 @@ void readStaff(STAFF* &data, fstream &input)
         }
 
         cur -> nodeNext = new STAFF;
+        cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;   
     }
     cur = nullptr;
@@ -65,6 +66,7 @@ void readTeacher(TEACHER* &data, fstream &input)
         }
 
         cur -> nodeNext = new TEACHER;
+        cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;   
     }
     cur = nullptr;
@@ -100,6 +102,7 @@ void readStudent(STUDENT* &data, fstream &input)
         }
 
         cur -> nodeNext = new STUDENT;
+        cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;
     }
     cur = nullptr;
