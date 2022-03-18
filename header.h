@@ -4,20 +4,23 @@
 
 struct STAFF
 {
-    string staffusr, staffpwd, firstname, lastname, dob, gender;
-    STAFF* next;
+    STAFF* nodePrev;
+    std::string usr, pwd, firstName, lastName, gender, dob;
+    STAFF* nodeNext;
 };
 
 struct TEACHER
 {
-    string teacherusr, teacherpwd, firstname, lastname, dob, gender;
-    TEACHER* next;
+    TEACHER* nodePrev;
+    std::string usr, pwd, firstName, lastName, gender, dob;
+    TEACHER* nodeNext;
 };
 
 struct STUDENT
 {
-    string studentusr, studentpwd, studentID, firstname, lastname, dob, gender, socialID, startyear, classID, CoursesID;
-    STUDENT* next;
+    STUDENT* nodePrev;
+    std::string usr, pwd, firstName, lastName, gender, dob, socialID, startYear, classID;
+    STUDENT* nodeNext;
 };
 
 struct LOGIN
@@ -25,7 +28,7 @@ struct LOGIN
     STAFF* staff;
     TEACHER* teacher;
     STUDENT* student;
-    string username, password;
+    std::string username, password;
     int identity = 0;
 };
 

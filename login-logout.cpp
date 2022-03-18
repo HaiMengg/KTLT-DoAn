@@ -30,12 +30,12 @@ void loginCheck(LOGIN &data)
             STAFF* cur = data.staff;
             while (cur != nullptr)
             {
-                if (data.username == cur -> staffusr && data.password == cur -> staffpwd)
+                if (data.username == cur -> usr && data.password == cur -> pwd)
                 {
                     data.identity = 1;
                     break;
                 }
-                cur = cur -> next;
+                cur = cur -> nodeNext;
             }
         }
 
@@ -44,12 +44,12 @@ void loginCheck(LOGIN &data)
             TEACHER* cur = data.teacher;
             while (cur != nullptr)
             {
-                if (data.username == cur -> teacherusr && data.password == cur -> teacherpwd)
+                if (data.username == cur -> usr && data.password == cur -> pwd)
                 {
                     data.identity = 2;
                     break;
                 }
-                cur = cur -> next;
+                cur = cur -> nodeNext;
             }
         }
 
@@ -58,12 +58,12 @@ void loginCheck(LOGIN &data)
             STUDENT* cur = data.student;
             while (cur != nullptr)
             {
-                if (data.username == cur -> studentusr && data.password == cur -> studentpwd)
+                if (data.username == cur -> usr && data.password == cur -> pwd)
                 {
                     data.identity = 3;
                     break;
                 }
-                cur = cur -> next;
+                cur = cur -> nodeNext;
             }
         }
 
@@ -119,18 +119,18 @@ void viewInfo(LOGIN data)
         STAFF* cur = data.staff;
         while (cur != nullptr)
         {
-            if (data.username == cur -> staffusr && data.password == cur -> staffpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
                 cout << "----------------\n";
-                cout << "Username: " << cur -> staffusr << endl;
-                cout << "First Name: " << cur -> firstname << endl;
-                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Username: " << cur -> usr << endl;
+                cout << "First Name: " << cur -> firstName << endl;
+                cout << "Last Name: " << cur -> lastName << endl;
                 cout << "Date of Birth: " << cur -> dob << endl;
                 cout << "Gender: " << cur -> gender << endl;
                 cout << "----------------\n";
                 return loginMenu(data);
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
         cout << endl;
     }
@@ -140,18 +140,18 @@ void viewInfo(LOGIN data)
         TEACHER* cur = data.teacher;
         while (cur != nullptr)
         {
-            if (data.username == cur -> teacherusr && data.password == cur -> teacherpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
                 cout << "----------------\n";
-                cout << "Username: " << cur -> teacherusr << endl;
-                cout << "First Name: " << cur -> firstname << endl;
-                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Username: " << cur -> usr << endl;
+                cout << "First Name: " << cur -> firstName << endl;
+                cout << "Last Name: " << cur -> lastName << endl;
                 cout << "Date of Birth: " << cur -> dob << endl;
                 cout << "Gender: " << cur -> gender << endl;
                 cout << "----------------\n";
                 return loginMenu(data);
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
         cout << endl;
     }
@@ -161,23 +161,21 @@ void viewInfo(LOGIN data)
         STUDENT* cur = data.student;
         while (cur != nullptr)
         {
-            if (data.username == cur -> studentusr && data.password == cur -> studentpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
                 cout << "----------------\n";
-                cout << "Username: " << cur -> studentusr << endl;
-                cout << "Student ID: " << cur -> studentID << endl;
-                cout << "First Name: " << cur -> firstname << endl;
-                cout << "Last Name: " << cur -> lastname << endl;
+                cout << "Username: " << cur -> usr << endl;
+                cout << "First Name: " << cur -> firstName << endl;
+                cout << "Last Name: " << cur -> lastName << endl;
                 cout << "Date of Birth: " << cur -> dob << endl;
                 cout << "Gender: " << cur -> gender << endl;
                 cout << "Social ID: " << cur -> socialID << endl;
-                cout << "Start Year: " << cur -> startyear << endl;
+                cout << "Start Year: " << cur -> startYear << endl;
                 cout << "Class ID: " << cur -> classID << endl;
-                cout << "Courses' ID: " << cur -> CoursesID << endl;
                 cout << "----------------\n";
                 return loginMenu(data);
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
         cout << endl;
     }
@@ -195,13 +193,13 @@ void changePassword(LOGIN &data)
         STAFF* cur = data.staff;
         while (cur != nullptr)
         {
-            if (data.username == cur -> staffusr && data.password == cur -> staffpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
-                cur -> staffpwd = pass;
+                cur -> pwd = pass;
                 writeStaff(data.staff);
                 break;
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
     }
 
@@ -210,13 +208,13 @@ void changePassword(LOGIN &data)
         TEACHER* cur = data.teacher;
         while (cur != nullptr)
         {
-            if (data.username == cur -> teacherusr && data.password == cur -> teacherpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
-                cur -> teacherpwd = pass;
+                cur -> pwd = pass;
                 writeTeacher(data.teacher);
                 break;
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
     }
 
@@ -225,13 +223,13 @@ void changePassword(LOGIN &data)
         STUDENT* cur = data.student;
         while (cur != nullptr)
         {
-            if (data.username == cur -> studentusr && data.password == cur -> studentpwd)
+            if (data.username == cur -> usr && data.password == cur -> pwd)
             {
-                cur -> studentpwd = pass;
+                cur -> pwd = pass;
                 writeStudent(data.student);
                 break;
             }
-            cur = cur -> next;
+            cur = cur -> nodeNext;
         }
     }
 

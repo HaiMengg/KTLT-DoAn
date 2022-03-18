@@ -19,21 +19,21 @@ void readStaff(STAFF* &data, fstream &input)
     // Get data
     while (true)
     {
-        getline(input, cur -> staffusr, ',');
-        getline(input, cur -> staffpwd, ',');
-        getline(input, cur -> firstname, ',');
-        getline(input, cur -> lastname, ',');
+        getline(input, cur -> usr, ',');
+        getline(input, cur -> pwd, ',');
+        getline(input, cur -> firstName, ',');
+        getline(input, cur -> lastName, ',');
         getline(input, cur -> dob, ',');
         getline(input, cur -> gender);
 
         if (input.eof())
         {
-            cur -> next = nullptr;
+            cur -> nodeNext = nullptr;
             break;
         }
 
-        cur -> next = new STAFF;
-        cur = cur -> next;   
+        cur -> nodeNext = new STAFF;
+        cur = cur -> nodeNext;   
     }
     cur = nullptr;
 }
@@ -51,21 +51,21 @@ void readTeacher(TEACHER* &data, fstream &input)
     // Get data
     while (true)
     {
-        getline(input, cur -> teacherusr, ',');
-        getline(input, cur -> teacherpwd, ',');
-        getline(input, cur -> firstname, ',');
-        getline(input, cur -> lastname, ',');
+        getline(input, cur -> usr, ',');
+        getline(input, cur -> pwd, ',');
+        getline(input, cur -> firstName, ',');
+        getline(input, cur -> lastName, ',');
         getline(input, cur -> dob, ',');
         getline(input, cur -> gender);
 
         if (input.eof())
         {
-            cur -> next = nullptr;
+            cur -> nodeNext = nullptr;
             break;
         }
 
-        cur -> next = new TEACHER;
-        cur = cur -> next;   
+        cur -> nodeNext = new TEACHER;
+        cur = cur -> nodeNext;   
     }
     cur = nullptr;
 }
@@ -83,26 +83,24 @@ void readStudent(STUDENT* &data, fstream &input)
     // Get data from student.csv
     while (true)
     {
-        getline(input, cur -> studentusr, ',');
-        getline(input, cur -> studentpwd, ',');
-        getline(input, cur -> studentID, ',');
-        getline(input, cur -> firstname, ',');
-        getline(input, cur -> lastname, ',');
+        getline(input, cur -> usr, ',');
+        getline(input, cur -> pwd, ',');
+        getline(input, cur -> firstName, ',');
+        getline(input, cur -> lastName, ',');
         getline(input, cur -> dob, ',');
         getline(input, cur -> gender, ',');
         getline(input, cur -> socialID, ',');
-        getline(input, cur -> startyear, ',');
+        getline(input, cur -> startYear, ',');
         getline(input, cur -> classID, ',');
-        getline(input, cur -> CoursesID);
 
         if (input.eof())
         {
-            cur -> next = nullptr;
+            cur -> nodeNext = nullptr;
             break;
         }
 
-        cur -> next = new STUDENT;
-        cur = cur -> next;
+        cur -> nodeNext = new STUDENT;
+        cur = cur -> nodeNext;
     }
     cur = nullptr;
 }
@@ -112,22 +110,22 @@ void writeStaff(STAFF* data)
 {
     fstream output;
     output.open("staff.csv", ios::out);
-    output << "staffusr,staffpwd,firstname,lastname,dob,gender\n";
+    output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     STAFF* cur = data;
     while (cur != nullptr)
     {
-        output << cur -> staffusr << ","
-        << cur -> staffpwd << ","
-        << cur -> firstname << ","
-        << cur -> lastname << ","
+        output << cur -> usr << ","
+        << cur -> pwd << ","
+        << cur -> firstName << ","
+        << cur -> lastName << ","
         << cur -> dob << ","
         << cur -> gender;
 
-        if (cur -> next != nullptr)
+        if (cur -> nodeNext != nullptr)
         output << endl;
 
-        cur = cur -> next;
+        cur = cur -> nodeNext;
     }
 }
 
@@ -136,22 +134,22 @@ void writeTeacher(TEACHER* data)
 {
     fstream output;
     output.open("teacher.csv", ios::out);
-    output << "teacherusr,teacherpwd,firstname,lastname,dob,gender\n";
+    output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     TEACHER* cur = data;
     while (cur != nullptr)
     {
-        output << cur -> teacherusr << ","
-        << cur -> teacherpwd << ","
-        << cur -> firstname << ","
-        << cur -> lastname << ","
+        output << cur -> usr << ","
+        << cur -> pwd << ","
+        << cur -> firstName << ","
+        << cur -> lastName << ","
         << cur -> dob << ","
         << cur -> gender;
 
-        if (cur -> next != nullptr)
+        if (cur -> nodeNext != nullptr)
         output << endl;
 
-        cur = cur -> next;
+        cur = cur -> nodeNext;
     }
 }
 
@@ -160,27 +158,25 @@ void writeStudent(STUDENT* data)
 {
     fstream output;
     output.open("student.csv", ios::out);
-    output << "studentusr,studentpwd,studentID,firstname,lastname,dob,gender,socialID,startyear,classID,CoursesID\n";
+    output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,CoursesID\n";
 
     STUDENT* cur = data;
     while (cur != nullptr)
     {
-        output << cur -> studentusr << ","
-        << cur -> studentpwd << ","
-        << cur -> studentID << ","
-        << cur -> firstname << ","
-        << cur -> lastname << ","
+        output << cur -> usr << ","
+        << cur -> pwd << ","
+        << cur -> firstName << ","
+        << cur -> lastName << ","
         << cur -> dob << ","
         << cur -> gender << ","
         << cur -> socialID << ","
-        << cur -> startyear << ","
-        << cur -> classID << ","
-        << cur -> CoursesID;
+        << cur -> startYear << ","
+        << cur -> classID;
 
-        if (cur -> next != nullptr)
+        if (cur -> nodeNext != nullptr)
         output << endl;
 
-        cur = cur -> next;
+        cur = cur -> nodeNext;
     }
 }
 
@@ -193,21 +189,21 @@ void deleteData(STAFF* &data, TEACHER* &teacherData, STUDENT* &studentData)
 
     while (fCur != nullptr)
     {
-        fDel = fCur -> next;
+        fDel = fCur -> nodeNext;
         delete fCur;
         fCur = fDel;
     }
 
     while (rCur != nullptr)
     {
-        rDel = rCur -> next;
+        rDel = rCur -> nodeNext;
         delete rCur;
         rCur = rDel;
     }
 
     while (tCur != nullptr)
     {
-        tDel = tCur -> next;
+        tDel = tCur -> nodeNext;
         delete tCur;
         tCur = tDel;
     }
