@@ -1,4 +1,4 @@
-teacherusr,teacherpwd,firstname,lastname,dob,gender
+usr,pwd,firstName,lastName,dob,gender
 teacher1,abcd,Nguyen,Van A,01/01/2022,Nam
 teacher2,abcdef,Tran,Thi A,02/02/2023,Nu
 teacher3,abcde,Nguyen,Van B,03/03/2024,Nam

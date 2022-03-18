@@ -1,4 +1,4 @@
-staffusr,staffpwd,firstname,lastname,dob,gender
-admin1,abcd,Nguyen,Van A,01/01/2022,Nam
+usr,pwd,firstName,lastName,dob,gender
+admin1,abcdef,Nguyen,Van A,01/01/2022,Nam
 admin2,abc,Tran,Thi A,02/02/2023,Nu
 admin3,abcd,Nguyen,Van B,03/03/2024,Nam
