@@ -6,5 +6,10 @@
 #include <direct.h>
 #include "../Linked-List/linkedlist.h"
 
-void create(Node*&);
-void createSchoolYear(Node*&, std::fstream& dataFile);
+// void create(Node*&);
+void createSchoolYear(SchoolYear*&, std::fstream&);
+
+bool schoolYearSearchBool(SchoolYear*, int);
+
+void appendNewYearList(SchoolYear*&, int);
+void appendNewYearFile(std::fstream&, int);

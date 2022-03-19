@@ -4,9 +4,8 @@
 #include <fstream>
 #include <string>
 #include <direct.h>
+#include "../Linked-List/linkedlist.h"
+#include "../Create-Classes/create.h"
+#include "../Create-School-Year/create.h"
 
-// void root();
-// void* emptyFunc(void*, std::string&);
-// void* createMenu(void*, std::string&);
-// void* createSchoolYear(void*, std::string&);
-// void login(void*);
+void currentMenu(Node&, int&);

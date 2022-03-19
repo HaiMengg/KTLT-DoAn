@@ -8,22 +8,27 @@
 #include "Create-Classes/create.h"
 
 int main() {
-	Node* schoolYears = nullptr;
-	create(schoolYears);
+	Node allData;
+	SchoolYear* schoolYears = allData.schoolYearHead;
+	std::fstream schoolYearData("data/schoolyear.csv", std::ios::app | std::ios::out | std::ios::in);
+	createList(schoolYears, schoolYearData);
+	createSchoolYear(schoolYears, schoolYearData);
 
-	Node* classes = nullptr;
-	std::fstream classData("data/2021/class.csv", std::ios::app);
+	std::cout << std::endl;
+
+	Classes* classes = allData.classesHead;
+	std::fstream classData("data/class.csv", std::ios::app | std::ios::out | std::ios::in);
 	createList(classes, classData);
 	createClass(classes, classData, 2021);
+
+	std::cout << std::endl;
 	
-	Node* students = nullptr;
-	std::fstream studentData("data/student.csv", std::ios::app);
+	Student* students = allData.studentHead;
+	std::fstream studentData("data/student.csv", std::ios::app | std::ios::out | std::ios::in);
 	createList(students, studentData);
 	addStudentsToClass(students, studentData, 2021, "21CLC09");
 
-	destructList(schoolYears);
-	destructList(classes);
-	destructList(students);
+	destructList(allData);
 
 	system("pause");
 	return 0;
