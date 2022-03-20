@@ -8,4 +8,7 @@
 #include "../Create-Classes/create.h"
 #include "../Create-School-Year/create.h"
 
-void currentMenu(Node&, int&);
+void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&);
+
+void createClassMenu(Classes*& classHead, std::fstream& classData);
+int viewMenu();

@@ -7,7 +7,9 @@
 #include "../Linked-List/linkedlist.h"
 
 // void create(Node*&);
-void createSchoolYear(SchoolYear*&, std::fstream&);
+void viewSchoolYear(SchoolYear*);
+void inputSchoolYear(SchoolYear*, std::string&);
+void createSchoolYear(SchoolYear*&, std::fstream&, std::string);
 
 bool schoolYearSearchBool(SchoolYear*, int);
 

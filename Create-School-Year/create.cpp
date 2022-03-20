@@ -1,40 +1,28 @@
 #include "create.h"
 
-// void create(Node*& schoolYears) {
-// 	std::cout << "What do you want to create: " << std::endl;
-// 	std::cout << "1. School year\n2. Semester\nInput: ";
-// 	int choice;
-// 	std::cin >> choice;
-
-// 	switch(choice) {
-// 		case 1:
-// 		std::fstream finSchoolYears("data/schoolyear.csv", std::ios::in | std::ios::app);
-// 		createList(schoolYears, finSchoolYears);
-// 		createSchoolYear(schoolYears, finSchoolYears);
-// 		break;
-// 	}
-// }
-
-void createSchoolYear(SchoolYear*& schoolYearHead, std::fstream& dataFile) {
-    //Print currently existing school years
+//Print currently existing school years
+void viewSchoolYear(SchoolYear* schoolYearHead) {
 	std::cout << "Currently existing school years:\n";
     SchoolYear* schoolYearCurr = schoolYearHead;
 	if (schoolYearHead != nullptr) {
 		do {
 			std::cout << schoolYearCurr->schoolYear << "-" << schoolYearCurr->schoolYear + 1 << std::endl;
 			schoolYearCurr = schoolYearCurr->nodeNext;
-		} while (schoolYearCurr != schoolYearHead);
+		} while (schoolYearCurr != schoolYearHead && schoolYearCurr != nullptr);
 	}
 	else std::cout << "No school year data found" << std::endl;
+}
 
+void inputSchoolYear(SchoolYear* schoolYearHead, std::string& inputYear) {
 	std::cout << "Enter the start of the new school year (you can't create an existing school year): ";
-	std::string inputYear = "";
 	do {
 		//Display this message if "start" is already input but is invalid
 		if (inputYear != "") std::cout << "You can't create an existing school year. Enter another school year: ";
 		std::getline(std::cin, inputYear);
 	} while (schoolYearSearchBool(schoolYearHead, stoi(inputYear)));
+}
 
+void createSchoolYear(SchoolYear*& schoolYearHead, std::fstream& dataFile, std::string inputYear) {
     //Create and append the new school year to the current list
 	appendNewYearList(schoolYearHead, stoi(inputYear));
 	appendNewYearFile(dataFile, stoi(inputYear));
