@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-#include "header.h"
+#include "struct.h"
 #include "read-write-csv.cpp"
 
 // Login
@@ -27,7 +27,7 @@ void loginCheck(LOGIN &data)
 
         if (option == "1")
         {
-            STAFF* cur = data.staff;
+            Staff* cur = data.staff;
             while (cur != nullptr)
             {
                 if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -41,7 +41,7 @@ void loginCheck(LOGIN &data)
 
         else if (option == "2")
         {
-            TEACHER* cur = data.teacher;
+            Teacher* cur = data.teacher;
             while (cur != nullptr)
             {
                 if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -55,7 +55,7 @@ void loginCheck(LOGIN &data)
 
         else
         {
-            STUDENT* cur = data.student;
+            Student* cur = data.student;
             while (cur != nullptr)
             {
                 if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -116,7 +116,7 @@ void viewInfo(LOGIN data)
 {
     if (data.identity == 1)
     {
-        STAFF* cur = data.staff;
+        Staff* cur = data.staff;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -137,7 +137,7 @@ void viewInfo(LOGIN data)
 
     else if (data.identity == 2)
     {
-        TEACHER* cur = data.teacher;
+        Teacher* cur = data.teacher;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -158,7 +158,7 @@ void viewInfo(LOGIN data)
 
     else
     {
-        STUDENT* cur = data.student;
+        Student* cur = data.student;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -190,7 +190,7 @@ void changePassword(LOGIN &data)
 
     if (data.identity == 1)
     {
-        STAFF* cur = data.staff;
+        Staff* cur = data.staff;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -205,7 +205,7 @@ void changePassword(LOGIN &data)
 
     else if (data.identity == 2)
     {
-        TEACHER* cur = data.teacher;
+        Teacher* cur = data.teacher;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)
@@ -220,7 +220,7 @@ void changePassword(LOGIN &data)
 
     else
     {
-        STUDENT* cur = data.student;
+        Student* cur = data.student;
         while (cur != nullptr)
         {
             if (data.username == cur -> usr && data.password == cur -> pwd)

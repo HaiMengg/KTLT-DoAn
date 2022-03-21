@@ -4,13 +4,13 @@
 #include <string>
 using namespace std;
 
-#include "header.h"
+#include "struct.h"
 
 // Read staff.csv
-void readStaff(STAFF* &data, fstream &input)
+void readStaff(Staff* &data, fstream &input)
 {
     // Track current pointer
-    STAFF* cur = data;
+    Staff* cur = data;
 
     // Ignore first line
     string str;
@@ -32,7 +32,7 @@ void readStaff(STAFF* &data, fstream &input)
             break;
         }
 
-        cur -> nodeNext = new STAFF;
+        cur -> nodeNext = new Staff;
         cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;   
     }
@@ -40,10 +40,10 @@ void readStaff(STAFF* &data, fstream &input)
 }
 
 // Read teacher.csv
-void readTeacher(TEACHER* &data, fstream &input)
+void readTeacher(Teacher* &data, fstream &input)
 {
     // Track current pointer
-    TEACHER* cur = data;
+    Teacher* cur = data;
 
     // Ignore first line
     string str;
@@ -65,7 +65,7 @@ void readTeacher(TEACHER* &data, fstream &input)
             break;
         }
 
-        cur -> nodeNext = new TEACHER;
+        cur -> nodeNext = new Teacher;
         cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;   
     }
@@ -73,10 +73,10 @@ void readTeacher(TEACHER* &data, fstream &input)
 }
 
 // Read student.csv
-void readStudent(STUDENT* &data, fstream &input)
+void readStudent(Student* &data, fstream &input)
 {
     // Track current pointer
-    STUDENT* cur = data;
+    Student* cur = data;
 
     // Ignore first line
     string str;
@@ -101,7 +101,7 @@ void readStudent(STUDENT* &data, fstream &input)
             break;
         }
 
-        cur -> nodeNext = new STUDENT;
+        cur -> nodeNext = new Student;
         cur -> nodeNext -> nodePrev = cur;
         cur = cur -> nodeNext;
     }
@@ -109,13 +109,13 @@ void readStudent(STUDENT* &data, fstream &input)
 }
 
 // Write to staff.csv
-void writeStaff(STAFF* data)
+void writeStaff(Staff* data)
 {
     fstream output;
     output.open("staff.csv", ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
-    STAFF* cur = data;
+    Staff* cur = data;
     while (cur != nullptr)
     {
         output << cur -> usr << ","
@@ -133,13 +133,13 @@ void writeStaff(STAFF* data)
 }
 
 // Write to teacher.csv
-void writeTeacher(TEACHER* data)
+void writeTeacher(Teacher* data)
 {
     fstream output;
     output.open("teacher.csv", ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
-    TEACHER* cur = data;
+    Teacher* cur = data;
     while (cur != nullptr)
     {
         output << cur -> usr << ","
@@ -157,13 +157,13 @@ void writeTeacher(TEACHER* data)
 }
 
 // Write to student.csv
-void writeStudent(STUDENT* data)
+void writeStudent(Student* data)
 {
     fstream output;
     output.open("student.csv", ios::out);
     output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,CoursesID\n";
 
-    STUDENT* cur = data;
+    Student* cur = data;
     while (cur != nullptr)
     {
         output << cur -> usr << ","
@@ -184,11 +184,11 @@ void writeStudent(STUDENT* data)
 }
 
 // Delete data
-void deleteData(STAFF* &data, TEACHER* &teacherData, STUDENT* &studentData)
+void deleteData(Staff* &data, Teacher* &teacherData, Student* &studentData)
 {
-    STAFF *fCur = data, *fDel;
-    TEACHER *rCur = teacherData, *rDel;
-    STUDENT *tCur = studentData, *tDel;
+    Staff *fCur = data, *fDel;
+    Teacher *rCur = teacherData, *rDel;
+    Student *tCur = studentData, *tDel;
 
     while (fCur != nullptr)
     {

@@ -15,9 +15,9 @@ int main()
     student.open("student.csv", ios::in);
 
     // Linked lists
-    STAFF* staffData = new STAFF;
-    TEACHER* teacherData = new TEACHER;
-    STUDENT* studentData = new STUDENT;
+    Staff* staffData = new Staff;
+    Teacher* teacherData = new Teacher;
+    Student* studentData = new Student;
 
     // Read CSV files
     readStaff(staffData, staff);
