@@ -1,6 +1,56 @@
 #include "create.h"
 
 /*Class*/
+void viewClasses(Classes* classHead) {
+    int viewType;
+    do {
+        std::cout << "Select view type:\n1. Classes of a single school year\n2. All classes\n0. Return to previous menu\n: ";
+        std::cin >> viewType;
+        if (viewType < 0 || viewType > 2) std::cout << "Invalid view type. Please re-enter.\n";
+    } while (viewType < 0 || viewType > 2);
+
+    switch (viewType) {
+        case 1: {
+            std::cout << "Enter the school year whose classes you want to view: ";
+            int schoolYear;
+            std::cin >> schoolYear;
+            Classes* classCurr = classHead;
+            bool found = 0;
+            while (classCurr != nullptr) {
+                if (classCurr->startYear == schoolYear) {
+                    found = 1;
+                    std::cout << classCurr->classID << std::endl;
+                }
+                classCurr = classCurr->nodeNext;
+            }
+            if (!found) std::cout << "No class data found";     //Display this if no valid class is found
+            break;
+        }
+        case 2: {
+            Classes* classCurr = classHead;
+            bool first; int prevYear = -1;
+            if (classCurr == nullptr) std::cout << "No class data found";     //Display this if no valid class is found
+            while (classCurr != nullptr) {
+                //Print the school year of these classes before printing them
+                if (prevYear != classCurr->startYear) {
+                    first = 1;
+                    prevYear = classCurr->startYear;
+                }
+                if (first) {
+                    first = 0;
+                    std::cout << classCurr->startYear << ":" << std::endl;
+                }
+
+                std::cout << classCurr->classID << std::endl;
+                classCurr = classCurr->nodeNext;
+            }
+            break;
+        }
+        case 0:
+            return;
+    }
+}
+
 void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
     std::string categories;
     getline(dataFile, categories);
@@ -15,11 +65,6 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
     Classes* currentClassesList = nullptr;
     createList(currentClassesList, currentClasses);
 
-    //Print currently existing classes
-    std::cout << "Currently existing classes of the school year " << startYear << "-" << startYear + 1 << ":\n";
-    if (currentClassesList != nullptr) std::cout << currentClassesList->classID << std::endl;
-    else std::cout << "No class data found" << std::endl;
-
     bool inserted = 0;
     while (!inserted) {
         std::string choice = "0";
@@ -33,8 +78,8 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
                     std::cout << "Enter the ID of a SINGLE new class (you can't create an already existing class): ";
                     std::getline(std::cin, classInput);
                     if (classInput != "0") {
-                        appendNewClassList(classHead, classInput);
-                        appendNewClassFile(dataFile, classInput);
+                        appendNewClassList(classHead, classInput, startYear, true);
+                        appendNewClassFile(dataFile, classInput, startYear, true);
                         appendNewClassFile(currentClasses, classInput);
                         appendNewClassFolder(classInput, startYear);
                         inserted = 1;
@@ -53,8 +98,8 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
                                 SNode* fInputBatch = nullptr;
 
                                 createList(fInputBatch, fileClass);
-                                appendBatchClassList(classHead, fInputBatch);
-                                appendBatchClassFile(dataFile, fInputBatch);
+                                appendBatchClassList(classHead, fInputBatch, startYear, true);
+                                appendBatchClassFile(dataFile, fInputBatch, startYear, true);
                                 appendBatchClassFile(currentClasses, fInputBatch);
                                 appendBatchClassFolder(fInputBatch, startYear);
 
@@ -75,9 +120,10 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
     destructList(currentClassesList);
 }
 
-void appendNewClassList(Classes*& classHead, std::string newClass) {
+void appendNewClassList(Classes*& classHead, std::string newClass, int schoolYear, bool full) {
     Classes* nodeNew = new Classes;
     nodeNew->classID = newClass;
+    if (full) nodeNew->startYear = schoolYear;
 
 	if (classHead == nullptr) {
 		nodeNew->nodePrev = nullptr;
@@ -94,25 +140,26 @@ void appendNewClassList(Classes*& classHead, std::string newClass) {
 	nodeNew->nodeNext = nullptr;
 	nodeCurr->nodeNext = nodeNew;
 }
-void appendNewClassFile(std::fstream& dataFile, std::string newClass) {
+void appendNewClassFile(std::fstream& dataFile, std::string newClass, int schoolYear, bool full) {
 	if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
 	dataFile << std::endl << newClass;
+    if (full) dataFile << "," << schoolYear;
     dataFile.flush();
 }
 void appendNewClassFolder(std::string newClass, int startYear) {
     mkdir(std::string("data/" + std::to_string(startYear) + "/classes/" + newClass).c_str());
 }
-void appendBatchClassList(Classes*& classHead, SNode* batch) {
+void appendBatchClassList(Classes*& classHead, SNode* batch, int schoolYear, bool full) {
     SNode* batchCurr = batch;
     while (batchCurr != nullptr) {
-        appendNewClassList(classHead, batchCurr->value);
+        appendNewClassList(classHead, batchCurr->value, schoolYear, full);
         batchCurr = batchCurr->nodeNext;
     }
 }
-void appendBatchClassFile(std::fstream& dataFile, SNode* batch) {
+void appendBatchClassFile(std::fstream& dataFile, SNode* batch, int schoolYear, bool full) {
     SNode* batchCurr = batch;
     while (batchCurr != nullptr) {
-        appendNewClassFile(dataFile, batchCurr->value);
+        appendNewClassFile(dataFile, batchCurr->value, schoolYear, full);
         batchCurr = batchCurr->nodeNext;
     }
 }
@@ -148,7 +195,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                 case 1: {
                     std::string studentInput;
                     std::cout << "Enter the data of a new student of class \"" << currentClass << "\" (you can't add an already existing student)\n"
-                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n:";
+                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n: ";
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);

@@ -13,6 +13,9 @@ int main() {
 	std::fstream schoolYearData("data/schoolyear.csv", std::ios::app | std::ios::out | std::ios::in);
     std::fstream classData("data/class.csv", std::ios::app | std::ios::out | std::ios::in);
     std::fstream studentData("data/student.csv", std::ios::app | std::ios::out | std::ios::in);
+	createList(allData.schoolYearHead, schoolYearData);
+	createList(allData.classesHead, classData);
+	createList(allData.studentHead, studentData);
 
 	currentMenu(allData, schoolYearData, classData, studentData);
 

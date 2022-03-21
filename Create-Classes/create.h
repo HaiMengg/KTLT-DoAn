@@ -7,12 +7,14 @@
 #include <regex>
 #include "../Linked-List/linkedlist.h"
 
+void viewClasses(Classes* classHead);
 void createClass(Classes*& classHead, std::fstream& dataFile, int startYear);
-void appendNewClassList(Classes*& classHead, std::string newClass);
-void appendNewClassFile(std::fstream& dataFile, std::string newClass);
+//"schoolYear" is only needed if bool == true
+void appendNewClassList(Classes*& classHead, std::string newClass, int schoolYear = -1, bool = false);
+void appendNewClassFile(std::fstream& dataFile, std::string newClass, int schoolYear = -1, bool = false);
 void appendNewClassFolder(std::string newClass, int startYear);
-void appendBatchClassList(Classes*& classHead, SNode* batch);
-void appendBatchClassFile(std::fstream& dataFile, SNode* batch);
+void appendBatchClassList(Classes*& classHead, SNode* , int schoolYear = -1, bool = false);
+void appendBatchClassFile(std::fstream& dataFile, SNode* batch, int schoolYear = -1, bool = false);
 void appendBatchClassFolder(SNode* batch, int startYear);
 
 void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass);

@@ -10,5 +10,6 @@
 
 void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&);
 
+void viewMenu(Node allData);
 void createClassMenu(Classes*& classHead, std::fstream& classData);
-int viewMenu();
+void addStudentMenu(Student* studentHead, std::fstream& studentData);

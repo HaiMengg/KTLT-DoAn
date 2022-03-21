@@ -64,32 +64,26 @@ void createList(SchoolYear*& schoolYearHead, std::fstream& dataFile) {
         std::string categories;
         std::getline(dataFile, categories);
 
-        SchoolYear* prev = nullptr;
         while (!dataFile.eof()) {
             std::string currentLine;
             std::getline(dataFile, currentLine);
             if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
                 if (schoolYearHead == nullptr) {
                     schoolYearHead = new SchoolYear;
+                    schoolYearHead->nodePrev = nullptr;
                     schoolYearHead->schoolYear = stoi(currentLine);
-                    schoolYearHead->nodePrev = prev;
                     schoolYearHead->nodeNext = nullptr;
                     curr = schoolYearHead;
                 }
                 else {
                     curr->nodeNext = new SchoolYear;
-                    prev = curr;
+                    SchoolYear* prev = curr;
                     curr = curr->nodeNext;
-                    curr->schoolYear = stoi(currentLine);
-                    prev->nodeNext = curr;
                     curr->nodePrev = prev;
+                    curr->schoolYear = stoi(currentLine);
+                    curr->nodeNext = nullptr;
                 }
             }
-        }
-        //Check if the list is still empty (in case there's no node)
-        if (schoolYearHead != nullptr) {
-            curr->nodeNext = schoolYearHead;
-            schoolYearHead->nodePrev = curr;
         }
     }
 }
@@ -100,32 +94,28 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
         std::string categories;
         std::getline(dataFile, categories);
 
-        Classes* prev = nullptr;
         while (!dataFile.eof()) {
             std::string currentLine;
             std::getline(dataFile, currentLine);
             if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
                 if (classHead == nullptr) {
                     classHead = new Classes;
-                    classHead->classID = currentLine;
-                    classHead->nodePrev = prev;
+                    classHead->nodePrev = nullptr;
+                    classHead->classID = currentLine.substr(0, currentLine.size() - 5);
+                    classHead->startYear = stoi(currentLine.substr(currentLine.size() - 4));
                     classHead->nodeNext = nullptr;
                     curr = classHead;
                 }
                 else {
+                    Classes* prev = curr;
                     curr->nodeNext = new Classes;
-                    prev = curr;
                     curr = curr->nodeNext;
-                    curr->classID = currentLine;
-                    prev->nodeNext = curr;
                     curr->nodePrev = prev;
+                    curr->classID = currentLine.substr(0, currentLine.size() - 5);
+                    curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                    curr->nodeNext = nullptr;
                 }
             }
-        }
-        //Check if the list is still empty (in case there's no node)
-        if (classHead != nullptr) {
-            curr->nodeNext = classHead;
-            classHead->nodePrev = curr;
         }
     }
 }
@@ -371,9 +361,9 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
 void destructList(Node& node) {
     SchoolYear* sy = node.schoolYearHead;
     Classes* cl = node.classesHead;
-    Course* co = node.courseHead;
+    Semesters* sem = node.semesterHead;
     Student* stu = node.studentHead;
-    while (sy != nullptr || cl != nullptr || co != nullptr || stu != nullptr) {
+    while (sy != nullptr || cl != nullptr || sem != nullptr || stu != nullptr) {
         if (sy != nullptr) {
             SchoolYear* rmv = sy;
             sy = sy->nodeNext;
@@ -384,9 +374,9 @@ void destructList(Node& node) {
             cl = cl->nodeNext;
             delete rmv;
         }
-        if (co != nullptr) {
-            Course* rmv = co;
-            co = co->nodeNext;
+        if (sem != nullptr) {
+            Semesters* rmv = sem;
+            sem = sem->nodeNext;
             delete rmv;
         }
         if (stu != nullptr) {
@@ -395,7 +385,7 @@ void destructList(Node& node) {
             delete rmv;
         }
     }
-    sy, cl, co, stu = nullptr;
+    sy, cl, sem, stu = nullptr;
 }
 void destructList(SNode*& nodeHead) {
     while (nodeHead != nullptr) {
