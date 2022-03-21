@@ -87,6 +87,7 @@ void readStudent(Student* &data, fstream &input)
     {
         getline(input, cur -> usr, ',');
         getline(input, cur -> pwd, ',');
+        getline(input, cur -> studentID, ',');
         getline(input, cur -> firstName, ',');
         getline(input, cur -> lastName, ',');
         getline(input, cur -> dob, ',');
@@ -94,6 +95,7 @@ void readStudent(Student* &data, fstream &input)
         getline(input, cur -> socialID, ',');
         getline(input, cur -> startYear, ',');
         getline(input, cur -> classID, ',');
+        getline(input, cur -> studentCoursesSem1);
 
         if (input.eof())
         {
@@ -168,6 +170,7 @@ void writeStudent(Student* data)
     {
         output << cur -> usr << ","
         << cur -> pwd << ","
+        << cur -> studentID << ","
         << cur -> firstName << ","
         << cur -> lastName << ","
         << cur -> dob << ","

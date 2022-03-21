@@ -64,7 +64,7 @@ struct Node {
     Semesters* semesterHead = nullptr;
 };
 
-struct LOGIN
+struct Login
 {
     Staff* staff;
     Teacher* teacher;
@@ -73,8 +73,8 @@ struct LOGIN
     int identity = 0;
 };
 
-void loginCheck(LOGIN &data);
-void loginMenu(LOGIN &data);
-void viewInfo(LOGIN data);
-void changePassword(LOGIN &data);
-void logOut(LOGIN &data);
+void loginCheck(Login &data);
+void loginMenu(Login &data);
+void viewInfo(Login data);
+void changePassword(Login &data);
+void logOut(Login &data);

@@ -8,7 +8,7 @@ using namespace std;
 #include "read-write-csv.cpp"
 
 // Login
-void loginCheck(LOGIN &data)
+void loginCheck(Login &data)
 {
     if (data.identity == 0) cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
     cout << "[1] Login as Staff\n[2] Login as Teacher\n[3] Login as Student\n[4] Exit Program\n"
@@ -95,7 +95,7 @@ void loginCheck(LOGIN &data)
 }
 
 // Basic menu
-void loginMenu(LOGIN &data)
+void loginMenu(Login &data)
 {
     string option;
     cin >> option;
@@ -112,7 +112,7 @@ void loginMenu(LOGIN &data)
 }
 
 // 1. View info
-void viewInfo(LOGIN data)
+void viewInfo(Login data)
 {
     if (data.identity == 1)
     {
@@ -165,6 +165,7 @@ void viewInfo(LOGIN data)
             {
                 cout << "----------------\n";
                 cout << "Username: " << cur -> usr << endl;
+                cout << "Student ID: " << cur -> studentID << endl;
                 cout << "First Name: " << cur -> firstName << endl;
                 cout << "Last Name: " << cur -> lastName << endl;
                 cout << "Date of Birth: " << cur -> dob << endl;
@@ -182,7 +183,7 @@ void viewInfo(LOGIN data)
 }
 
 // 2. Change password
-void changePassword(LOGIN &data)
+void changePassword(Login &data)
 {
     string pass;
     cout << "Input new password: ";
@@ -239,7 +240,7 @@ void changePassword(LOGIN &data)
 }
 
 // 3. Log out
-void logOut(LOGIN &data)
+void logOut(Login &data)
 {
     data.username = "";
     data.password = "";

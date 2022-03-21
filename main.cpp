@@ -25,7 +25,7 @@ int main()
     readStudent(studentData, student);
 
     // Log in to the system
-    LOGIN data;
+    Login data;
     data.staff = staffData;
     data.teacher = teacherData;
     data.student = studentData;
