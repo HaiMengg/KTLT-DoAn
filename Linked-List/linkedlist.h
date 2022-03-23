@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <direct.h>
+#include "../Functions/func.h"
 
 struct SNode {
     std::string value;
@@ -79,7 +80,9 @@ void readStudentData(Student*& studentNode, std::string studentData, bool = true
 // void appendFileSingle(std::string newValue, std::fstream& dataFile);
 // void appendFileBatch(SNode* batch, std::fstream& dataFile);
 
-bool listSearchBool(Node* nodeHead, std::string searchValue);
+bool listSearchBool(SchoolYear* schoolYearHead, int searchSchoolYear);
+bool listSearchBool(Classes* classesHead, std::string searchClass, int startYear);
+bool listSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID);
 
 // void printListSingle(Node* nodeHead, bool reverse);
 // void printStringSegment(std::string str, int segmentStart, int segmentEnd);

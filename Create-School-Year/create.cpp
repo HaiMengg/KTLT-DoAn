@@ -19,7 +19,8 @@ void inputSchoolYear(SchoolYear* schoolYearHead, std::string& inputYear) {
 		//Display this message if "start" is already input but is invalid
 		if (inputYear != "") std::cout << "You can't create an existing school year. Enter another school year: ";
 		std::getline(std::cin, inputYear);
-	} while (schoolYearSearchBool(schoolYearHead, stoi(inputYear)));
+		if (!isDigit_w(inputYear)) std::cout << "Invalid year\n";
+	} while (schoolYearSearchBool(schoolYearHead, stoi(inputYear)) && !isDigit_w(inputYear));
 }
 
 void createSchoolYear(SchoolYear*& schoolYearHead, std::fstream& dataFile, std::string inputYear) {

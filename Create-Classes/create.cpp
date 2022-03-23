@@ -56,31 +56,40 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
     getline(dataFile, categories);
 
     //Get all classes of the current school year
-    std::fstream currentClasses(std::string("data/" + std::to_string(startYear) + "/class.csv").c_str(), std::ios::app | std::ios::out);
-    if (currentClasses.peek() == EOF)      //If the file is newly created, a line for category in the file is pre-written before any data gets added to it
+    std::fstream currentClasses(std::string("data/" + std::to_string(startYear) + "/class.csv").c_str(),  std::ios::app | std::ios::out | std::ios::in);
+    std::string currentClassesCatagories;
+    std::getline(currentClasses, currentClassesCatagories);
+    if (currentClassesCatagories == "" && currentClasses.eof())      //If the file is newly created, a line for category in the file is pre-written before any data gets added to it
     {
         currentClasses.clear();
         currentClasses << "classID";
     }
+    currentClasses.seekg(0);
+
     Classes* currentClassesList = nullptr;
     createList(currentClassesList, currentClasses);
 
     bool inserted = 0;
     while (!inserted) {
-        std::string choice = "0";
-        while (choice == "0") {
+        std::string choice = "a";
+        while (!isDigit_w(choice)) {
             std::cout << "Choose the input method by which students' data are to be entered:\n"
-            << "1. Single input (manually)\n2. CSV file\n: ";
+            << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
+            if (!isDigit_w(choice)) {
+                std::cout << "Invalid choice\n";
+                continue;
+            }
             switch(stoi(choice)) {
                 case 1: {
                     std::string classInput;
-                    std::cout << "Enter the ID of a SINGLE new class (you can't create an already existing class): ";
+                    std::cout << "Enter the ID of a SINGLE new class (already existing class will not be added) (enter 0 to return to previous menu): ";
                     std::getline(std::cin, classInput);
+                    classInput = toUpper_w(classInput);
                     if (classInput != "0") {
                         appendNewClassList(classHead, classInput, startYear, true);
                         appendNewClassFile(dataFile, classInput, startYear, true);
-                        appendNewClassFile(currentClasses, classInput);
+                        appendNewClassFile(currentClasses, classInput, startYear);
                         appendNewClassFolder(classInput, startYear);
                         inserted = 1;
                     }
@@ -89,7 +98,8 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
                 }
                 case 2: {
                     std::string fileClassInput;
-                    std::cout << "Enter the directory of the CSV file containing data on multiple classes (EACH CLASS ID MUST BE SEPERATED BY A NEW LINE):";
+                    std::cout << "Enter the directory of the CSV file containing data on multiple classes (EACH CLASS ID MUST BE SEPERATED BY A NEW LINE)\n"
+                    << "(already existing classes will not be added) (enter 0 to return to previous menu)\n: ";
                     std::getline(std::cin, fileClassInput);
                     if (fileClassInput != "0") {
                         std::fstream fileClass(fileClassInput.c_str(), std::ios::in);
@@ -100,7 +110,7 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
                                 createList(fInputBatch, fileClass);
                                 appendBatchClassList(classHead, fInputBatch, startYear, true);
                                 appendBatchClassFile(dataFile, fInputBatch, startYear, true);
-                                appendBatchClassFile(currentClasses, fInputBatch);
+                                appendBatchClassFile(currentClasses, fInputBatch, startYear);
                                 appendBatchClassFolder(fInputBatch, startYear);
 
                                 destructList(fInputBatch);
@@ -114,6 +124,9 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
                     else choice = "0";
                     break;
                 }
+                case 0: {
+                    return;
+                }
             }
         }
     }
@@ -121,6 +134,8 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
 }
 
 void appendNewClassList(Classes*& classHead, std::string newClass, int schoolYear, bool full) {
+    if (classListSearchBool(classHead, newClass, schoolYear)) return;
+
     Classes* nodeNew = new Classes;
     nodeNew->classID = newClass;
     if (full) nodeNew->startYear = schoolYear;
@@ -141,10 +156,21 @@ void appendNewClassList(Classes*& classHead, std::string newClass, int schoolYea
 	nodeCurr->nodeNext = nodeNew;
 }
 void appendNewClassFile(std::fstream& dataFile, std::string newClass, int schoolYear, bool full) {
-	if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
+    if (classFileSearchBool(dataFile, newClass, schoolYear, full)) return;
+
+    //Get to end of file for appendage
+    while (!dataFile.eof()) {
+        std::string line;
+        std::getline(dataFile, line);
+    }
+    dataFile.clear();       //Remove file's EOF flag so that new line can be added
+    
 	dataFile << std::endl << newClass;
     if (full) dataFile << "," << schoolYear;
     dataFile.flush();
+
+    dataFile.clear();
+    dataFile.seekg(0); //Move to beginning of file
 }
 void appendNewClassFolder(std::string newClass, int startYear) {
     mkdir(std::string("data/" + std::to_string(startYear) + "/classes/" + newClass).c_str());
@@ -166,20 +192,44 @@ void appendBatchClassFile(std::fstream& dataFile, SNode* batch, int schoolYear, 
 void appendBatchClassFolder(SNode* batch, int startYear) {
     SNode* batchCurr = batch;
     while (batchCurr != nullptr) {
-        appendNewClassFolder(batch->value, startYear);
+        appendNewClassFolder(batchCurr->value, startYear);
         batchCurr = batchCurr->nodeNext;
     }
+}
+bool classListSearchBool(Classes* classesHead, std::string searchClass, int startYear) {
+    while (classesHead != nullptr) {
+        if (classesHead->classID == searchClass && classesHead->startYear == startYear) return 1;
+        classesHead = classesHead->nodeNext;
+    }
+    return 0;
+}
+bool classFileSearchBool(std::fstream& classesTotalFile, std::string searchClass, int startYear, bool full) {
+    classesTotalFile.clear();
+    classesTotalFile.seekg(0);
+
+    std::string categories;
+    std::getline(classesTotalFile, categories);
+    while (!classesTotalFile.eof()) {
+        std::string currentLine;
+        std::getline(classesTotalFile, currentLine);
+        if (currentLine.find(searchClass) != std::string::npos && currentLine.find(std::to_string(startYear)) != std::string::npos) return 1;
+        if (currentLine.find(searchClass) != std::string::npos && !full) return 1;
+    }
+    return 0;
 }
 
 /*Student*/
 void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass) {
     //Get all students of the current class
-    std::fstream currentStudents(std::string("data/" + std::to_string(schoolYear) + "/classes/" + currentClass + "/student.csv").c_str(), std::ios::app);
-    if (currentStudents.peek() == EOF)      //If the file is newly created, a line for category in the file is pre-written before any data gets added to it
+    std::fstream currentStudents(std::string("data/" + std::to_string(schoolYear) + "/classes/" + currentClass + "/student.csv").c_str(), std::ios::app | std::ios::out | std::ios::in);
+    std::string currentStudentsCategories;
+    std::getline(currentStudents, currentStudentsCategories);
+    if (currentStudentsCategories == "" && currentStudents.eof())      //If the file is newly created, a line for category in the file is pre-written before any data gets added to it
     {
         currentStudents.clear();
         currentStudents << "studentID,firstname,lastname,gender,dob,socialID";
     }
+    currentStudents.seekg(0);
     Student* currentStudentsList = nullptr;
     createList(currentStudentsList, currentStudents, schoolYear, currentClass);
 
@@ -194,8 +244,9 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
             switch(stoi(choice)) {
                 case 1: {
                     std::string studentInput;
-                    std::cout << "Enter the data of a new student of class \"" << currentClass << "\" (you can't add an already existing student)\n"
-                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n: ";
+                    std::cout << "Enter the data of a new student of class \"" << currentClass << "\"\n"
+                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
+                    << "(already existing student or student data that don't match the given format won't be added)\n: ";
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);
@@ -210,7 +261,8 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                 case 2: {
                     std::string fileStudentInput;
                     std::cout << "Enter the directory of the CSV file containing data on multiple students of class \"" << currentClass << "\"\n"
-                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n:";
+                    << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
+                    << "(already existing students or student data that don't match the given format won't be added)\n: ";
                     std::getline(std::cin, fileStudentInput);
                     if (fileStudentInput != "0") {
                         std::fstream fileStudent(fileStudentInput.c_str(), std::ios::in);
@@ -240,6 +292,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
         if (inserted) {
             std::cout << "Do you want to add more students? ('y' to continue, 'n' or anything else to stop adding): ";
             std::cin >> cont;
+            std::cin.ignore(10000, '\n');
         }
     }
     destructList(currentStudentsList);
@@ -247,8 +300,17 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
 
 //This appends a new student (containing new info) to the file
 void appendNewStudentList(Student*& totalStudentHead, std::string newValue, int schoolYear, std::string currentClass, bool full) {
+    if (!studentFormatCheck(newValue)) return;
+
     Student* nodeNew = new Student;
     readStudentData(nodeNew, newValue, full);
+
+    //This is put here instead of at beginning of the function so that nodeNew->studentID can be checked
+    if (studentListSearchBool(totalStudentHead, currentClass, nodeNew->studentID)) {
+        delete nodeNew;
+        return;
+    }
+
     if (full) {
         nodeNew->usr = nodeNew->studentID;
         nodeNew->pwd = nodeNew->dob;
@@ -284,11 +346,26 @@ void appendBatchStudentList(Student*& totalStudentHead, SNode* batch, int school
 }
 
 void appendNewStudentFile(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass, bool full) {
-    if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
-    int afterComma = newValue.find_first_of(',');
+    if (!studentFormatCheck(newValue)) return;
+
+    int afterComma = newValue.find(',');
+
+    //This is put here so that the current student's ID can be checked
+    if (studentFileSearchBool(dataFile, currentClass, newValue.substr(afterComma + 1, 8), full)) return;
+
+    //Get to end of file for appendage
+    while (!dataFile.eof()) {
+        std::string line;
+        std::getline(dataFile, line);
+    }
+    dataFile.clear();       //Remove file's EOF flag so that new line can be added
+
     if (full) dataFile << std::endl << newValue.substr(afterComma + 1, 8) << "," << getStudentDOB(newValue) << "," << newValue.substr(afterComma + 1, newValue.size()) << "," << std::to_string(schoolYear) << "," << currentClass << ",";
     else dataFile << std::endl << newValue.substr(afterComma + 1, newValue.size());
     dataFile.flush();
+
+    dataFile.clear();
+    dataFile.seekg(0);          //Move to beginning of file
 }
 
 void appendBatchStudentFile(SNode* batch, std::fstream& dataFile, int schoolYear, std::string currentClass, bool full) {
@@ -305,8 +382,8 @@ std::string getStudentDOB(std::string studentInfo) {
     for (int i = 0; i < studentInfo.size(); i++) {
         if (isdigit(studentInfo[i]) != 0) {
             for (int j = i + 1; j < studentInfo.size(); j++) {
-                if (studentInfo[j] == '-' && j == i + 2) count++;
-                if (studentInfo[j] == '-' && j == i + 5) count++;
+                if (studentInfo[j] == '/' && j == i + 2) count++;
+                if (studentInfo[j] == '/' && j == i + 5) count++;
             }
             if (count == 2) {
                 return studentInfo.substr(i, 10);
@@ -314,6 +391,74 @@ std::string getStudentDOB(std::string studentInfo) {
         }
     }
     return "";
+}
+
+bool studentListSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID) {
+    while (studentHead != nullptr) {
+        if (studentHead->classID == searchStudentClass || studentHead->studentID == searchStudentID) return 1;
+        studentHead = studentHead->nodeNext;
+    }
+    return 0;
+}
+bool studentFileSearchBool(std::fstream& studentTotalFile, std::string searchStudentClass, std::string searchStudentID, bool full){
+    std::string categories;
+    std::getline(studentTotalFile, categories);
+    while (!studentTotalFile.eof()) {
+        std::string currentLine;
+        std::getline(studentTotalFile, currentLine);
+        if ((!full || currentLine.find(searchStudentClass) != std::string::npos) && currentLine.find(searchStudentID) != std::string::npos) {
+            studentTotalFile.clear();
+            studentTotalFile.seekg(0);
+
+            return 1;
+        }
+    }
+    studentTotalFile.clear();
+    studentTotalFile.seekg(0);
+    return 0;
+}
+bool studentFormatCheck(std::string studentData) {
+    int count = 0;
+    for (int i = 0; i < studentData.size(); i++) {
+        if (studentData[i] == ',') {
+            count++;
+            switch(count) {
+                case 1: {
+                    if (!isDigit_w(studentData.substr(i + 1, i + 7))) return 0;
+                    break;
+                }
+                case 4: {
+                    for (int j = i + 1; j < studentData.size(); j++) {
+                        if (studentData[j] == ',') {
+                            if (studentData.substr(i + 1, j - i - 1) != "Nam" && studentData.substr(i + 1, j - i - 1) != "Nu") return 0;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 5: {
+                    int slashCount = 0;
+                    for (int j = i + 1; j < studentData.size(); j++) {
+                        if (studentData[j] == '/') {
+                            if (studentData.substr(i + 1, j - i - 1) == "/") return 0;
+                            if (!isDigit_w(studentData.substr(i + 1, j - i - 1))) return 0;
+                            if (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 31) return 0;
+                            else { i = j + 1; slashCount++; }
+                            if (slashCount == 1 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 || stoi(studentData.substr(i + 1, j - i - 1))) > 12) return 0;
+                            else { i = j + 1; slashCount++; }
+                            if (slashCount == 2 && stoi(studentData.substr(i + 1, j - i - 1)) < 0) return 0;
+                        }
+                    }
+                    break;
+                }
+                case 6: {
+                    if (!isDigit_w(studentData.substr(i + 1, studentData.size() - i))) return 0;
+                }
+            }
+        }
+    }
+    if (count != 6) return 0;
+    return 1;
 }
 
 bool checkInputFormat(std::fstream& inputFile, int mode) {

@@ -86,6 +86,9 @@ void createList(SchoolYear*& schoolYearHead, std::fstream& dataFile) {
             }
         }
     }
+    
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
 
 void createList(Classes*& classHead, std::fstream& dataFile) {
@@ -102,7 +105,7 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                     classHead = new Classes;
                     classHead->nodePrev = nullptr;
                     classHead->classID = currentLine.substr(0, currentLine.size() - 5);
-                    classHead->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) classHead->startYear = stoi(currentLine.substr(currentLine.size() - 4));
                     classHead->nodeNext = nullptr;
                     curr = classHead;
                 }
@@ -112,12 +115,15 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                     curr = curr->nodeNext;
                     curr->nodePrev = prev;
                     curr->classID = currentLine.substr(0, currentLine.size() - 5);
-                    curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
                     curr->nodeNext = nullptr;
                 }
             }
         }
     }
+
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
 
 //For reading all students
@@ -135,32 +141,32 @@ void createList(Student*& studentHead, std::fstream& dataFile) {
                 if (studentHead == nullptr) {
                     studentHead = new Student;
 
+                    studentHead->nodePrev = nullptr;
+
                     //Read and store current student data
                     readStudentData(studentHead, currentLine);
 
-                    studentHead->nodePrev = prev;
                     studentHead->nodeNext = nullptr;
                     curr = studentHead;
                 }
                 else {
+                    Student* prev = curr;
                     curr->nodeNext = new Student;
-                    prev = curr;
                     curr = curr->nodeNext;
                     
+                    curr->nodePrev = prev;
+
                     //Read and store current student data
                     readStudentData(studentHead, currentLine);
                     
-                    prev->nodeNext = curr;
-                    curr->nodePrev = prev;
+                    curr->nodeNext = nullptr;
                 }
             }
         }
-        //Check if the list is still empty (in case there's no node)
-        if (studentHead != nullptr) {
-            curr->nodeNext = studentHead;
-            studentHead->nodePrev = curr;
-        }
     }
+    
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
 //For reading students of a single class (csv format: "")
 void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, std::string currentClass) {
@@ -177,6 +183,8 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
                 if (studentHead == nullptr) {
                     studentHead = new Student;
 
+                    studentHead->nodePrev = nullptr;
+
                     //Read and store current student data
                     readStudentData(studentHead, currentLine, false);
                     studentHead->usr = studentHead->studentID;
@@ -184,15 +192,16 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
                     studentHead->startYear = std::to_string(schoolYear);
                     studentHead->classID = currentClass;
 
-                    studentHead->nodePrev = prev;
                     studentHead->nodeNext = nullptr;
                     curr = studentHead;
                 }
                 else {
+                    Student* prev = curr;
                     curr->nodeNext = new Student;
-                    prev = curr;
                     curr = curr->nodeNext;
                     
+                    curr->nodePrev = prev;
+
                     //Read and store current student data
                     readStudentData(studentHead, currentLine, false);
                     curr->usr = curr->studentID;
@@ -200,17 +209,14 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
                     curr->startYear = std::to_string(schoolYear);
                     curr->classID = currentClass;
                     
-                    prev->nodeNext = curr;
-                    curr->nodePrev = prev;
+                    curr->nodeNext = nullptr;
                 }
             }
         }
-        //Check if the list is still empty (in case there's no node)
-        if (studentHead != nullptr) {
-            curr->nodeNext = studentHead;
-            studentHead->nodePrev = curr;
-        }
     }
+    
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
 
 void readStudentData(Student*& studentNode, std::string studentData, bool full) {
@@ -222,33 +228,33 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
         if (studentData[i] == ',') {
             switch(level) {
                 case 1:
-                studentNode->studentID = studentData.substr(previousComma, i);
+                studentNode->studentID = studentData.substr(previousComma + 1, i - previousComma);
                 if (full) studentNode->usr = studentNode->studentID;
                 break;
                 case 2:
-                studentNode->firstName = studentData.substr(previousComma, i);
+                studentNode->firstName = studentData.substr(previousComma + 1, i - previousComma);
                 break;
                 case 3:
-                studentNode->lastName = studentData.substr(previousComma, i);
+                studentNode->lastName = studentData.substr(previousComma + 1, i - previousComma);
                 break;
                 case 4:
-                studentNode->gender = studentData.substr(previousComma, i);
+                studentNode->gender = studentData.substr(previousComma + 1, i - previousComma);
                 break;
                 case 5:
-                studentNode->dob = studentData.substr(previousComma, i);
+                studentNode->dob = studentData.substr(previousComma + 1, i - previousComma);
                 if (full) studentNode->pwd = studentNode->dob;
                 break;
                 case 6:
-                studentNode->socialID = studentData.substr(previousComma, i);
+                studentNode->socialID = studentData.substr(previousComma + 1, i - previousComma);
                 break;
             }
             if (full) {
                 switch(level) {
                     case 7:
-                    studentNode->startYear = studentData.substr(previousComma, i);
+                    studentNode->startYear = studentData.substr(previousComma + 1, i - previousComma);
                     break;
                     case 8:
-                    studentNode->classID = studentData.substr(previousComma, i);
+                    studentNode->classID = studentData.substr(previousComma + 1, i - previousComma);
                     break;
                 }
             }
@@ -258,68 +264,28 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
     }
 }
 
-// //This appends a new line (containing new value) to the file
-// bool appendListSingle(Node*& nodeHead, std::string newValue) {
-//     Node* nodeNew = new Node;
-//     nodeNew->value = newValue;
-
-//     if (nodeHead != nullptr) {
-//         //Connects new node to the head and tail of the list
-//         nodeNew->nodeNext = nodeHead;
-//         nodeNew->nodePrev = nodeHead->nodePrev;
-//         //Connects the head and tail of the list to the new node
-//         nodeHead->nodePrev->nodeNext = nodeNew;
-//         nodeHead->nodePrev = nodeNew;
-//     }
-//     else {
-//         nodeNew->nodeNext = nodeNew;
-//         nodeNew->nodePrev = nodeNew;
-//         nodeHead = nodeNew;
-//     }
-
-//     return 1;
-// }
-
-// //This appends multiple new lines to the file the file
-// //"batch" must not be nullptr
-// bool appendListBatch(Node*& nodeHead, SNode* batch) {
-//     SNode* batchCurr = batch;
-    
-//     while (batchCurr != nullptr) {
-//         appendListSingle(nodeHead, batchCurr->value);
-//         batchCurr = batchCurr->nodeNext;
-//     }
-
-//     return 1;
-// }
-
-// void appendFileSingle(std::string newValue, std::fstream& dataFile) {
-//     if (dataFile.eof()) dataFile.clear();       //Resets dataFile's EOF state flag
-//     dataFile << std::endl << newValue;
-// }
-
-// void appendFileBatch(SNode* batch, std::fstream& dataFile) {
-//     SNode* batchCurr = batch;
-
-//     while (batchCurr != nullptr) {
-//         appendFileSingle(batchCurr->value, dataFile);
-//         batchCurr = batchCurr->nodeNext;
-//     }
-// }
-
-// //Returns true on search value found, false otherwise
-// bool listSearchBool(Node* nodeHead, std::string searchValue) {
-//     if (nodeHead == nullptr) return 0;
-
-//     Node* nodeCurr = nodeHead;
-//     while (nodeCurr->value.find(searchValue, 0) == std::string::npos) {
-//         nodeCurr = nodeCurr->nodeNext;
-//         if (nodeCurr == nodeHead) break;        //Break loop if there's the end of list is reached
-//     }
-//     if (nodeCurr->value.find(searchValue, 0) != std::string::npos) return 1;
-
-//     return 0;
-// }
+//Returns true on search found, false otherwise
+bool listSearchBool(SchoolYear* schoolYearHead, int searchSchoolYear) {
+    while (schoolYearHead != nullptr) {
+        if (schoolYearHead->schoolYear == searchSchoolYear) return 1;
+        schoolYearHead = schoolYearHead->nodeNext;
+    }
+    return 0;
+}
+bool listSearchBool(Classes* classesHead, std::string searchClass, int startYear) {
+    while (classesHead != nullptr) {
+        if (classesHead->classID == searchClass && classesHead->startYear == startYear) return 1;
+        classesHead = classesHead->nodeNext;
+    }
+    return 0;
+}
+bool listSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID) {
+    while (studentHead != nullptr) {
+        if (studentHead->classID == searchStudentClass || studentHead->studentID == searchStudentID) return 1;
+        studentHead = studentHead->nodeNext;
+    }
+    return 0;
+}
 
 // //Print the entire string contained in each node of the list
 // void printListSingle(Node* nodeHead, bool reverse) {

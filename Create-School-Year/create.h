@@ -5,6 +5,7 @@
 #include <string>
 #include <direct.h>
 #include "../Linked-List/linkedlist.h"
+#include "../Functions/func.h"
 
 // void create(Node*&);
 void viewSchoolYear(SchoolYear*);
