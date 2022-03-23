@@ -67,8 +67,11 @@ struct Node {
 struct Login
 {
     Staff* staff;
+    Staff* curStaff;
     Teacher* teacher;
+    Teacher* curTeacher;
     Student* student;
+    Student* curStudent;
     std::string username, password;
     int identity = 0;
 };

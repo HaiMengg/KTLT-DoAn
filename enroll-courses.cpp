@@ -51,9 +51,9 @@ int getSemester()
     return 0;
 }
 
-int main()
-{
-    int sem = getSemester();
-    std::cout << sem;
-    return 0;
-}
+// int main()
+// {
+//     int sem = getSemester();
+//     std::cout << sem;
+//     return 0;
+// }
