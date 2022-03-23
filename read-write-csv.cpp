@@ -176,7 +176,8 @@ void writeStudent(Student* data)
         << cur -> gender << ","
         << cur -> socialID << ","
         << cur -> startYear << ","
-        << cur -> classID;
+        << cur -> classID << ","
+        << cur -> studentCoursesSem1;
 
         if (cur -> nodeNext != nullptr)
         output << std::endl;

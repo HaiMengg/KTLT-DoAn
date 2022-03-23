@@ -72,12 +72,19 @@ struct Login
     Teacher* curTeacher;
     Student* student;
     Student* curStudent;
+    Course* course;
     std::string username, password;
     int identity = 0;
 };
 
+bool checkSemester(std::string start, std::string end);
+int getSemester();
+void readCourse(Course* &data, std::fstream &input);
+void viewCourse(Course* data);
+
 void loginCheck(Login &data);
 void loginMenu(Login &data);
+void studentMenu(Login &data);
 void viewInfo(Login data);
 void changePassword(Login &data);
 void logOut(Login &data);
