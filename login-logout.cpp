@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-using namespace std;
 
 #include "struct.h"
 #include "read-write-csv.cpp"
@@ -10,20 +9,20 @@ using namespace std;
 // Login
 void loginCheck(Login &data)
 {
-    if (data.identity == 0) cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    cout << "[1] Login as Staff\n[2] Login as Teacher\n[3] Login as Student\n[4] Exit Program\n"
+    if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
+    std::cout << "[1] Login as Staff\n[2] Login as Teacher\n[3] Login as Student\n[4] Exit Program\n"
     << "----------------\n";
 
-    string option;
-    cin >> option;
+    std::string option;
+    std::cin >> option;
 
     if (option == "1" || option == "2" || option == "3")
     {
-        cout << "Username: ";
-        cin >> data.username;
+        std::cout << "Username: ";
+        std::cin >> data.username;
 
-        cout << "Password: ";
-        cin >> data.password;
+        std::cout << "Password: ";
+        std::cin >> data.password;
 
         if (option == "1")
         {
@@ -72,7 +71,7 @@ void loginCheck(Login &data)
 
         if (data.identity != 0 && data.identity != -1)
         {
-            cout << "----------------\n"
+            std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
             << "[1] View Info\n[2] Change Password\n[3] Log Out\n[4] Exit Program\n"
             << "----------------\n";
@@ -81,7 +80,7 @@ void loginCheck(Login &data)
 
         else
         {
-            cout << "Incorrect username or password. Please try again.\n\n";
+            std::cout << "Incorrect username or password. Please try again.\n\n";
             data.identity = -1;
             return loginCheck(data);
         }
@@ -91,7 +90,7 @@ void loginCheck(Login &data)
 
     else
     {
-        cout << "Invalid input. Please try again.\n\n";
+        std::cout << "Invalid input. Please try again.\n\n";
         data.identity = -1;
         return loginCheck(data);
     }
@@ -100,8 +99,8 @@ void loginCheck(Login &data)
 // Basic menu
 void loginMenu(Login &data)
 {
-    string option;
-    cin >> option;
+    std::string option;
+    std::cin >> option;
 
     if (option == "1") viewInfo(data);
     else if (option == "2") changePassword(data);
@@ -109,7 +108,7 @@ void loginMenu(Login &data)
     else if (option == "4") return;
     else
     {
-        cout << "Invalid input. Please try again.\n\n";
+        std::cout << "Invalid input. Please try again.\n\n";
         return loginMenu(data);
     }
 }
@@ -120,43 +119,43 @@ void viewInfo(Login data)
     if (data.identity == 1)
     {
         Staff* cur = data.curStaff;
-        cout << "----------------\n";
-        cout << "Username: " << cur -> usr << endl;
-        cout << "First Name: " << cur -> firstName << endl;
-        cout << "Last Name: " << cur -> lastName << endl;
-        cout << "Date of Birth: " << cur -> dob << endl;
-        cout << "Gender: " << cur -> gender << endl;
-        cout << "----------------\n";
+        std::cout << "----------------\n";
+        std::cout << "Username: " << cur -> usr << std::endl;
+        std::cout << "First Name: " << cur -> firstName << std::endl;
+        std::cout << "Last Name: " << cur -> lastName << std::endl;
+        std::cout << "Date of Birth: " << cur -> dob << std::endl;
+        std::cout << "Gender: " << cur -> gender << std::endl;
+        std::cout << "----------------\n";
         return loginMenu(data);
     }
 
     else if (data.identity == 2)
     {
         Teacher* cur = data.curTeacher;
-        cout << "----------------\n";
-        cout << "Username: " << cur -> usr << endl;
-        cout << "First Name: " << cur -> firstName << endl;
-        cout << "Last Name: " << cur -> lastName << endl;
-        cout << "Date of Birth: " << cur -> dob << endl;
-        cout << "Gender: " << cur -> gender << endl;
-        cout << "----------------\n";
+        std::cout << "----------------\n";
+        std::cout << "Username: " << cur -> usr << std::endl;
+        std::cout << "First Name: " << cur -> firstName << std::endl;
+        std::cout << "Last Name: " << cur -> lastName << std::endl;
+        std::cout << "Date of Birth: " << cur -> dob << std::endl;
+        std::cout << "Gender: " << cur -> gender << std::endl;
+        std::cout << "----------------\n";
         return loginMenu(data);
     }
 
     else
     {
         Student* cur = data.curStudent;
-        cout << "----------------\n";
-        cout << "Username: " << cur -> usr << endl;
-        cout << "Student ID: " << cur -> studentID << endl;
-        cout << "First Name: " << cur -> firstName << endl;
-        cout << "Last Name: " << cur -> lastName << endl;
-        cout << "Date of Birth: " << cur -> dob << endl;
-        cout << "Gender: " << cur -> gender << endl;
-        cout << "Social ID: " << cur -> socialID << endl;
-        cout << "Start Year: " << cur -> startYear << endl;
-        cout << "Class ID: " << cur -> classID << endl;
-        cout << "----------------\n";
+        std::cout << "----------------\n";
+        std::cout << "Username: " << cur -> usr << std::endl;
+        std::cout << "Student ID: " << cur -> studentID << std::endl;
+        std::cout << "First Name: " << cur -> firstName << std::endl;
+        std::cout << "Last Name: " << cur -> lastName << std::endl;
+        std::cout << "Date of Birth: " << cur -> dob << std::endl;
+        std::cout << "Gender: " << cur -> gender << std::endl;
+        std::cout << "Social ID: " << cur -> socialID << std::endl;
+        std::cout << "Start Year: " << cur -> startYear << std::endl;
+        std::cout << "Class ID: " << cur -> classID << std::endl;
+        std::cout << "----------------\n";
         return loginMenu(data);
     }
 }
@@ -164,18 +163,18 @@ void viewInfo(Login data)
 // 2. Change password
 void changePassword(Login &data)
 {
-    string pass;
-    cout << "Input current password: ";
-    cin >> pass;
+    std::string pass;
+    std::cout << "Input current password: ";
+    std::cin >> pass;
 
     while (pass != data.password)
     {
-        cout << "Incorrect password. Try again: ";
-        cin >> pass;
+        std::cout << "Incorrect password. Try again: ";
+        std::cin >> pass;
     }
 
-    cout << "Input new password: ";
-    cin >> pass;
+    std::cout << "Input new password: ";
+    std::cin >> pass;
 
     if (data.identity == 1)
     {
@@ -199,7 +198,7 @@ void changePassword(Login &data)
     }
 
     data.password = pass;
-    cout << "Password changed successfully!\n" << "----------------\n";
+    std::cout << "Password changed successfully!\n" << "----------------\n";
     loginMenu(data);
 }
 

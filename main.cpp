@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-using namespace std;
 
 #include "login-logout.cpp"
 #include "enroll-courses.cpp"
@@ -10,10 +9,10 @@ using namespace std;
 int main()
 {
     // Get CSV files
-    fstream staff, teacher, student;
-    staff.open("staff.csv", ios::in);
-    teacher.open("teacher.csv", ios::in);
-    student.open("student.csv", ios::in);
+    std::fstream staff, teacher, student;
+    staff.open("staff.csv", std::ios::in);
+    teacher.open("teacher.csv", std::ios::in);
+    student.open("student.csv", std::ios::in);
 
     // Linked lists
     Staff* staffData = new Staff;

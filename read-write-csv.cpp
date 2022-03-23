@@ -2,19 +2,18 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-using namespace std;
 
 #include "struct.h"
 
 // Read staff.csv
-void readStaff(Staff* &data, fstream &input)
+void readStaff(Staff* &data, std::fstream &input)
 {
     // Track current pointer
     Staff* cur = data;
 
     // Ignore first line
-    string str;
-    getline(input, str);
+    std::string str;
+    std::getline(input, str);
 
     // Get data
     while (true)
@@ -40,14 +39,14 @@ void readStaff(Staff* &data, fstream &input)
 }
 
 // Read teacher.csv
-void readTeacher(Teacher* &data, fstream &input)
+void readTeacher(Teacher* &data, std::fstream &input)
 {
     // Track current pointer
     Teacher* cur = data;
 
     // Ignore first line
-    string str;
-    getline(input, str);
+    std::string str;
+    std::getline(input, str);
 
     // Get data
     while (true)
@@ -73,14 +72,14 @@ void readTeacher(Teacher* &data, fstream &input)
 }
 
 // Read student.csv
-void readStudent(Student* &data, fstream &input)
+void readStudent(Student* &data, std::fstream &input)
 {
     // Track current pointer
     Student* cur = data;
 
     // Ignore first line
-    string str;
-    getline(input, str);
+    std::string str;
+    std::getline(input, str);
 
     // Get data from student.csv
     while (true)
@@ -113,8 +112,8 @@ void readStudent(Student* &data, fstream &input)
 // Write to staff.csv
 void writeStaff(Staff* data)
 {
-    fstream output;
-    output.open("staff.csv", ios::out);
+    std::fstream output;
+    output.open("staff.csv", std::ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     Staff* cur = data;
@@ -128,7 +127,7 @@ void writeStaff(Staff* data)
         << cur -> gender;
 
         if (cur -> nodeNext != nullptr)
-        output << endl;
+        output << std::endl;
 
         cur = cur -> nodeNext;
     }
@@ -137,8 +136,8 @@ void writeStaff(Staff* data)
 // Write to teacher.csv
 void writeTeacher(Teacher* data)
 {
-    fstream output;
-    output.open("teacher.csv", ios::out);
+    std::fstream output;
+    output.open("teacher.csv", std::ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     Teacher* cur = data;
@@ -152,7 +151,7 @@ void writeTeacher(Teacher* data)
         << cur -> gender;
 
         if (cur -> nodeNext != nullptr)
-        output << endl;
+        output << std::endl;
 
         cur = cur -> nodeNext;
     }
@@ -161,8 +160,8 @@ void writeTeacher(Teacher* data)
 // Write to student.csv
 void writeStudent(Student* data)
 {
-    fstream output;
-    output.open("student.csv", ios::out);
+    std::fstream output;
+    output.open("student.csv", std::ios::out);
     output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,CoursesID\n";
 
     Student* cur = data;
@@ -180,7 +179,7 @@ void writeStudent(Student* data)
         << cur -> classID;
 
         if (cur -> nodeNext != nullptr)
-        output << endl;
+        output << std::endl;
 
         cur = cur -> nodeNext;
     }
