@@ -5,6 +5,7 @@
 using namespace std;
 
 #include "login-logout.cpp"
+#include "enroll-courses.cpp"
 
 int main()
 {
