@@ -264,6 +264,80 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
     }
 }
 
+void createList(Semesters*& semestersHead, std::fstream& dataFile, int schoolYear) {
+    if (semestersHead == nullptr) {
+        Semesters* curr = nullptr;
+        std::string categories;
+        std::getline(dataFile, categories);
+
+        while (!dataFile.eof()) {
+            std::string currentLine;
+            std::getline(dataFile, currentLine);
+            if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
+                if (semestersHead == nullptr) {
+                    semestersHead = new Semesters;
+                    semestersHead->nodePrev = nullptr;
+
+                    if (schoolYear != -1) { 
+                        readSemesterData(semestersHead, currentLine, false);
+                        semestersHead->schoolYear = schoolYear;
+                    }
+                    else readSemesterData(semestersHead, currentLine);
+
+                    semestersHead->nodeNext = nullptr;
+                    curr = semestersHead;
+                }
+                else {
+                    Semesters* prev = curr;
+                    curr->nodeNext = new Semesters;
+                    curr = curr->nodeNext;
+                    curr->nodePrev = prev;
+
+                    if (schoolYear != -1) { 
+                        readSemesterData(curr, currentLine, false);
+                        curr->schoolYear = schoolYear;
+                    }
+                    else readSemesterData(curr, currentLine);
+                    
+                    curr->nodeNext = nullptr;
+                }
+            }
+        }
+    }
+
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
+}
+void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool full) {
+    int level = 1;
+    int afterComma;
+    for (int i = 0; i < semesterData.size(); i++) {
+        if (semesterData[i] == ',') {
+            switch(level) {
+                case 1: {
+                    semestersHead->semester = stoi(semesterData.substr(0, i));
+                    afterComma = i + 1;
+                    break;
+                }
+                case 2: {
+                    if (full) {
+                        semestersHead->schoolYear = stoi(semesterData.substr(afterComma, i - afterComma));
+                        afterComma = i + 1;
+                    }
+                    break;
+                }
+                case 3: {
+                    semestersHead->startDate = semesterData.substr(afterComma, i - afterComma);
+                    semestersHead->endDate = semesterData.substr(i + 1, semesterData.size() - i);
+                    break;
+                }
+            }
+        
+            level++;
+        }
+    }
+}
+
 //Returns true on search found, false otherwise
 bool listSearchBool(SchoolYear* schoolYearHead, int searchSchoolYear) {
     while (schoolYearHead != nullptr) {
@@ -377,6 +451,13 @@ void destructList(Classes*& nodeHead) {
 void destructList(Student*& nodeHead) {
     while (nodeHead != nullptr) {
         Student* temp = nodeHead;
+        nodeHead = nodeHead->nodeNext;
+        delete temp;
+    }
+}
+void destructList(Semesters*& nodeHead) {
+    while (nodeHead != nullptr) {
+        Semesters* temp = nodeHead;
         nodeHead = nodeHead->nodeNext;
         delete temp;
     }

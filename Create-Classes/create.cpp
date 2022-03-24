@@ -77,7 +77,7 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
             << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
             if (!isDigit_w(choice)) {
-                std::cout << "Invalid choice\n";
+                std::cout << "Invalid format for choice\n";
                 continue;
             }
             switch(stoi(choice)) {
@@ -238,15 +238,20 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
         bool inserted = 0;
         std::string choice = "0";
         while (choice == "0") {
-            std::cout << "Choose the input method by which students' data are to be entered:\n"
-            << "1. Single input (manually)\n2. CSV file\n: ";
-            std::getline(std::cin, choice);
+            do {
+                if (!isDigit_w(choice)) std::cout << "Invalid format for choice\n";
+                std::cout << "Choose the input method by which students' data are to be entered:\n"
+                << "1. Single input (manually)\n2. CSV file\n0. Back to previous menu\n: ";
+                std::getline(std::cin, choice);
+                if (choice == "0") return;
+            } while (!isDigit_w(choice));
             switch(stoi(choice)) {
                 case 1: {
                     std::string studentInput;
                     std::cout << "Enter the data of a new student of class \"" << currentClass << "\"\n"
                     << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
-                    << "(already existing student or student data that don't match the given format won't be added)\n: ";
+                    << "(already existing student or student data that don't match the given format won't be added)\n"
+                    << "(enter \"0\" to return to previous menu)\n: ";
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);
@@ -262,7 +267,8 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                     std::string fileStudentInput;
                     std::cout << "Enter the directory of the CSV file containing data on multiple students of class \"" << currentClass << "\"\n"
                     << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
-                    << "(already existing students or student data that don't match the given format won't be added)\n: ";
+                    << "(already existing students or student data that don't match the given format won't be added)\n"
+                    << "(enter \"0\" to return to previous menu)\n: ";
                     std::getline(std::cin, fileStudentInput);
                     if (fileStudentInput != "0") {
                         std::fstream fileStudent(fileStudentInput.c_str(), std::ios::in);
@@ -424,7 +430,7 @@ bool studentFormatCheck(std::string studentData) {
             count++;
             switch(count) {
                 case 1: {
-                    if (!isDigit_w(studentData.substr(i + 1, i + 7))) return 0;
+                    if (!isDigit_w(studentData.substr(i + 1, 8))) return 0;
                     break;
                 }
                 case 4: {
@@ -440,19 +446,22 @@ bool studentFormatCheck(std::string studentData) {
                     int slashCount = 0;
                     for (int j = i + 1; j < studentData.size(); j++) {
                         if (studentData[j] == '/') {
-                            if (studentData.substr(i + 1, j - i - 1) == "/") return 0;
+                            if (studentData.substr(i + 1, 1) == "/") return 0;
                             if (!isDigit_w(studentData.substr(i + 1, j - i - 1))) return 0;
-                            if (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 31) return 0;
-                            else { i = j + 1; slashCount++; }
-                            if (slashCount == 1 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 || stoi(studentData.substr(i + 1, j - i - 1))) > 12) return 0;
-                            else { i = j + 1; slashCount++; }
-                            if (slashCount == 2 && stoi(studentData.substr(i + 1, j - i - 1)) < 0) return 0;
+                            if (slashCount == 0 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 31)) return 0;
+                            if (slashCount == 1 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 12)) return 0;
+                            i = j; slashCount++;
+                        }
+                        if (studentData[j] == ',' && slashCount == 2) {
+                            if (!isDigit_w(studentData.substr(i + 1, j - i - 1))) return 0;
+                            if (stoi(studentData.substr(i + 1, j - i - 1)) < 0) return 0;
+                            i = j;
+                            break;
                         }
                     }
-                    break;
-                }
-                case 6: {
                     if (!isDigit_w(studentData.substr(i + 1, studentData.size() - i))) return 0;
+                    count++;
+                    break;
                 }
             }
         }

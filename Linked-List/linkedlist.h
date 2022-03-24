@@ -22,20 +22,25 @@ struct SchoolYear {
     int schoolYear;
     SchoolYear* nodeNext;
 };
+struct StudentCourse {
+    StudentCourse* nodePrev;
+    int schoolYear;
+    std::string sem1Courses;
+    std::string sem2Courses;
+    std::string sem3Courses;
+    StudentCourse* nodeNext;
+};
 struct Student {
     Student* nodePrev;
     std::string usr, pwd, studentID, firstName, lastName, gender, dob, socialID, startYear, classID;
-    //Reset after each school year
-    std::string studentCoursesSem1;
-    std::string studentCoursesSem2;
-    std::string studentCoursesSem3;
+    StudentCourse* studentCourseHead = nullptr;
     Student* nodeNext;
 };
 struct Classes {
     Classes* nodePrev;
     std::string classID;
     int startYear;
-    Student* classStudentHead;      //All students of this class
+    Student* classStudentHead = nullptr;      //All students of this class
     Classes* nodeNext;
 };
 //Course can only exist in a semester
@@ -43,14 +48,15 @@ struct Course {
     Course* nodePrev;
     std::string courseId, courseName, teacherName, numOfCredits, daySession;    //Format: MON-S1|SAT-S4|TUE-S2|...
     int studentMax = 50;
-    Student* courseStudentHead;     //All students of this course
+    Student* courseStudentHead = nullptr;     //All students of this course
     Course* nodeNext;
 };
 struct Semesters {
     Semesters* nodePrev;
+    int semester;
     int schoolYear;
     std::string startDate, endDate;
-    Course* semesterCourseHead;
+    Course* semesterCourseHead = nullptr;
     Semesters* nodeNext;
 };
 
@@ -70,10 +76,12 @@ void createList(Classes*& classHead, std::fstream& dataFile);
 void createList(Student*& studentHead, std::fstream& dataFile);
 //For reading students of a single class
 void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, std::string currentClass);
+void readStudentData(Student*& studentNode, std::string studentData, bool = true);
+
+void createList(Semesters*& semestersHead, std::fstream& dataFile, int = -1);
+void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool = true);
 
 void createList(Course*& courseHead, std::fstream& dataFile);
-
-void readStudentData(Student*& studentNode, std::string studentData, bool = true);
 
 // bool appendListSingle(Node*& nodeHead, std::string newValue);
 // bool appendListBatch(Node*& nodeHead, SNode* batch);
@@ -94,3 +102,4 @@ void destructList(SNode*&);
 void destructList(DNode*&);
 void destructList(Classes*&);
 void destructList(Student*&);
+void destructList(Semesters*&);
