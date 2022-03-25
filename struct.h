@@ -74,13 +74,17 @@ struct Login
     Student* curStudent;
     Course* course;
     std::string username, password;
-    int identity = 0;
+    int semester = 0, identity = 0;
 };
 
 bool checkSemester(std::string start, std::string end);
 int getSemester();
 void readCourse(Course* &data, std::fstream &input);
-void viewCourse(Course* data);
+void replaceAll(std::string& str, const std::string& from, const std::string& to);
+void showCourseNode(Course* data);
+void showCourses(Course* data);
+void enrollCourse(Login data);
+void viewCourse(Login data);
 
 void loginCheck(Login &data);
 void loginMenu(Login &data);

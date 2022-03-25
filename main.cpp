@@ -38,6 +38,7 @@ int main()
     data.teacher = teacherData;
     data.student = studentData;
     data.course = courseData;
+    data.semester = sem;
     loginCheck(data);
 
     // Delete linked lists

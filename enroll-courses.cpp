@@ -92,10 +92,160 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
     }
 }
 
-// Show all available courses
-void viewCourse(Course* data)
+// Show a single course node
+void showCourseNode(Course* data)
 {
     Course* cur = data;
+
+    replaceAll(cur -> daySession, "|", ", ");
+    replaceAll(cur -> daySession, "-S1", " (07:30-09:10)");
+    replaceAll(cur -> daySession, "-S2", " (09:30-11:10)");
+    replaceAll(cur -> daySession, "-S3", " (13:30-15:10)");
+    replaceAll(cur -> daySession, "-S4", " (15:30-17:10)");
+
+    std::cout << std::setw(15) << cur -> courseId;
+    std::cout << std::setw(22) << cur -> courseName;
+    std::cout << std::setw(25) << cur -> teacherName;
+    std::cout << std::setw(10) << cur -> numOfCredits;
+    std::cout << std::setw(20) << cur -> daySession << std::endl;
+}
+
+// Show available courses in a semester
+void showCourses(Course* data)
+{
+    std::cout << "----------------\n";
+    std::cout << std::left
+    << std::setw(15) << "ID"
+    << std::setw(22) << "Course"
+    << std::setw(25) << "Teacher"
+    << std::setw(10) << "Credits"
+    << std::setw(20) << "Sessions" << std::endl;
+
+    Course* cur = data;
+    while (cur != nullptr)
+    {
+        showCourseNode(cur);
+        cur = cur -> nodeNext;
+    }
+
+    std::cout << "----------------\n";
+}
+
+// Enroll in a course
+void enrollCourse(Login data)
+{
+    std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
+    std::string enrollId;
+    std::cin >> enrollId;
+
+    if (enrollId == "1")
+    {
+        std::cout << "----------------\n";
+        studentMenu(data);
+        return;
+    }
+
+    Course* cur = data.course;
+    bool check = false;
+    std::string enrolled, sessions;
+    int amount = 0;
+
+    if (data.semester == 1)
+    enrolled = data.curStudent -> studentCoursesSem1;
+
+    else if (data.semester == 2)
+    enrolled = data.curStudent -> studentCoursesSem2;
+
+    else
+    enrolled = data.curStudent -> studentCoursesSem3;
+
+    if (enrolled != "")
+    {
+        std::istringstream iss(enrolled);
+        std::string item;
+        while (std::getline(iss, item, '-')) {
+            amount++;
+            cur = data.course;
+            while (cur != nullptr)
+            {
+                if (cur -> courseId == item)
+                {
+                    sessions += cur -> daySession + "|";
+                    break;
+                }
+                cur = cur -> nodeNext;
+            }
+        }
+    }
+
+    if (amount == 5)
+    {
+        std::cout << "You have reached the maximum amount of courses to enroll in a semester.\n";
+        std::cout << "----------------\n";
+        studentMenu(data);
+        return;
+    }
+
+    bool reason = true;
+    cur = data.course;
+
+    while (cur != nullptr)
+    {
+        if (cur -> courseId == enrollId)
+        {
+            if (sessions.find(cur -> daySession) != std::string::npos)
+            {
+                reason = false;
+                break;
+            }
+
+            if (data.semester == 1)
+            data.curStudent -> studentCoursesSem1 += "-" + cur -> courseId;
+
+            else if (data.semester == 2)
+            data.curStudent -> studentCoursesSem2 += "-" + cur -> courseId;
+
+            else
+            data.curStudent -> studentCoursesSem3 += "-" + cur -> courseId;
+
+            writeStudent(data.student);
+            std::cout << "Course enrolled!\n" << "----------------\n";
+            studentMenu(data);
+
+            return;
+        }
+        cur = cur -> nodeNext;
+    }
+
+    if (reason) std::cout << "Could not find that course. Please try again.\n";
+    else std::cout << "You have already enrolled in this course or another one with conflicting sessions. Please try again.\n";
+
+    enrollCourse(data);
+}
+
+// View courses that are enrolled
+void viewCourse(Login data)
+{
+    Course* cur;
+    std::string enrolled;
+
+    if (data.semester == 1)
+    enrolled = data.curStudent -> studentCoursesSem1;
+
+    else if (data.semester == 2)
+    enrolled = data.curStudent -> studentCoursesSem2;
+
+    else
+    enrolled = data.curStudent -> studentCoursesSem3;
+
+    if (enrolled == "")
+    {
+        std::cout << "----------------\n"
+        << "Nothing to see here.\n"
+        << "----------------\n";
+        studentMenu(data);
+        return;
+    }
 
     std::cout << "----------------\n";
     std::cout << std::left
@@ -105,22 +255,20 @@ void viewCourse(Course* data)
     << std::setw(10) << "Credits"
     << std::setw(20) << "Sessions" << std::endl;
 
-    while (cur != nullptr)
-    {
-        replaceAll(cur -> daySession, "|", ", ");
-        replaceAll(cur -> daySession, "-S1", " (07:30-09:10)");
-        replaceAll(cur -> daySession, "-S2", " (09:30-11:10)");
-        replaceAll(cur -> daySession, "-S3", " (13:30-15:10)");
-        replaceAll(cur -> daySession, "-S4", " (15:30-17:10)");
-
-        std::cout << std::setw(15) << cur -> courseId;
-        std::cout << std::setw(22) << cur -> courseName;
-        std::cout << std::setw(25) << cur -> teacherName;
-        std::cout << std::setw(10) << cur -> numOfCredits;
-        std::cout << std::setw(20) << cur -> daySession << std::endl;
-
-        cur = cur -> nodeNext;
+    std::istringstream iss(enrolled);
+    std::string item;
+    while (std::getline(iss, item, '-')) {
+        cur = data.course;
+        while (cur != nullptr)
+        {
+            if (cur -> courseId == item)
+            {
+                showCourseNode(cur);
+            }
+            cur = cur -> nodeNext;
+        }
     }
 
     std::cout << "----------------\n";
+    studentMenu(data);
 }

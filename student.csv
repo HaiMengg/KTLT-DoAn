@@ -1,5 +1,5 @@
-usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,CoursesID
-student1,abcd,21127517,Nguyen,Anh Khoa,10/24/2003,Nam,0123456789,temp,temp,none
-student2,12345,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,temp,temp,none
-student3,test,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,temp,temp,none
-student4,pass,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,temp,temp,none
+usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,coursesID
+student1,abcd,21127517,Nguyen,Anh Khoa,10/24/2003,Nam,0123456789,2021,21CLC09,||
+student2,12345,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,|VLDC10002-KTLT10004|
+student3,test,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,|TH10003-NMLT10004-VTP10002-FK10003-VLDC10002|
+student4,pass,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,||

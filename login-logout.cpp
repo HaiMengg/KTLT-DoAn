@@ -10,9 +10,10 @@
 void loginCheck(Login &data)
 {
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    std::cout << "[1] Login as Staff\n[2] Login as Teacher\n[3] Login as Student\n[4] Exit Program\n"
+    std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
     << "----------------\n";
 
+    std::cout << "Input: ";
     std::string option;
     std::cin >> option;
 
@@ -73,7 +74,7 @@ void loginCheck(Login &data)
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
-            << "[1] View Info\n[2] View Courses\n[3] Change Password\n[4] Log Out\n[5] Exit Program\n"
+            << "[1] View info\n[2] Enroll in a course\n[3] View my courses\n[4] Change password\n[5] Log out\n[6] Exit program\n"
             << "----------------\n";
             studentMenu(data);
         }
@@ -82,7 +83,7 @@ void loginCheck(Login &data)
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
-            << "[1] View Info\n[2] Change Password\n[3] Log Out\n[4] Exit Program\n"
+            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Exit program\n"
             << "----------------\n";
             loginMenu(data);
         }
@@ -108,6 +109,7 @@ void loginCheck(Login &data)
 // Basic menu
 void loginMenu(Login &data)
 {
+    std::cout << "Input: ";
     std::string option;
     std::cin >> option;
 
@@ -125,14 +127,20 @@ void loginMenu(Login &data)
 // Student menu
 void studentMenu(Login &data)
 {
+    std::cout << "Input: ";
     std::string option;
     std::cin >> option;
 
     if (option == "1") viewInfo(data);
-    else if (option == "2") viewCourse(data.course);
-    else if (option == "3") changePassword(data);
-    else if (option == "4") logOut(data);
-    else if (option == "5") return;
+    else if (option == "2")
+    {
+        showCourses(data.course);
+        enrollCourse(data);
+    }
+    else if (option == "3") viewCourse(data);
+    else if (option == "4") changePassword(data);
+    else if (option == "5") logOut(data);
+    else if (option == "6") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n\n";

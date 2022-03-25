@@ -94,7 +94,9 @@ void readStudent(Student* &data, std::fstream &input)
         getline(input, cur -> socialID, ',');
         getline(input, cur -> startYear, ',');
         getline(input, cur -> classID, ',');
-        getline(input, cur -> studentCoursesSem1);
+        getline(input, cur -> studentCoursesSem1, '|');
+        getline(input, cur -> studentCoursesSem2, '|');
+        getline(input, cur -> studentCoursesSem3);
 
         if (input.eof())
         {
@@ -162,7 +164,7 @@ void writeStudent(Student* data)
 {
     std::fstream output;
     output.open("student.csv", std::ios::out);
-    output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,CoursesID\n";
+    output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,coursesID\n";
 
     Student* cur = data;
     while (cur != nullptr)
@@ -177,7 +179,18 @@ void writeStudent(Student* data)
         << cur -> socialID << ","
         << cur -> startYear << ","
         << cur -> classID << ","
-        << cur -> studentCoursesSem1;
+        << cur -> studentCoursesSem1 << "|"
+        << cur -> studentCoursesSem2 << "|"
+        << cur -> studentCoursesSem3;
+
+        // if (data.semester == 1)
+        // output << cur -> studentCoursesSem1;
+
+        // else if (data.semester == 2)
+        // output << cur -> studentCoursesSem2;
+
+        // else
+        // output << cur -> studentCoursesSem3;
 
         if (cur -> nodeNext != nullptr)
         output << std::endl;
