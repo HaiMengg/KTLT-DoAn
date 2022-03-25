@@ -1,0 +1,6 @@
+studentusr,studentpwd,studentID,firstname,lastname,gender,dob,socialID,startyear,classID,[courseID1]-[courseID2]-[courseID3]-...|[courseID1]-[courseID2]-[courseID3]-...|[course1/2/3] (Courses that this student took/is taking)
+21127517,24/10/2003,21127517,Nguyen,Anh Khoa,Nam,24/10/2003,123456789,2021,21CLC09,
+21127007,01/01/2003,21127007,Nguyen,Quoc Anh,Nam,01/01/2003,241241241,2021,21CLC09,
+
+Student ID      First       Last    Gender      Date of birth       Social ID   Start year      class ID        Courses that this student took/is taking
+21127517        Nguyen      ANh Khoa Nam        24/10/2003          42354352    2021            21CLC09         VTP312452-MTH321124
