@@ -85,6 +85,7 @@ void showCourseNode(Course* data);
 void showCourses(Course* data);
 void enrollCourse(Login data);
 void viewCourse(Login data);
+void removeCourse(Login data);
 
 void loginCheck(Login &data);
 void loginMenu(Login &data);

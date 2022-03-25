@@ -74,7 +74,8 @@ void loginCheck(Login &data)
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
-            << "[1] View info\n[2] Enroll in a course\n[3] View my courses\n[4] Change password\n[5] Log out\n[6] Exit program\n"
+            << "[1] View info\n[2] View my courses\n[3] Enroll in a course\n[4] Remove a course\n"
+            << "[5] Change password\n[6] Log out\n[7] Exit program\n"
             << "----------------\n";
             studentMenu(data);
         }
@@ -132,19 +133,20 @@ void studentMenu(Login &data)
     std::cin >> option;
 
     if (option == "1") viewInfo(data);
-    else if (option == "2")
+    else if (option == "2") viewCourse(data);
+    else if (option == "3")
     {
         showCourses(data.course);
         enrollCourse(data);
     }
-    else if (option == "3") viewCourse(data);
-    else if (option == "4") changePassword(data);
-    else if (option == "5") logOut(data);
-    else if (option == "6") return;
+    else if (option == "4") removeCourse(data);
+    else if (option == "5") changePassword(data);
+    else if (option == "6") logOut(data);
+    else if (option == "7") return;
     else
     {
-        std::cout << "Invalid input. Please try again.\n\n";
-        return loginMenu(data);
+        std::cout << "Invalid input. Please try again.\n";
+        return studentMenu(data);
     }
 }
 

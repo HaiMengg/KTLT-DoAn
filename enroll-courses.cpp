@@ -272,3 +272,49 @@ void viewCourse(Login data)
     std::cout << "----------------\n";
     studentMenu(data);
 }
+
+// Remove an enrolled course
+void removeCourse(Login data)
+{
+    std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
+    std::string removeId;
+    std::cin >> removeId;
+
+    std::string enrolled;
+
+    if (data.semester == 1)
+    enrolled = data.curStudent -> studentCoursesSem1;
+
+    else if (data.semester == 2)
+    enrolled = data.curStudent -> studentCoursesSem2;
+
+    else
+    enrolled = data.curStudent -> studentCoursesSem3;
+
+    std::istringstream iss(enrolled);
+    std::string item;
+    while (std::getline(iss, item, '-')) {
+        if (item == removeId)
+        {
+            replaceAll(enrolled, item, "");
+            replaceAll(enrolled, "--", "-");
+
+            if (data.semester == 1)
+            data.curStudent -> studentCoursesSem1 = enrolled;
+
+            else if (data.semester == 2)
+            data.curStudent -> studentCoursesSem2 = enrolled;
+
+            else
+            data.curStudent -> studentCoursesSem3 = enrolled;
+
+            writeStudent(data.student);
+            std::cout << "Course removed!\n" << "----------------\n";
+            studentMenu(data);
+            return;
+        }
+    }
+
+    std::cout << "Could not find that course. Please try again.\n";
+    removeCourse(data);
+}

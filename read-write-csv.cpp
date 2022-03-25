@@ -178,8 +178,18 @@ void writeStudent(Student* data)
         << cur -> gender << ","
         << cur -> socialID << ","
         << cur -> startYear << ","
-        << cur -> classID << ","
-        << cur -> studentCoursesSem1 << "|"
+        << cur -> classID << ",";
+
+        if (cur -> studentCoursesSem1[0] == '-')
+        cur -> studentCoursesSem1.erase(0, 1);
+
+        if (cur -> studentCoursesSem2[0] == '-')
+        cur -> studentCoursesSem2.erase(0, 1);
+
+        if (cur -> studentCoursesSem3[0] == '-')
+        cur -> studentCoursesSem3.erase(0, 1);
+
+        output << cur -> studentCoursesSem1 << "|"
         << cur -> studentCoursesSem2 << "|"
         << cur -> studentCoursesSem3;
 
