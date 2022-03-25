@@ -1,4 +1,4 @@
-#include "functionClass.h"
+#include "functionView.h"
 
 void UpString(string& stu)
 {
@@ -128,7 +128,7 @@ void ChooseDisplayStudent(Classes* pClass)
 	do {
 		cout << "Do you want to see all students of a specific class (y/yes to continue): "; cin >> choose;
 		UpString(choose);
-		//cout << "Input the class you want to see:"; cin >> clas;
+		cout << "Input the class you want to see:"; cin >> clas;
 		if (choose == "Y" || choose == "YES")
 		{
 			while (pCur != nullptr)
@@ -180,10 +180,10 @@ void DeleteNode(Classes*& pClass)
 	}
 }
 
-int main()
+void ViewClass()
 {
 	string syear = "2022";
-	//cout << "Input schoolyear that you want to see all students: ";	cin >> syear;
+	cout << "Input schoolyear that you want to see all students: ";	cin >> syear;
 	fstream fin(syear + "/class.csv");
 	Classes* pClass = nullptr;
 	ReadClass(pClass, fin, syear);

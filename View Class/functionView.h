@@ -12,3 +12,4 @@ void DeleteNode(Classes*& pClass);
 void ChooseDisplayStudent(Classes* pClass);
 void DisplayStudent(Student* pStudent);
 void InputCourse(Student*& pClassS, fstream& fin, string temp);
+void ViewClass();
