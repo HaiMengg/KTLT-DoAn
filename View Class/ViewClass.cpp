@@ -1,5 +1,6 @@
 #include "functionView.h"
 
+
 void UpString(string& stu)
 {
 	for (int i = 0; i < stu.size(); i++)
@@ -115,7 +116,7 @@ void DisplayClass(Classes* pClass)
 	Classes* pCur = pClass;
 	while (pCur != nullptr)
 	{
-		cout << "ClassID:      " << pCur->classID << "		StartYear:		" << pCur->startYear << endl;
+		cout << "ClassID:      " << pCur->classID << setw(20) << "StartYear:		" << pCur->startYear << endl;
 		pCur = pCur->nodeNext;
 	}
 }
@@ -124,13 +125,16 @@ void ChooseDisplayStudent(Classes* pClass)
 {
 	string choose = "Y", clas = "21CLC09";
 	Classes* pCur = pClass;
-	del;
 	do {
-		cout << "Do you want to see all students of a specific class (y/yes to continue): "; cin >> choose;
+		cout << "\nDo you want to see all students of a specific class (y/yes to continue): "; cin >> choose;
 		UpString(choose);
+		del;
 		cout << "Input the class you want to see:"; cin >> clas;
+		UpString(clas);
+		del;
 		if (choose == "Y" || choose == "YES")
 		{
+			pCur = pClass;
 			while (pCur != nullptr)
 			{
 				if (pCur->classID == clas)
@@ -141,9 +145,8 @@ void ChooseDisplayStudent(Classes* pClass)
 				else
 					pCur = pCur->nodeNext;
 			}
-			cout << "			Can't find the class you wanted, please try again\n";
+			cout << "Can't find the class you wanted, please try again\n";
 		}
-		del;
 	} while (choose == "Y" || choose == "YES");
 }
 
@@ -154,9 +157,9 @@ void DisplayStudent(Student* pStudent)
 		cout << "No student in this class";
 	while (pCur != nullptr)
 	{
-		cout << "ID: " << pCur->studentID << "		";
-		cout << "Name:: " << pCur->firstName << " " << pCur->lastName << "		";
-		cout << "Gender: " << pCur->gender << "		";
+		cout << "ID: " << pCur->studentID << setw(10);
+		cout << "Name: " << pCur->firstName << " " << pCur->lastName << setw(30 - pCur->firstName.size() - pCur->lastName.size());
+		cout << "Gender: " << pCur->gender << setw(20);
 		cout << "Date of birth: " << pCur->dob << endl;
 		pCur = pCur->nodeNext;
 	}
@@ -183,11 +186,21 @@ void DeleteNode(Classes*& pClass)
 void ViewClass()
 {
 	string syear = "2022";
-	cout << "Input schoolyear that you want to see all students: ";	cin >> syear;
-	fstream fin(syear + "/class.csv");
-	Classes* pClass = nullptr;
-	ReadClass(pClass, fin, syear);
-	DisplayClass(pClass);
-	ChooseDisplayStudent(pClass);
-	DeleteNode(pClass);
+	bool check = true;
+	do {
+		cout << "Input school year that you want to view classes ";	cin >> syear;
+		del;
+		fstream fin(syear + "/class.csv");
+		if (!fin.is_open())
+			cout << " Can't find the school year you want, please try again\n";
+		else
+		{
+			Classes* pClass = nullptr;
+			ReadClass(pClass, fin, syear);
+			DisplayClass(pClass);
+			ChooseDisplayStudent(pClass);
+			DeleteNode(pClass);
+			check = false;
+		}
+	} while (check);
 }

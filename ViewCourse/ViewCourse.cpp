@@ -152,8 +152,11 @@ void ChooseDisplayStudent(Course* pCourse)
 		UpString(choose);
 		del;
 		cout << "Input the course you want to see:"; cin >> course;
+		UpString(course);
+		del;
 		if (choose == "Y" || choose == "YES")
 		{
+			pCur = pCourse;
 			while (pCur != nullptr)
 			{
 				if (pCur->courseId == course)
@@ -164,9 +167,8 @@ void ChooseDisplayStudent(Course* pCourse)
 				else
 					pCur = pCur->nodeNext;
 			}
-			cout << "			Can't find the course you wanted, please try again\n";
+			cout << "Can't find the course you wanted, please try again\n";
 		}
-		del;
 	} while (choose == "Y" || choose == "YES");
 }
 
@@ -203,16 +205,25 @@ void DeleteNode(Course*& pCourse)
 	}
 }
 
-void ViewCourse()
+void ViewClass()
 {
 	int max = 0, max2 = 0, max1 = 0;
 	string syear = "2022", choose;
-	cout << "Input schoolyear that you want to view courses: ";	cin >> syear;
-	del;
-	fstream fin(syear + "/course.csv");
-	Course* pCourse = nullptr;
-	ReadCourse(pCourse, fin, syear, max, max2, max1);
-	DisplayCourse(pCourse, max, max2, max1);
-	ChooseDisplayStudent(pCourse);
-	DeleteNode(pCourse);
+	bool check = true;
+	do {
+		cout << "Input school year that you want to view courses: ";	cin >> syear;
+		del;
+		fstream fin(syear + "/course.csv");
+		if (!fin.is_open())
+			cout << " Can't find the school year you want, please try again\n";
+		else
+		{
+			Course* pCourse = nullptr;
+			ReadCourse(pCourse, fin, syear, max, max2, max1);
+			DisplayCourse(pCourse, max, max2, max1);
+			ChooseDisplayStudent(pCourse);
+			DeleteNode(pCourse);
+			check = false;
+		}
+	} while (check);
 }
