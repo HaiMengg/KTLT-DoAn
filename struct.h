@@ -1,5 +1,7 @@
+#include <iostream>
 #include <string>
 #include <fstream>
+#include <direct.h>
 #pragma once
 
 struct Staff
@@ -22,13 +24,19 @@ struct SchoolYear {
     SchoolYear* nodeNext;
 };
 
+struct StudentCourse {
+    StudentCourse* nodePrev;
+    int schoolYear;
+    std::string sem1Courses;
+    std::string sem2Courses;
+    std::string sem3Courses;
+    StudentCourse* nodeNext;
+};
+
 struct Student {
     Student* nodePrev;
     std::string usr, pwd, studentID, firstName, lastName, gender, dob, socialID, startYear, classID;
-    //Reset after each school year
-    std::string studentCoursesSem1;
-    std::string studentCoursesSem2;
-    std::string studentCoursesSem3;
+    StudentCourse* studentCourseHead = nullptr;
     Student* nodeNext;
 };
 
@@ -36,7 +44,7 @@ struct Classes {
     Classes* nodePrev;
     std::string classID;
     int startYear;
-    Student* classStudentHead;      //All students of this class
+    Student* classStudentHead = nullptr;      //All students of this class
     Classes* nodeNext;
 };
 
@@ -45,15 +53,16 @@ struct Course {
     Course* nodePrev;
     std::string courseId, courseName, teacherName, numOfCredits, daySession;    //Format: MON-S1|SAT-S4|TUE-S2|...
     int studentMax = 50;
-    Student* courseStudentHead;     //All students of this course
+    Student* courseStudentHead = nullptr;     //All students of this course
     Course* nodeNext;
 };
 
 struct Semesters {
     Semesters* nodePrev;
+    int semester;
     int schoolYear;
     std::string startDate, endDate;
-    Course* semesterCourseHead;
+    Course* semesterCourseHead = nullptr;
     Semesters* nodeNext;
 };
 
