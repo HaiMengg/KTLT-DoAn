@@ -7,79 +7,63 @@ void UpString(string& stu)
 			stu[i] -= 32;
 }
 
-void ReadCourse(Course*& pCourse, fstream& fin, string syear, int& max, int& max2, int& max1)
+void ReadCourse(Course*& pCourse, fstream& fin, string syear, int i)
 {
-	string temp;
-	Course* pCur = pCourse;
-	getline(fin, temp);
-	if (pCourse == nullptr && !fin.eof())
+	while (!fin.eof())
 	{
 		pCourse = new Course;
-		pCur = pCourse;
 		getline(fin, pCourse->courseId, ',');
-		if (max1 < pCourse->courseId.size())
-			max1 = pCourse->courseId.size();
 		getline(fin, pCourse->courseName, ',');
-		if (max2 < pCourse->courseName.size())			//display ok with it
-			max2 = pCourse->courseName.size();
 		getline(fin, pCourse->teacherName, ',');
-		if (max < pCourse->teacherName.size())
-			max = pCourse->teacherName.size();
 		getline(fin, pCourse->numOfCredits, ',');
 		fin >> pCourse->studentMax;
 		getline(fin, pCourse->daySession);
-		pCourse->daySession.erase(0, 1);
-		fstream fstudent(syear + "/courses/" + pCourse->courseId + "/student.csv");
-		InputStudent(pCur->courseStudentHead, fstudent);
-		pCur->nodeNext = nullptr;
-	}
-	while (!fin.eof())
-	{
-
-		pCur->nodeNext = new Course;
-		pCur = pCur->nodeNext;
-		getline(fin, pCur->courseId, ',');
-		if (max1 < pCur->courseId.size())
-			max1 = pCur->courseId.size();
-		getline(fin, pCur->courseName, ',');
-		if (max2 < pCur->courseName.size())			//display ok with it
-			max2 = pCur->courseName.size();
-		getline(fin, pCur->teacherName, ',');
-		if (max < pCur->teacherName.size())
-			max = pCur->teacherName.size();
-		getline(fin, pCur->numOfCredits, ',');
-		fin >> pCur->studentMax;
-		getline(fin, pCur->daySession);
-		pCur->daySession.erase(0, 1);
-		fstream fstudent(syear + "/courses/" + pCur->courseId + "/student.csv");
-		InputStudent(pCur->courseStudentHead, fstudent);
-		pCur->nodeNext = nullptr;
+		if (pCourse->daySession[0] == ',')
+			pCourse->daySession.erase(0, 1);
+		fstream fstudent(syear + "/semester/" + to_string(i) + "/" + pCourse->courseId + "/student.csv");
+		string temp;
+		getline(fstudent, temp);
+		InputStudent(pCourse->courseStudentHead, fstudent);
+		pCourse->nodeNext = nullptr;
+		ReadCourse(pCourse->nodeNext, fin, syear, i);
 	}
 }
 
-void InputStudentCourse(Student*& pCourseS, fstream& fin, string temp)
+void ReadCourseSetUp(Course*& pCourse, string syear)
 {
-	int k = 0, j = 1;
-	for (int i = 0; i < temp.size(); i++)
+	string temp;
+	Course* temp2 = nullptr, * temp1 = nullptr;
+	int i = 1;
+	fstream fin(syear + "/semester/" + to_string(i) + "/course.csv");
+	getline(fin, temp);
+	ReadCourse(pCourse, fin, syear, i);
+	fin.close();
+	fin.open(syear + "/semester/" + to_string(i + 1) + "/course.csv");
+	if (fin.is_open())
 	{
-		if (temp[i] == '|')
+		getline(fin, temp);
+		ReadCourse(temp2, fin, syear, i + 1);
+	}
+	fin.close();
+	fin.open(syear + "/semester/" + to_string(i + 2) + "/course.csv");
+	if (fin.is_open())
+	{
+		getline(fin, temp);
+		ReadCourse(temp1, fin, syear, i + 2);
+	}
+	Course* pCur = pCourse;
+	if (pCur != nullptr)
+	{
+		while (pCur->nodeNext != nullptr)
+			pCur = pCur->nodeNext;
+		if (temp2 != nullptr)
 		{
-			j++;
-			continue;
+			pCur->nodeNext = temp2;
+			while (pCur->nodeNext != nullptr)
+				pCur = pCur->nodeNext;
+			if (temp1 != nullptr)
+				pCur->nodeNext = temp1;
 		}
-		switch (j)
-		{
-		case 1:
-			pCourseS->studentCoursesSem1 += temp[i];
-			break;
-		case 2:
-			pCourseS->studentCoursesSem2 += temp[i];
-			break;
-		default:
-			pCourseS->studentCoursesSem3 += temp[i];
-			break;
-		}
-
 	}
 }
 
@@ -87,59 +71,29 @@ void InputStudent(Student*& pCourseS, fstream& fin)
 {
 	if (!fin.is_open())
 		return;
-	string temp;
-	getline(fin, temp);
-	Student* pCur = pCourseS = nullptr;
-	if (pCourseS == nullptr && !fin.eof())
+	while (!fin.eof())
 	{
 		pCourseS = new Student;
-		getline(fin, pCourseS->usr, ',');
-		getline(fin, pCourseS->pwd, ',');
 		getline(fin, pCourseS->studentID, ',');
 		getline(fin, pCourseS->firstName, ',');
 		getline(fin, pCourseS->lastName, ',');
 		getline(fin, pCourseS->gender, ',');
-		getline(fin, pCourseS->dob, ',');
-		getline(fin, pCourseS->socialID, ',');
-		getline(fin, pCourseS->startYear, ',');
-		getline(fin, pCourseS->classID, ',');
-		getline(fin, temp);
-		InputStudentCourse(pCourseS, fin, temp);
-		pCur = pCourseS;
-		pCur->nodeNext = nullptr;
-	}
-	while (!fin.eof())
-	{
-
-		pCur->nodeNext = new Student;
-		pCur = pCur->nodeNext;
-		getline(fin, pCur->usr, ',');
-		getline(fin, pCur->pwd, ',');
-		getline(fin, pCur->studentID, ',');
-		getline(fin, pCur->firstName, ',');
-		getline(fin, pCur->lastName, ',');
-		getline(fin, pCur->gender, ',');
-		getline(fin, pCur->dob, ',');
-		getline(fin, pCur->socialID, ',');
-		getline(fin, pCur->startYear, ',');
-		getline(fin, pCur->classID, ',');
-		getline(fin, temp);
-		InputStudentCourse(pCur, fin, temp);
-		pCur->nodeNext = nullptr;
+		getline(fin, pCourseS->dob);
+		pCourseS->nodeNext = nullptr;
+		InputStudent(pCourseS->nodeNext, fin);
 	}
 }
 
-void DisplayCourse(Course* pCourse, int max, int max2, int max1)
+void DisplayCourse(Course* pCourse)
 {
-	Course* pCur = pCourse;
-	while (pCur != nullptr)
+	if (pCourse != nullptr)
 	{
-		cout << "ID: " << pCur->courseId;
-		cout << setw(max1 - pCur->courseId.size() + 10) << "Name : " << pCur->courseName;
-		cout << setw(max2 - pCur->courseName.size() + 15) << "Teacher: " << pCur->teacherName;
-		cout << setw(max - pCur->teacherName.size() + 15) << "Credits : " << pCur->numOfCredits;
-		cout << setw(15) << "Session : " << pCur->daySession << endl;
-		pCur = pCur->nodeNext;
+		cout << pCourse->courseId << setw(33 - pCourse->courseId.size());
+		cout << pCourse->courseName << setw(48 - pCourse->courseName.size());
+		cout << pCourse->teacherName << setw(30 - pCourse->teacherName.size());
+		cout << pCourse->numOfCredits << setw(33 - pCourse->numOfCredits.size());
+		cout << pCourse->daySession << endl;
+		DisplayCourse(pCourse->nodeNext);
 	}
 }
 
@@ -148,42 +102,37 @@ void ChooseDisplayStudent(Course* pCourse)
 	string choose = "Y", course = "VTP10002";
 	Course* pCur = pCourse;
 	do {
-		cout << "\nDo you want to see all students of a specific course (y/yes to continue): "; cin >> choose;
-		UpString(choose);
-		del;
-		cout << "Input the course you want to see:"; cin >> course;
+		//cout << "Input the course you want to see:"; cin >> course;
 		UpString(course);
 		del;
-		if (choose == "Y" || choose == "YES")
+		pCur = pCourse;
+		while (pCur != nullptr)
 		{
-			pCur = pCourse;
-			while (pCur != nullptr)
+			if (pCur->courseId == course)
 			{
-				if (pCur->courseId == course)
-				{
-					DisplayStudent(pCur->courseStudentHead);
-					return;
-				}
-				else
-					pCur = pCur->nodeNext;
+				cout << "ID: " << setw(20);
+				cout << "Name: " << setw(30);
+				cout << "Gender: " << setw(20);
+				cout << "Date of birth: " << endl;
+				DisplayStudent(pCur->courseStudentHead);
+				return;
 			}
-			cout << "Can't find the course you wanted, please try again\n";
+			else
+				pCur = pCur->nodeNext;
 		}
+		cout << "Can't find the course you wanted, please try again\n";
 	} while (choose == "Y" || choose == "YES");
 }
 
 void DisplayStudent(Student* pStudent)
 {
-	Student* pCur = pStudent;
-	if (pCur == nullptr)
-		cout << "No student in this class";
-	while (pCur != nullptr)
+	if (pStudent != nullptr)
 	{
-		cout << "ID: " << pCur->studentID << setw(10);
-		cout << "Name: " << pCur->firstName << " " << pCur->lastName << setw(30 - pCur->firstName.size() - pCur->lastName.size());
-		cout << "Gender: " << pCur->gender << setw(20);
-		cout << "Date of birth: " << pCur->dob << endl;
-		pCur = pCur->nodeNext;
+		cout << pStudent->studentID << setw(16);
+		cout << pStudent->firstName << " " << pStudent->lastName << setw(30 - pStudent->firstName.size() - pStudent->lastName.size());
+		cout << pStudent->gender << setw(20);
+		cout << pStudent->dob << endl;
+		DisplayStudent(pStudent->nodeNext);
 	}
 }
 
@@ -205,25 +154,59 @@ void DeleteNode(Course*& pCourse)
 	}
 }
 
-void ViewClass()
+void ViewCourse()
 {
-	int max = 0, max2 = 0, max1 = 0;
 	string syear = "2022", choose;
 	bool check = true;
 	do {
-		cout << "Input school year that you want to view courses: ";	cin >> syear;
+		//cout << "Input school year that you want to view courses: ";	cin >> syear;
 		del;
-		fstream fin(syear + "/course.csv");
+		fstream fin(syear + "/semester/1/course.csv");
 		if (!fin.is_open())
 			cout << " Can't find the school year you want, please try again\n";
 		else
 		{
 			Course* pCourse = nullptr;
-			ReadCourse(pCourse, fin, syear, max, max2, max1);
-			DisplayCourse(pCourse, max, max2, max1);
+			ReadCourseSetUp(pCourse, syear);
+			cout << "ID: ";
+			cout << setw(20) << "Name : ";
+			cout << setw(30) << "Teacher: ";
+			cout << setw(30) << "Credits : ";
+			cout << setw(20) << "Session : " << endl;
+			DisplayCourse(pCourse);
+			DeleteNode(pCourse);
+			check = false;
+		}
+	} while (check);
+}
+
+void ViewCourseStudent()
+{
+	int max = 0, max2 = 0, max1 = 0;
+	string syear = "2022", choose;
+	bool check = true;
+	do {
+		//cout << "Input school year that you want to view courses: ";	cin >> syear;
+		del;
+		fstream fin(syear + "/semester/1/course.csv");
+		if (!fin.is_open())
+			cout << " Can't find the school year you want, please try again\n";
+		else
+		{
+			Course* pCourse = nullptr;
+			ReadCourseSetUp(pCourse, syear);
 			ChooseDisplayStudent(pCourse);
 			DeleteNode(pCourse);
 			check = false;
 		}
 	} while (check);
+}
+
+int main()
+{
+	int i = 0;
+	if (i == 0)
+		ViewCourse();
+	else
+		ViewCourseStudent();
 }
