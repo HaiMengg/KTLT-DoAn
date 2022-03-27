@@ -94,9 +94,42 @@ void readStudent(Student* &data, std::fstream &input)
         getline(input, cur -> socialID, ',');
         getline(input, cur -> startYear, ',');
         getline(input, cur -> classID, ',');
-        getline(input, cur -> studentCoursesSem1, '|');
-        getline(input, cur -> studentCoursesSem2, '|');
-        getline(input, cur -> studentCoursesSem3);
+
+        std::string rawCourses;
+        getline(input, rawCourses);
+
+        int count = 3;
+        StudentCourse* headCourse = new StudentCourse;
+        StudentCourse* curCourse = headCourse;
+
+        std::istringstream iss(rawCourses);
+        std::string item;
+        while (getline(iss, item, '|'))
+        {
+            if (count % 3 == 0)
+            {
+                if (count != 3)
+                {
+                    curCourse -> nodeNext = new StudentCourse;
+                    curCourse -> nodeNext -> nodePrev = curCourse;
+                    curCourse = curCourse -> nodeNext;
+                }
+
+                curCourse -> schoolYear = atoi(cur -> startYear.c_str());
+                curCourse -> sem1Courses = item;
+            }
+
+            if (count % 3 == 1)
+            curCourse -> sem2Courses = item;
+
+            if (count % 3 == 2)
+            curCourse -> sem3Courses = item;
+
+            count++;
+        }
+
+        curCourse -> nodeNext = nullptr;
+        cur -> studentCourseHead = headCourse;
 
         if (input.eof())
         {
@@ -180,27 +213,27 @@ void writeStudent(Student* data)
         << cur -> startYear << ","
         << cur -> classID << ",";
 
-        if (cur -> studentCoursesSem1[0] == '-')
-        cur -> studentCoursesSem1.erase(0, 1);
+        StudentCourse* curCourse = cur -> studentCourseHead;
+        while (curCourse != nullptr)
+        {
+            if (curCourse -> sem1Courses[0] == '-')
+            curCourse -> sem1Courses.erase(0, 1);
 
-        if (cur -> studentCoursesSem2[0] == '-')
-        cur -> studentCoursesSem2.erase(0, 1);
+            if (curCourse -> sem2Courses[0] == '-')
+            curCourse -> sem2Courses.erase(0, 1);
 
-        if (cur -> studentCoursesSem3[0] == '-')
-        cur -> studentCoursesSem3.erase(0, 1);
+            if (curCourse -> sem3Courses[0] == '-')
+            curCourse -> sem3Courses.erase(0, 1);
 
-        output << cur -> studentCoursesSem1 << "|"
-        << cur -> studentCoursesSem2 << "|"
-        << cur -> studentCoursesSem3;
+            if (curCourse != cur -> studentCourseHead)
+            output << "|";
 
-        // if (data.semester == 1)
-        // output << cur -> studentCoursesSem1;
+            output << curCourse -> sem1Courses << "|"
+            << curCourse -> sem2Courses << "|"
+            << curCourse -> sem3Courses;
 
-        // else if (data.semester == 2)
-        // output << cur -> studentCoursesSem2;
-
-        // else
-        // output << cur -> studentCoursesSem3;
+            curCourse = curCourse -> nodeNext;
+        }
 
         if (cur -> nodeNext != nullptr)
         output << std::endl;

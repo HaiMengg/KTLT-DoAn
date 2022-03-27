@@ -150,14 +150,21 @@ void enrollCourse(Login data)
     std::string enrolled, sessions;
     int amount = 0;
 
+    StudentCourse* curCourse = data.curStudent -> studentCourseHead;
+    while (curCourse != nullptr)
+    {
+        if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
+        curCourse = curCourse -> nodeNext;
+    }
+
     if (data.semester == 1)
-    enrolled = data.curStudent -> studentCoursesSem1;
+    enrolled = curCourse -> sem1Courses;
 
     else if (data.semester == 2)
-    enrolled = data.curStudent -> studentCoursesSem2;
+    enrolled = curCourse -> sem2Courses;
 
     else
-    enrolled = data.curStudent -> studentCoursesSem3;
+    enrolled = curCourse -> sem3Courses;
 
     if (enrolled != "")
     {
@@ -200,13 +207,13 @@ void enrollCourse(Login data)
             }
 
             if (data.semester == 1)
-            data.curStudent -> studentCoursesSem1 += "-" + cur -> courseId;
+            curCourse -> sem1Courses += "-" + cur -> courseId;
 
             else if (data.semester == 2)
-            data.curStudent -> studentCoursesSem2 += "-" + cur -> courseId;
+            curCourse -> sem2Courses += "-" + cur -> courseId;
 
             else
-            data.curStudent -> studentCoursesSem3 += "-" + cur -> courseId;
+            curCourse -> sem3Courses += "-" + cur -> courseId;
 
             writeStudent(data.student);
             std::cout << "Course enrolled!\n" << "----------------\n";
@@ -229,14 +236,21 @@ void viewCourse(Login data)
     Course* cur;
     std::string enrolled;
 
+    StudentCourse* curCourse = data.curStudent -> studentCourseHead;
+    while (curCourse != nullptr)
+    {
+        if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
+        curCourse = curCourse -> nodeNext;
+    }
+
     if (data.semester == 1)
-    enrolled = data.curStudent -> studentCoursesSem1;
+    enrolled = curCourse -> sem1Courses;
 
     else if (data.semester == 2)
-    enrolled = data.curStudent -> studentCoursesSem2;
+    enrolled = curCourse -> sem2Courses;
 
     else
-    enrolled = data.curStudent -> studentCoursesSem3;
+    enrolled = curCourse -> sem3Courses;
 
     if (enrolled == "")
     {
@@ -281,15 +295,21 @@ void removeCourse(Login data)
     std::cin >> removeId;
 
     std::string enrolled;
+    StudentCourse* curCourse = data.curStudent -> studentCourseHead;
+    while (curCourse != nullptr)
+    {
+        if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
+        curCourse = curCourse -> nodeNext;
+    }
 
     if (data.semester == 1)
-    enrolled = data.curStudent -> studentCoursesSem1;
+    enrolled = curCourse -> sem1Courses;
 
     else if (data.semester == 2)
-    enrolled = data.curStudent -> studentCoursesSem2;
+    enrolled = curCourse -> sem2Courses;
 
     else
-    enrolled = data.curStudent -> studentCoursesSem3;
+    enrolled = curCourse -> sem3Courses;
 
     std::istringstream iss(enrolled);
     std::string item;
@@ -300,13 +320,13 @@ void removeCourse(Login data)
             replaceAll(enrolled, "--", "-");
 
             if (data.semester == 1)
-            data.curStudent -> studentCoursesSem1 = enrolled;
+            curCourse -> sem1Courses = enrolled;
 
             else if (data.semester == 2)
-            data.curStudent -> studentCoursesSem2 = enrolled;
+            curCourse -> sem2Courses = enrolled;
 
             else
-            data.curStudent -> studentCoursesSem3 = enrolled;
+            curCourse -> sem3Courses = enrolled;
 
             writeStudent(data.student);
             std::cout << "Course removed!\n" << "----------------\n";
