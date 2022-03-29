@@ -41,6 +41,6 @@ int main()
     data.semester = sem;
     loginCheck(data);
 
-    // Delete linked lists
-    deleteData(staffData, teacherData, studentData);
+    // Delete data before exiting program
+    deleteData(data);
 }

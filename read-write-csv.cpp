@@ -249,11 +249,12 @@ void writeStudent(Student* data)
 }
 
 // Delete data
-void deleteData(Staff* &data, Teacher* &teacherData, Student* &studentData)
+void deleteData(Login &data)
 {
-    Staff *fCur = data, *fDel;
-    Teacher *rCur = teacherData, *rDel;
-    Student *tCur = studentData, *tDel;
+    Staff *fCur = data.staff, *fDel;
+    Teacher *rCur = data.teacher, *rDel;
+    Student *tCur = data.student, *tDel;
+    Course *cCur = data.course, *cDel;
 
     while (fCur != nullptr)
     {
@@ -276,7 +277,15 @@ void deleteData(Staff* &data, Teacher* &teacherData, Student* &studentData)
         tCur = tDel;
     }
 
-    data = nullptr;
-    teacherData = nullptr;
-    studentData = nullptr;
+    while (cCur != nullptr)
+    {
+        cDel = cCur -> nodeNext;
+        delete cCur;
+        cCur = cDel;
+    }
+
+    data.staff = nullptr;
+    data.teacher = nullptr;
+    data.staff = nullptr;
+    data.course = nullptr;
 }
