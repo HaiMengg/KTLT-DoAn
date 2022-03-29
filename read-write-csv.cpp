@@ -5,6 +5,43 @@
 
 #include "struct.h"
 
+// Read student's courses
+void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head)
+{
+    int count = 3;
+    StudentCourse* headCourse = new StudentCourse;
+    StudentCourse* curCourse = headCourse;
+
+    std::istringstream iss(courses);
+    std::string item;
+    while (getline(iss, item, '|'))
+    {
+        if (count % 3 == 0)
+        {
+            if (count != 3)
+            {
+                curCourse -> nodeNext = new StudentCourse;
+                curCourse -> nodeNext -> nodePrev = curCourse;
+                curCourse = curCourse -> nodeNext;
+            }
+
+            curCourse -> schoolYear = atoi(schoolYear.c_str());
+            curCourse -> sem1Courses = item;
+        }
+
+        if (count % 3 == 1)
+        curCourse -> sem2Courses = item;
+
+        if (count % 3 == 2)
+        curCourse -> sem3Courses = item;
+
+        count++;
+    }
+
+    curCourse -> nodeNext = nullptr;
+    head = headCourse;
+}
+
 // Read staff.csv
 void readStaff(Staff* &data, std::fstream &input)
 {
@@ -95,41 +132,10 @@ void readStudent(Student* &data, std::fstream &input)
         getline(input, cur -> startYear, ',');
         getline(input, cur -> classID, ',');
 
+        std::string schoolYear = cur -> startYear;
         std::string rawCourses;
         getline(input, rawCourses);
-
-        int count = 3;
-        StudentCourse* headCourse = new StudentCourse;
-        StudentCourse* curCourse = headCourse;
-
-        std::istringstream iss(rawCourses);
-        std::string item;
-        while (getline(iss, item, '|'))
-        {
-            if (count % 3 == 0)
-            {
-                if (count != 3)
-                {
-                    curCourse -> nodeNext = new StudentCourse;
-                    curCourse -> nodeNext -> nodePrev = curCourse;
-                    curCourse = curCourse -> nodeNext;
-                }
-
-                curCourse -> schoolYear = atoi(cur -> startYear.c_str());
-                curCourse -> sem1Courses = item;
-            }
-
-            if (count % 3 == 1)
-            curCourse -> sem2Courses = item;
-
-            if (count % 3 == 2)
-            curCourse -> sem3Courses = item;
-
-            count++;
-        }
-
-        curCourse -> nodeNext = nullptr;
-        cur -> studentCourseHead = headCourse;
+        readCourse(rawCourses, schoolYear, cur -> studentCourseHead);
 
         if (input.eof())
         {
