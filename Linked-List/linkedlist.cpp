@@ -96,7 +96,8 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
         Classes* curr = nullptr;
         std::string categories;
         std::getline(dataFile, categories);
-
+        
+        std::fstream currentClassStudent;
         while (!dataFile.eof()) {
             std::string currentLine;
             std::getline(dataFile, currentLine);
@@ -105,7 +106,17 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                     classHead = new Classes;
                     classHead->nodePrev = nullptr;
                     classHead->classID = currentLine.substr(0, currentLine.size() - 5);
-                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) classHead->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) {
+                        classHead->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                        
+                        //Add current student list to current class node
+                        currentClassStudent.open(std::string("data/" + std::to_string(classHead->startYear) + "/classes/" + classHead->classID + "/student.csv"));
+                        if (currentClassStudent.is_open()) {
+                            Student* currentClassStudentList = nullptr;
+                            createList(currentClassStudentList, currentClassStudent, classHead->startYear, classHead->classID);
+                            classHead->classStudentHead = currentClassStudentList;
+                        }
+                    }
                     classHead->nodeNext = nullptr;
                     curr = classHead;
                 }
@@ -115,11 +126,21 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                     curr = curr->nodeNext;
                     curr->nodePrev = prev;
                     curr->classID = currentLine.substr(0, currentLine.size() - 5);
-                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                    if (currentLine.size() - 4 >= 0 && isDigit_w(currentLine.substr(currentLine.size() - 4))) {
+                        curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
+                        
+                        //Add current student list to current class node
+                        if (currentClassStudent.is_open()) {
+                            Student* currentClassStudentList = nullptr;
+                            createList(currentClassStudentList, currentClassStudent, classHead->startYear, classHead->classID);
+                            classHead->classStudentHead = currentClassStudentList;
+                        }
+                    }
                     curr->nodeNext = nullptr;
                 }
             }
         }
+        currentClassStudent.close();
     }
 
     dataFile.clear();
@@ -157,7 +178,7 @@ void createList(Student*& studentHead, std::fstream& dataFile) {
                     curr->nodePrev = prev;
 
                     //Read and store current student data
-                    readStudentData(studentHead, currentLine);
+                    readStudentData(curr, currentLine);
                     
                     curr->nodeNext = nullptr;
                 }
@@ -203,7 +224,7 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
                     curr->nodePrev = prev;
 
                     //Read and store current student data
-                    readStudentData(studentHead, currentLine, false);
+                    readStudentData(curr, currentLine, false);
                     curr->usr = curr->studentID;
                     curr->pwd = curr->dob;
                     curr->startYear = std::to_string(schoolYear);
@@ -221,45 +242,81 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
 
 void readStudentData(Student*& studentNode, std::string studentData, bool full) {
     int level;
-    if (!full) level = 0;
-    else level = -1;
-    int previousComma;
-    for (int i = 0; i < studentData.size(); i++) {
+    level = 0;
+    int previousComma = 0;
+
+    //Only runs when reading a total student.csv file
+    int commaCount = 0;
+    if (full) {
+        for (int i = 0; i < studentData.size(); i++) {
+            if (studentData[i] == ',') {
+                switch(commaCount) {
+                    case 0: {
+                        studentNode->usr = studentData.substr(0, i);
+                        break;
+                    }
+                    case 1: {
+                        studentNode->pwd = studentData.substr(previousComma + 1, i - previousComma - 1);
+                        break;
+                    }
+                }
+                previousComma = i;
+                commaCount++;
+                if (commaCount == 2) break;
+            }
+        }
+    }
+
+    if (commaCount == 2) previousComma += 1;
+    if (countElement(studentData, ',') == 5 || countElement(studentData, ',') == 10) level++;
+    for (int i = previousComma; i < studentData.size(); i++) {
         if (studentData[i] == ',') {
+            if (level == 0) { 
+                level++;
+                continue; 
+            }
             switch(level) {
                 case 1:
-                studentNode->studentID = studentData.substr(previousComma + 1, i - previousComma);
-                if (full) studentNode->usr = studentNode->studentID;
+                if (commaCount == 0) studentNode->studentID = studentData.substr(0, i);
+                else studentNode->studentID = studentData.substr(previousComma, i - previousComma);
+                //Skip the "no" category
+                if (studentNode->studentID.find(',') != std::string::npos) 
+                    studentNode->studentID = studentNode->studentID.substr(studentNode->studentID.find(',') + 1);
+                if (full && studentNode->usr == "") studentNode->usr = studentNode->studentID;
                 break;
                 case 2:
-                studentNode->firstName = studentData.substr(previousComma + 1, i - previousComma);
+                studentNode->firstName = studentData.substr(previousComma + 1, i - previousComma - 1);
                 break;
                 case 3:
-                studentNode->lastName = studentData.substr(previousComma + 1, i - previousComma);
+                studentNode->lastName = studentData.substr(previousComma + 1, i - previousComma - 1);
                 break;
                 case 4:
-                studentNode->gender = studentData.substr(previousComma + 1, i - previousComma);
+                studentNode->gender = studentData.substr(previousComma + 1, i - previousComma - 1);
                 break;
                 case 5:
-                studentNode->dob = studentData.substr(previousComma + 1, i - previousComma);
-                if (full) studentNode->pwd = studentNode->dob;
-                break;
-                case 6:
-                studentNode->socialID = studentData.substr(previousComma + 1, i - previousComma);
+                studentNode->dob = studentData.substr(previousComma + 1, i - previousComma - 1);
+                if (full && studentNode->pwd == "") studentNode->pwd = studentNode->dob;
                 break;
             }
             if (full) {
                 switch(level) {
+                    case 6:
+                    studentNode->socialID = studentData.substr(previousComma + 1, i - previousComma - 1);
+                    break;
                     case 7:
-                    studentNode->startYear = studentData.substr(previousComma + 1, i - previousComma);
+                    studentNode->startYear = studentData.substr(previousComma + 1, i - previousComma - 1);
                     break;
                     case 8:
-                    studentNode->classID = studentData.substr(previousComma + 1, i - previousComma);
+                    studentNode->classID = studentData.substr(previousComma + 1, i - previousComma - 1);
                     break;
                 }
             }
             previousComma = i;
             level++;
+        }
+        //Only runs when reading a class' student.csv file
+        if (!full && i == studentData.size() - 1) {
+            studentNode->socialID = studentData.substr(previousComma + 1, i - previousComma);
         }
     }
 }
@@ -308,6 +365,7 @@ void createList(Semesters*& semestersHead, std::fstream& dataFile, int schoolYea
     dataFile.clear();
     dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
+
 void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool full) {
     int level = 1;
     int afterComma;
@@ -335,6 +393,88 @@ void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool 
         
             level++;
         }
+    }
+
+    std::fstream semesterCourseFile(std::string("data/" + std::to_string(semestersHead->schoolYear) + "/semesters/" + std::to_string(semestersHead->semester) + "/course.csv"), std::ios::in);
+    std::string courseCatagories;
+    std::getline(semesterCourseFile, courseCatagories);
+    if (semesterCourseFile.is_open() && courseCatagories != "") {
+        semesterCourseFile.seekg(0);
+        Course* semesterCourseList = nullptr;
+        createList(semesterCourseList, semesterCourseFile);
+        semestersHead->semesterCourseHead = semesterCourseList;
+    }
+    semesterCourseFile.close();
+}
+
+void createList(Course*& courseHead, std::fstream& dataFile) {
+    if (courseHead == nullptr) {
+        Course* curr = nullptr;
+        std::string categories;
+        std::getline(dataFile, categories);
+
+        while (!dataFile.eof()) {
+            std::string currentLine;
+            std::getline(dataFile, currentLine);
+            if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
+                if (courseHead == nullptr) {
+                    courseHead = new Course;
+                    courseHead->nodePrev = nullptr;
+
+                    readCourseData(courseHead, currentLine);
+
+                    courseHead->nodeNext = nullptr;
+                    curr = courseHead;
+                }
+                else {
+                    Course* prev = curr;
+                    curr->nodeNext = new Course;
+                    curr = curr->nodeNext;
+                    curr->nodePrev = prev;
+
+                    readCourseData(curr, currentLine);
+                    
+                    curr->nodeNext = nullptr;
+                }
+            }
+        }
+    }
+
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
+}
+
+void readCourseData(Course*& courseHead, std::string courseData) {
+    int level = 0;
+    int afterComma;
+    for (int i = 0; i < courseData.size(); i++) {
+        if (courseData[i] == ',') {
+            switch(level) {
+                case 0: {
+                    courseHead->courseId = toUpper_w(courseData.substr(0, i));
+                    break;
+                }
+                case 1: {
+                    courseHead->courseName = courseData.substr(afterComma + 1, i - afterComma - 1);
+                    break;
+                }
+                case 2: {
+                    courseHead->teacherName = courseData.substr(afterComma + 1, i - afterComma - 1);
+                    break;
+                }
+                case 3: {
+                    courseHead->numOfCredits = courseData.substr(afterComma + 1, i - afterComma - 1);
+                    break;
+                }
+                case 4: {
+                    courseHead->studentMax = stoi(courseData.substr(afterComma + 1, i - afterComma - 1));
+                    break;
+                }
+            }
+            afterComma = i;
+            level++;
+        }
+        if (level == 5 && i == courseData.size() - 1) courseHead->daySession = courseData.substr(afterComma + 1);
     }
 }
 

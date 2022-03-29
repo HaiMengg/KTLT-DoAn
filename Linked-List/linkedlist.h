@@ -82,6 +82,7 @@ void createList(Semesters*& semestersHead, std::fstream& dataFile, int = -1);
 void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool = true);
 
 void createList(Course*& courseHead, std::fstream& dataFile);
+void readCourseData(Course*& courseHead, std::string courseData);
 
 // bool appendListSingle(Node*& nodeHead, std::string newValue);
 // bool appendListBatch(Node*& nodeHead, SNode* batch);

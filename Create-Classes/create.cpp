@@ -219,7 +219,7 @@ bool classFileSearchBool(std::fstream& classesTotalFile, std::string searchClass
 }
 
 /*Student*/
-void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass) {
+void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass, Classes*& totalClassList) {
     //Get all students of the current class
     std::fstream currentStudents(std::string("data/" + std::to_string(schoolYear) + "/classes/" + currentClass + "/student.csv").c_str(), std::ios::app | std::ios::out | std::ios::in);
     std::string currentStudentsCategories;
@@ -255,6 +255,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);
+                        appendNewStudentList(currentStudentsList, studentInput, schoolYear, currentClass, false);
                         appendNewStudentFile(studentInput, totalFile, schoolYear, currentClass);
                         appendNewStudentFile(studentInput, currentStudents, schoolYear, currentClass, false);
 
@@ -278,6 +279,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
 
                                 createList(fInputBatch, fileStudent);
                                 appendBatchStudentList(totalStudentHead, fInputBatch, schoolYear, currentClass);
+                                appendBatchStudentList(currentStudentsList, fInputBatch, schoolYear, currentClass);
                                 appendBatchStudentFile(fInputBatch, totalFile, schoolYear, currentClass);
                                 appendBatchStudentFile(fInputBatch, currentStudents, schoolYear, currentClass, false);
 
@@ -301,6 +303,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
             std::cin.ignore(10000, '\n');
         }
     }
+    appendClassStudentList(currentStudentsList, totalClassList, currentClass);
     destructList(currentStudentsList);
 }
 
@@ -383,6 +386,17 @@ void appendBatchStudentFile(SNode* batch, std::fstream& dataFile, int schoolYear
     }
 }
 
+void appendClassStudentList(Student* classStudent, Classes*& totalClassList, std::string currentClass) {
+    Classes* classCurr = totalClassList;
+    while (classCurr != nullptr) {
+        if (classCurr->classID == currentClass) {
+            classCurr->classStudentHead = classStudent;
+            break;
+        }
+        classCurr = classCurr->nodeNext;
+    }
+}
+
 std::string getStudentDOB(std::string studentInfo) {
     int count = 0;
     for (int i = 0; i < studentInfo.size(); i++) {
@@ -401,7 +415,7 @@ std::string getStudentDOB(std::string studentInfo) {
 
 bool studentListSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID) {
     while (studentHead != nullptr) {
-        if (studentHead->classID == searchStudentClass || studentHead->studentID == searchStudentID) return 1;
+        if (studentHead->classID == searchStudentClass && studentHead->studentID == searchStudentID) return 1;
         studentHead = studentHead->nodeNext;
     }
     return 0;

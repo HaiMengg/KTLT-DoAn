@@ -8,6 +8,7 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
         << "create class: create new class/classes\n"
         << "add students: add new students to a class\n"
         << "create semester: create new semester/semesters\n"
+        << "add course: add new course/courses to semester\n"
         << "view: get access to the view feature (from which you can perform further actions)\n"
         << "exit: exit the program\n: ";
 
@@ -24,6 +25,8 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
             addStudentMenu(data.studentHead, studentData, data.schoolYearHead, data.classesHead);
         else if (choice == "create semester")
             createSemesterMenu(data.semesterHead, semesterData, data.schoolYearHead);
+        else if (choice == "add course")
+            addCourseMenu(data.semesterHead, data.schoolYearHead);
         else if (choice == "view")
             viewMenu(data);
         else if (choice == "exit") cont = 0;
@@ -31,6 +34,7 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
 
         std::cout << std::endl << "================================================" << std::endl << std::endl;
         system("pause");
+        system("cls");
     } while (cont);
 }
 
@@ -49,10 +53,10 @@ void createSchoolYearMenu(SchoolYear*& schoolYearHead, std::fstream& schoolYearD
 			}
 		}
 
-		if (inputYear != "" && isDigit_w(inputYear) && schoolYearSearchBool(schoolYearHead, stoi(inputYear))) valid = 1;
 		std::cout << "Enter the start of the new school year (you can't create an existing school year) (enter \"0\" to return to main menu): ";
 		std::getline(std::cin, inputYear);
 		if (inputYear == "0") return;
+		if (inputYear != "" && isDigit_w(inputYear) && !schoolYearSearchBool(schoolYearHead, stoi(inputYear))) valid = 1;
 	} while (!valid);
 
     createSchoolYear(schoolYearHead, schoolYearData, inputYear);
@@ -72,7 +76,7 @@ void createClassMenu(Classes*& classHead, std::fstream& classData, SchoolYear* s
     createClass(classHead, classData, stoi(currentSchoolYear));
 }
 
-void addStudentMenu(Student*& studentHead, std::fstream& studentData, SchoolYear* schoolYearHead, Classes* classesHead) {
+void addStudentMenu(Student*& studentHead, std::fstream& studentData, SchoolYear* schoolYearHead, Classes*& classesHead) {
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
@@ -93,7 +97,7 @@ void addStudentMenu(Student*& studentHead, std::fstream& studentData, SchoolYear
         if (!classListSearchBool(classesHead, currentClass, stoi(currentSchoolYear))) std::cout << "Class \"" + currentClass + "\" of year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
     }
 
-    addStudentsToClass(studentHead, studentData, stoi(currentSchoolYear), currentClass);
+    addStudentsToClass(studentHead, studentData, stoi(currentSchoolYear), currentClass, classesHead);
 }
 
 void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, SchoolYear* schoolYearHead) {
@@ -108,6 +112,20 @@ void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, Sc
         if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
     createSemester(semesterHead, semesterData, stoi(currentSchoolYear));
+}
+
+void addCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
+    bool valid = 0;
+    std::string currentSchoolYear = "a";
+    while (!valid) {
+        std::cout << "Enter the school year to create new course for (enter \"0\" to return to previous menu): ";
+        std::getline(std::cin, currentSchoolYear);
+        if (currentSchoolYear == "0") return;
+        if (!isDigit_w(currentSchoolYear)) { std::cout << "Invalid year\n"; continue; }
+        if (!schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) std::cout << "School year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
+        if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
+    }
+    addCourseToSemester(semesterHead, stoi(currentSchoolYear));
 }
 
 void viewMenu(Node allData) {
