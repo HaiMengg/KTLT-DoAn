@@ -1,5 +1,5 @@
 usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,coursesID
 student1,abcd,21127517,Nguyen,Anh Khoa,10/24/2003,Nam,0123456789,2021,21CLC09,||
 student2,nicegamer,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,|KTLT10004-FK10003|
-student3,test,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,|NMLT10004-VTP10002-VLDC10002|
+student3,test,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,|NMLT10004-VLDC10002-FK10003-VTP10002-TH10003|
 student4,pass,21127561,Nguyen,Quang Tuan,06/17/2003,Nam,0123456789,2021,21CLC09,||
