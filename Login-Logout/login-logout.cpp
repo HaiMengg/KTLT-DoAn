@@ -8,7 +8,7 @@
 
 // Login
 void loginCheck(Login &data)
-{
+{   
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
     std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
     << "----------------\n";
