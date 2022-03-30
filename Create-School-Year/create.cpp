@@ -14,13 +14,24 @@ void viewSchoolYear(SchoolYear* schoolYearHead) {
 }
 
 void inputSchoolYear(SchoolYear* schoolYearHead, std::string& inputYear) {
-	std::cout << "Enter the start of the new school year (you can't create an existing school year): ";
+	bool valid = 0;
 	do {
-		//Display this message if "start" is already input but is invalid
-		if (inputYear != "") std::cout << "You can't create an existing school year. Enter another school year: ";
+		if (inputYear != "" && !isDigit_w(inputYear)) {
+			std::cout << "Invalid year\n";
+			valid = 0;
+		}
+		else {
+			if (inputYear != "" && schoolYearSearchBool(schoolYearHead, stoi(inputYear))) {
+				std::cout << "You can't create an existing school year.\n";
+				valid = 0;
+			}
+		}
+
+		if (inputYear != "" && isDigit_w(inputYear) && schoolYearSearchBool(schoolYearHead, stoi(inputYear))) valid = 1;
+		std::cout << "Enter the start of the new school year (you can't create an existing school year) (enter \"0\" to return to main menu): ";
 		std::getline(std::cin, inputYear);
-		if (!isDigit_w(inputYear)) std::cout << "Invalid year\n";
-	} while (schoolYearSearchBool(schoolYearHead, stoi(inputYear)) && !isDigit_w(inputYear));
+		if (inputYear == "0") return;
+	} while (!valid);
 }
 
 void createSchoolYear(SchoolYear*& schoolYearHead, std::fstream& dataFile, std::string inputYear) {
@@ -32,7 +43,7 @@ void createSchoolYear(SchoolYear*& schoolYearHead, std::fstream& dataFile, std::
 	mkdir(newDir.c_str());
 	newDir = "data/" + inputYear + "/classes";
 	mkdir(newDir.c_str());
-	newDir = "data/" + inputYear + "/courses";
+	newDir = "data/" + inputYear + "/semesters";
 	mkdir(newDir.c_str());
 }
 
