@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include "read-write-csv.cpp"
+#include "struct.h"
 
 // Login
 void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem)
@@ -133,13 +133,13 @@ void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, st
     std::cin >> option;
 
     if (option == "1") viewInfo(data, node, sY, cl, stu, sem);
-    else if (option == "2") viewCourse(data);
+    else if (option == "2") viewCourse(data, node, sY, cl, stu, sem);
     else if (option == "3")
     {
         showCourses(data.course);
-        enrollCourse(data);
+        enrollCourse(data, node, sY, cl, stu, sem);
     }
-    else if (option == "4") removeCourse(data);
+    else if (option == "4") removeCourse(data, node, sY, cl, stu, sem);
     else if (option == "5") changePassword(data, node, sY, cl, stu, sem);
     else if (option == "6") logOut(data, node, sY, cl, stu, sem);
     else if (option == "7") return;
