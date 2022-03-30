@@ -3,6 +3,8 @@
 #include <sstream>
 #include <string>
 
+#include "struct.h"
+
 // Read student's courses
 void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head)
 {
