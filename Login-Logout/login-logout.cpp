@@ -5,9 +5,10 @@
 
 #include "struct.h"
 #include "read-write-csv.cpp"
+#include "Main-Menu/menu.h"
 
 // Login
-void loginCheck(Login &data)
+void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem)
 {   
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
     std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
@@ -84,7 +85,7 @@ void loginCheck(Login &data)
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
-            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Exit program\n"
+            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Access teacher's available actions\n[5] Exit program\n"
             << "----------------\n";
             loginMenu(data);
         }
@@ -97,7 +98,7 @@ void loginCheck(Login &data)
         }
     }
 
-    else if (option == "4") return;
+    else if (option == "5") return;
 
     else
     {
@@ -117,7 +118,8 @@ void loginMenu(Login &data)
     if (option == "1") viewInfo(data);
     else if (option == "2") changePassword(data);
     else if (option == "3") logOut(data);
-    else if (option == "4") return;
+    else if (option == "4") currentMenu(node, sY, cl, stu, sem);
+    else if (option == "5") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n\n";

@@ -96,7 +96,7 @@ void enrollCourse(Login data);
 void viewCourse(Login data);
 void removeCourse(Login data);
 
-void loginCheck(Login &data);
+void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem);
 void loginMenu(Login &data);
 void studentMenu(Login &data);
 void viewInfo(Login data);
