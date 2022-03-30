@@ -309,7 +309,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
 
 //This appends a new student (containing new info) to the file
 void appendNewStudentList(Student*& totalStudentHead, std::string newValue, int schoolYear, std::string currentClass, bool full) {
-    if (!studentFormatCheck(newValue)) return;
+    if (!studentFormatCheck(newValue, schoolYear)) return;
 
     Student* nodeNew = new Student;
     readStudentData(nodeNew, newValue, full);
@@ -355,7 +355,7 @@ void appendBatchStudentList(Student*& totalStudentHead, SNode* batch, int school
 }
 
 void appendNewStudentFile(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass, bool full) {
-    if (!studentFormatCheck(newValue)) return;
+    if (!studentFormatCheck(newValue, schoolYear)) return;
 
     int afterComma = newValue.find(',');
 
@@ -437,7 +437,7 @@ bool studentFileSearchBool(std::fstream& studentTotalFile, std::string searchStu
     studentTotalFile.seekg(0);
     return 0;
 }
-bool studentFormatCheck(std::string studentData) {
+bool studentFormatCheck(std::string studentData, int schoolYear) {
     int count = 0;
     for (int i = 0; i < studentData.size(); i++) {
         if (studentData[i] == ',') {
@@ -457,6 +457,7 @@ bool studentFormatCheck(std::string studentData) {
                     break;
                 }
                 case 5: {
+                    if (!isValidDate(studentData.substr(i + 1), schoolYear)) return 0;
                     int slashCount = 0;
                     for (int j = i + 1; j < studentData.size(); j++) {
                         if (studentData[j] == '/') {

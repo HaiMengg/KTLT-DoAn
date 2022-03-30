@@ -9,3 +9,4 @@ bool isDigit_w(std::string);
 std::string toLower_w(std::string);
 std::string toUpper_w(std::string);
 int countElement(std::string, char);
+bool isValidDate(std::string, int);

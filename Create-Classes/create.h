@@ -29,6 +29,6 @@ void appendClassStudentList(Student* classStudent, Classes*& totalClassList, std
 std::string getStudentDOB(std::string studentInfo);
 bool studentListSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID);
 bool studentFileSearchBool(std::fstream& studentTotalFile, std::string searchStudentClass, std::string searchStudentID, bool = true);
-bool studentFormatCheck(std::string);
+bool studentFormatCheck(std::string, int);
 
 bool checkInputFormat(std::fstream&, int);

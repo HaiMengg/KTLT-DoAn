@@ -83,7 +83,7 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
     destructList(currentSemestersList);
 }
 void appendNewSemesterList(Semesters*& semestersHead, std::string newSemesterData, int schoolYear, bool full) {
-    if (!semesterCheckBool(newSemesterData)) return;
+    if (!semesterCheckBool(newSemesterData, schoolYear)) return;
 
     if (semesterListSearchBool(semestersHead, stoi(newSemesterData.substr(0, 1)), schoolYear)) return;
 
@@ -107,7 +107,7 @@ void appendNewSemesterList(Semesters*& semestersHead, std::string newSemesterDat
 	nodeCurr->nodeNext = nodeNew;
 }
 void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, int schoolYear, bool full) {
-    if (!semesterCheckBool(newSemesterData)) return;
+    if (!semesterCheckBool(newSemesterData, schoolYear)) return;
     
     if (semesterFileSearchBool(dataFile, stoi(newSemesterData.substr(0, 1)), schoolYear, full)) return;
 
@@ -172,7 +172,7 @@ bool semesterFileSearchBool(std::fstream& semestersTotalFile, int semester, int 
     return 0;
 }
 
-bool semesterCheckBool(std::string semesterData) {
+bool semesterCheckBool(std::string semesterData, int schoolYear) {
     int count = 0;
     for (int i = 0; i < semesterData.size(); i++) {
         if (semesterData[i] == ',') {
@@ -192,6 +192,7 @@ bool semesterCheckBool(std::string semesterData) {
                         }
                         if (j == semesterData.size() - 1) return 0;     //This means the string doesn't have a second comma -> invalid format
                     }
+                    if (!isValidDate(semesterData.substr(i, secondComma - i), schoolYear)) return 0;
                     for (int j = i; j < secondComma - j; j++) {
                         if (semesterData[j] == '/') {
                             if (semesterData.substr(i + 1, 1) == "/") return 0;
@@ -211,6 +212,7 @@ bool semesterCheckBool(std::string semesterData) {
                 case 1: {
                     //Check after the second comma
                     int slashCount = 0;
+                    if (!isValidDate(semesterData.substr(i+ 1), schoolYear)) return 0;
                     for (int j = i + 1; j < semesterData.size(); j++) {
                         if (semesterData[j] == '/') {
                             if (semesterData.substr(i + 1, 1) == "/") return 0;
