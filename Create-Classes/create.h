@@ -20,14 +20,15 @@ void appendBatchClassFolder(SNode* batch, int startYear);
 bool classListSearchBool(Classes* classesHead, std::string searchClass, int startYear);
 bool classFileSearchBool(std::fstream& classesTotalFile, std::string searchClass, int startYear, bool = true);
 
-void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass);
+void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass, Classes*& totalClassList);
 void appendNewStudentList(Student*& totalStudentHead, std::string newValue, int schoolYear, std::string currentClass, bool = true);
 void appendBatchStudentList(Student*& totalStudentHead, SNode* batch, int schoolYear, std::string currentClass, bool = true);
 void appendNewStudentFile(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass, bool = true);
 void appendBatchStudentFile(SNode* batch, std::fstream& dataFile, int schoolYear, std::string currentClass, bool = true);
+void appendClassStudentList(Student* classStudent, Classes*& totalClassList, std::string currentClass);
 std::string getStudentDOB(std::string studentInfo);
 bool studentListSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID);
 bool studentFileSearchBool(std::fstream& studentTotalFile, std::string searchStudentClass, std::string searchStudentID, bool = true);
-bool studentFormatCheck(std::string);
+bool studentFormatCheck(std::string, int);
 
 bool checkInputFormat(std::fstream&, int);

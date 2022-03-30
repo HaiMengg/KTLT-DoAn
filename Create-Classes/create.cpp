@@ -77,7 +77,7 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
             << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
             if (!isDigit_w(choice)) {
-                std::cout << "Invalid choice\n";
+                std::cout << "Invalid format for choice\n";
                 continue;
             }
             switch(stoi(choice)) {
@@ -219,7 +219,7 @@ bool classFileSearchBool(std::fstream& classesTotalFile, std::string searchClass
 }
 
 /*Student*/
-void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass) {
+void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int schoolYear, std::string currentClass, Classes*& totalClassList) {
     //Get all students of the current class
     std::fstream currentStudents(std::string("data/" + std::to_string(schoolYear) + "/classes/" + currentClass + "/student.csv").c_str(), std::ios::app | std::ios::out | std::ios::in);
     std::string currentStudentsCategories;
@@ -238,18 +238,24 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
         bool inserted = 0;
         std::string choice = "0";
         while (choice == "0") {
-            std::cout << "Choose the input method by which students' data are to be entered:\n"
-            << "1. Single input (manually)\n2. CSV file\n: ";
-            std::getline(std::cin, choice);
+            do {
+                if (!isDigit_w(choice)) std::cout << "Invalid format for choice\n";
+                std::cout << "Choose the input method by which students' data are to be entered:\n"
+                << "1. Single input (manually)\n2. CSV file\n0. Back to previous menu\n: ";
+                std::getline(std::cin, choice);
+                if (choice == "0") return;
+            } while (!isDigit_w(choice));
             switch(stoi(choice)) {
                 case 1: {
                     std::string studentInput;
                     std::cout << "Enter the data of a new student of class \"" << currentClass << "\"\n"
                     << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
-                    << "(already existing student or student data that don't match the given format won't be added)\n: ";
+                    << "(already existing student or student data that don't match the given format won't be added)\n"
+                    << "(enter \"0\" to return to previous menu)\n: ";
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);
+                        appendNewStudentList(currentStudentsList, studentInput, schoolYear, currentClass, false);
                         appendNewStudentFile(studentInput, totalFile, schoolYear, currentClass);
                         appendNewStudentFile(studentInput, currentStudents, schoolYear, currentClass, false);
 
@@ -262,7 +268,8 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                     std::string fileStudentInput;
                     std::cout << "Enter the directory of the CSV file containing data on multiple students of class \"" << currentClass << "\"\n"
                     << "(format: \"studentID,firstname,lastname,gender,dob,socialID\")\n"
-                    << "(already existing students or student data that don't match the given format won't be added)\n: ";
+                    << "(already existing students or student data that don't match the given format won't be added)\n"
+                    << "(enter \"0\" to return to previous menu)\n: ";
                     std::getline(std::cin, fileStudentInput);
                     if (fileStudentInput != "0") {
                         std::fstream fileStudent(fileStudentInput.c_str(), std::ios::in);
@@ -272,6 +279,7 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
 
                                 createList(fInputBatch, fileStudent);
                                 appendBatchStudentList(totalStudentHead, fInputBatch, schoolYear, currentClass);
+                                appendBatchStudentList(currentStudentsList, fInputBatch, schoolYear, currentClass);
                                 appendBatchStudentFile(fInputBatch, totalFile, schoolYear, currentClass);
                                 appendBatchStudentFile(fInputBatch, currentStudents, schoolYear, currentClass, false);
 
@@ -295,12 +303,13 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
             std::cin.ignore(10000, '\n');
         }
     }
+    appendClassStudentList(currentStudentsList, totalClassList, currentClass);
     destructList(currentStudentsList);
 }
 
 //This appends a new student (containing new info) to the file
 void appendNewStudentList(Student*& totalStudentHead, std::string newValue, int schoolYear, std::string currentClass, bool full) {
-    if (!studentFormatCheck(newValue)) return;
+    if (!studentFormatCheck(newValue, schoolYear)) return;
 
     Student* nodeNew = new Student;
     readStudentData(nodeNew, newValue, full);
@@ -346,7 +355,7 @@ void appendBatchStudentList(Student*& totalStudentHead, SNode* batch, int school
 }
 
 void appendNewStudentFile(std::string newValue, std::fstream& dataFile, int schoolYear, std::string currentClass, bool full) {
-    if (!studentFormatCheck(newValue)) return;
+    if (!studentFormatCheck(newValue, schoolYear)) return;
 
     int afterComma = newValue.find(',');
 
@@ -377,6 +386,17 @@ void appendBatchStudentFile(SNode* batch, std::fstream& dataFile, int schoolYear
     }
 }
 
+void appendClassStudentList(Student* classStudent, Classes*& totalClassList, std::string currentClass) {
+    Classes* classCurr = totalClassList;
+    while (classCurr != nullptr) {
+        if (classCurr->classID == currentClass) {
+            classCurr->classStudentHead = classStudent;
+            break;
+        }
+        classCurr = classCurr->nodeNext;
+    }
+}
+
 std::string getStudentDOB(std::string studentInfo) {
     int count = 0;
     for (int i = 0; i < studentInfo.size(); i++) {
@@ -395,7 +415,7 @@ std::string getStudentDOB(std::string studentInfo) {
 
 bool studentListSearchBool(Student* studentHead, std::string searchStudentClass, std::string searchStudentID) {
     while (studentHead != nullptr) {
-        if (studentHead->classID == searchStudentClass || studentHead->studentID == searchStudentID) return 1;
+        if (studentHead->classID == searchStudentClass && studentHead->studentID == searchStudentID) return 1;
         studentHead = studentHead->nodeNext;
     }
     return 0;
@@ -417,14 +437,14 @@ bool studentFileSearchBool(std::fstream& studentTotalFile, std::string searchStu
     studentTotalFile.seekg(0);
     return 0;
 }
-bool studentFormatCheck(std::string studentData) {
+bool studentFormatCheck(std::string studentData, int schoolYear) {
     int count = 0;
     for (int i = 0; i < studentData.size(); i++) {
         if (studentData[i] == ',') {
             count++;
             switch(count) {
                 case 1: {
-                    if (!isDigit_w(studentData.substr(i + 1, i + 7))) return 0;
+                    if (!isDigit_w(studentData.substr(i + 1, 8))) return 0;
                     break;
                 }
                 case 4: {
@@ -437,22 +457,26 @@ bool studentFormatCheck(std::string studentData) {
                     break;
                 }
                 case 5: {
+                    if (!isValidDate(studentData.substr(i + 1), schoolYear)) return 0;
                     int slashCount = 0;
                     for (int j = i + 1; j < studentData.size(); j++) {
                         if (studentData[j] == '/') {
-                            if (studentData.substr(i + 1, j - i - 1) == "/") return 0;
+                            if (studentData.substr(i + 1, 1) == "/") return 0;
                             if (!isDigit_w(studentData.substr(i + 1, j - i - 1))) return 0;
-                            if (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 31) return 0;
-                            else { i = j + 1; slashCount++; }
-                            if (slashCount == 1 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 || stoi(studentData.substr(i + 1, j - i - 1))) > 12) return 0;
-                            else { i = j + 1; slashCount++; }
-                            if (slashCount == 2 && stoi(studentData.substr(i + 1, j - i - 1)) < 0) return 0;
+                            if (slashCount == 0 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 31)) return 0;
+                            if (slashCount == 1 && (stoi(studentData.substr(i + 1, j - i - 1)) < 1 && stoi(studentData.substr(i + 1, j - i - 1)) > 12)) return 0;
+                            i = j; slashCount++;
+                        }
+                        if (studentData[j] == ',' && slashCount == 2) {
+                            if (!isDigit_w(studentData.substr(i + 1, j - i - 1))) return 0;
+                            if (stoi(studentData.substr(i + 1, j - i - 1)) < 0) return 0;
+                            i = j;
+                            break;
                         }
                     }
-                    break;
-                }
-                case 6: {
                     if (!isDigit_w(studentData.substr(i + 1, studentData.size() - i))) return 0;
+                    count++;
+                    break;
                 }
             }
         }
