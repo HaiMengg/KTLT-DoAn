@@ -62,7 +62,7 @@ void DisplayClass(Classes* pClass)
 {
 	if (pClass != nullptr)
 	{
-		cout << pClass->classID << setw(20) << pClass->startYear << endl;
+		cout << setw(23) << left << pClass->classID << pClass->startYear << endl;
 		DisplayClass(pClass->nodeNext);
 	}
 }
@@ -99,7 +99,7 @@ void DisplayStudent(Student* pStudent)
 {
 	if (pStudent != nullptr)
 	{
-		cout << setw(18) << left << pStudent->studentID;
+		cout << setw(17) << left << pStudent->studentID;
 		cout << pStudent->firstName << " " << setw(21) << left << pStudent->lastName;
 		cout << setw(13) << left << pStudent->gender;
 		cout << pStudent->dob << endl;
