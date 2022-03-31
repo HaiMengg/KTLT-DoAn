@@ -99,9 +99,9 @@ void DisplayStudent(Student* pStudent)
 {
 	if (pStudent != nullptr)
 	{
-		cout << pStudent->studentID << setw(15);
-		cout << pStudent->firstName << " " << pStudent->lastName << setw(30 - pStudent->firstName.size() - pStudent->lastName.size());
-		cout << pStudent->gender << setw(20);
+		cout << setw(18) << left << pStudent->studentID;
+		cout << pStudent->firstName << " " << setw(21) << left << pStudent->lastName;
+		cout << setw(13) << left << pStudent->gender;
 		cout << pStudent->dob << endl;
 		DisplayStudent(pStudent->nodeNext);
 	}
@@ -159,5 +159,4 @@ void ViewClassStudent()
 			check = false;
 		}
 	} while (check);
-}
 }
