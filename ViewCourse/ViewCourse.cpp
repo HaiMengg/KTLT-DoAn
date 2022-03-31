@@ -88,10 +88,10 @@ void DisplayCourse(Course* pCourse)
 {
 	if (pCourse != nullptr)
 	{
-		cout << pCourse->courseId << setw(33 - pCourse->courseId.size());
-		cout << pCourse->courseName << setw(48 - pCourse->courseName.size());
-		cout << pCourse->teacherName << setw(30 - pCourse->teacherName.size());
-		cout << pCourse->numOfCredits << setw(33 - pCourse->numOfCredits.size());
+		cout << setw(17) << left << pCourse->courseId;
+		cout << setw(28) << left << pCourse->courseName;
+		cout << setw(29) << left << pCourse->teacherName;
+		cout << setw(20) << left << pCourse->numOfCredits;
 		cout << pCourse->daySession << endl;
 		DisplayCourse(pCourse->nodeNext);
 	}
@@ -128,9 +128,9 @@ void DisplayStudent(Student* pStudent)
 {
 	if (pStudent != nullptr)
 	{
-		cout << pStudent->studentID << setw(16);
-		cout << pStudent->firstName << " " << pStudent->lastName << setw(30 - pStudent->firstName.size() - pStudent->lastName.size());
-		cout << pStudent->gender << setw(20);
+		cout << setw(18) << left << pStudent->studentID;
+		cout << pStudent->firstName << " " << setw(21) << left << pStudent->lastName;
+		cout << setw(13) << left << pStudent->gender;
 		cout << pStudent->dob << endl;
 		DisplayStudent(pStudent->nodeNext);
 	}
@@ -168,6 +168,7 @@ void ViewCourse()
 		{
 			Course* pCourse = nullptr;
 			ReadCourseSetUp(pCourse, syear);
+			del;
 			cout << "ID: ";
 			cout << setw(20) << "Name : ";
 			cout << setw(30) << "Teacher: ";
@@ -200,13 +201,4 @@ void ViewCourseStudent()
 			check = false;
 		}
 	} while (check);
-}
-
-int main()
-{
-	int i = 0;
-	if (i == 0)
-		ViewCourse();
-	else
-		ViewCourseStudent();
 }
