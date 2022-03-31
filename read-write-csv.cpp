@@ -5,8 +5,41 @@
 
 #include "struct.h"
 
-// Read student's courses
-void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head)
+// Read course.csv
+void readCourse(Course* &data, std::fstream &input)
+{
+    // Track current pointer
+    Course* cur = data;
+
+    // Ignore first line
+    std::string str;
+    std::getline(input, str);
+
+    // Get data
+    while (true)
+    {
+        getline(input, cur -> courseId, ',');
+        getline(input, cur -> courseName, ',');
+        getline(input, cur -> teacherName, ',');
+        getline(input, cur -> numOfCredits, ',');
+        getline(input, str, ',');
+        getline(input, cur -> daySession);
+
+        if (input.eof())
+        {
+            cur -> nodeNext = nullptr;
+            break;
+        }
+
+        cur -> nodeNext = new Course;
+        cur -> nodeNext -> nodePrev = cur;
+        cur = cur -> nodeNext;   
+    }
+    cur = nullptr;
+}
+
+// Read student course
+void readStudentCourse(std::string courses, std::string schoolYear, StudentCourse* &head)
 {
     int count = 3;
     StudentCourse* headCourse = new StudentCourse;
@@ -135,7 +168,7 @@ void readStudent(Student* &data, std::fstream &input)
         std::string schoolYear = cur -> startYear;
         std::string rawCourses;
         getline(input, rawCourses);
-        readCourse(rawCourses, schoolYear, cur -> studentCourseHead);
+        readStudentCourse(rawCourses, schoolYear, cur -> studentCourseHead);
 
         if (input.eof())
         {

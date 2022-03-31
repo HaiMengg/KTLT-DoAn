@@ -48,39 +48,6 @@ int getSemester(std::fstream &input)
     return 0;
 }
 
-// Read course.csv
-void readCourse(Course* &data, std::fstream &input)
-{
-    // Track current pointer
-    Course* cur = data;
-
-    // Ignore first line
-    std::string str;
-    std::getline(input, str);
-
-    // Get data
-    while (true)
-    {
-        getline(input, cur -> courseId, ',');
-        getline(input, cur -> courseName, ',');
-        getline(input, cur -> teacherName, ',');
-        getline(input, cur -> numOfCredits, ',');
-        getline(input, str, ',');
-        getline(input, cur -> daySession);
-
-        if (input.eof())
-        {
-            cur -> nodeNext = nullptr;
-            break;
-        }
-
-        cur -> nodeNext = new Course;
-        cur -> nodeNext -> nodePrev = cur;
-        cur = cur -> nodeNext;   
-    }
-    cur = nullptr;
-}
-
 // Replace all same substrings with another string
 void replaceAll(std::string& str, const std::string& from, const std::string& to) {
     if (from.empty()) return;

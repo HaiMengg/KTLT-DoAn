@@ -88,7 +88,6 @@ struct Login
 
 bool checkSemester(std::string start, std::string end);
 int getSemester();
-void readCourse(Course* &data, std::fstream &input);
 void replaceAll(std::string& str, const std::string& from, const std::string& to);
 void showCourseNode(Course* data);
 void showCourses(Course* data);

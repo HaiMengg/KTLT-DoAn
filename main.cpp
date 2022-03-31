@@ -21,23 +21,23 @@ int main()
     course.open("semester/" + std::to_string(sem) + "/course.csv", std::ios::in);
 
     // Linked lists
+    Course* courseData = new Course;
     Staff* staffData = new Staff;
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
-    Course* courseData = new Course;
 
     // Read CSV files
+    readCourse(courseData, course);
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
-    readCourse(courseData, course);
 
     // Log in to the system
     Login data;
+    data.course = courseData;
     data.staff = staffData;
     data.teacher = teacherData;
     data.student = studentData;
-    data.course = courseData;
     data.semester = sem;
     loginCheck(data);
 
