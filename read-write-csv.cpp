@@ -336,6 +336,15 @@ void writeStudent(Student* data)
             if (curCourse -> sem3Courses[0] == '-')
             curCourse -> sem3Courses.erase(0, 1);
 
+            if (curCourse -> sem1Courses[curCourse -> sem1Courses.size() - 1] == '-')
+            curCourse -> sem1Courses.erase(curCourse -> sem1Courses.size() - 1, 1);
+
+            if (curCourse -> sem2Courses[curCourse -> sem2Courses.size() - 1] == '-')
+            curCourse -> sem2Courses.erase(curCourse -> sem2Courses.size() - 1, 1);
+
+            if (curCourse -> sem3Courses[curCourse -> sem3Courses.size() - 1] == '-')
+            curCourse -> sem3Courses.erase(curCourse -> sem3Courses.size() - 1, 1);
+
             if (curCourse != cur -> studentCourseHead)
             output << "|";
 

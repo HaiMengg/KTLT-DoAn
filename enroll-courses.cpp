@@ -299,7 +299,7 @@ void viewCourse(Login data)
 }
 
 // Remove an enrolled course
-void removeCourse(Login data)
+void removeCourse(Login &data)
 {
     std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
     std::string removeId;
@@ -340,6 +340,38 @@ void removeCourse(Login data)
             curCourse -> sem3Courses = enrolled;
 
             writeStudent(data.student);
+
+            Course* cur = data.course;
+            while (cur != nullptr)
+            {
+                if (cur -> courseId == removeId)
+                {
+                    Student* curCourseStudent = cur -> courseStudentHead;
+                    while (curCourseStudent != nullptr)
+                    {
+                        if (curCourseStudent -> studentID == data.curStudent -> studentID)
+                        {
+                            if (curCourseStudent == cur -> courseStudentHead)
+                            {
+                                cur -> courseStudentHead = curCourseStudent -> nodeNext;
+                                delete curCourseStudent;
+                                break;
+                            }
+
+                            curCourseStudent -> nodePrev -> nodeNext = curCourseStudent -> nodeNext;
+                            curCourseStudent -> nodeNext -> nodePrev = curCourseStudent -> nodePrev;
+                            delete curCourseStudent;
+                            break;
+                        }
+                        curCourseStudent = curCourseStudent -> nodeNext;
+                    }
+                    break;
+                }
+                cur = cur -> nodeNext;
+            }
+
+            writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
+
             std::cout << "Course removed!\n" << "----------------\n";
             studentMenu(data);
             return;
