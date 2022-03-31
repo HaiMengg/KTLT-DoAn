@@ -91,7 +91,7 @@ int getSemester();
 void replaceAll(std::string& str, const std::string& from, const std::string& to);
 void showCourseNode(Course* data);
 void showCourses(Course* data);
-void enrollCourse(Login data);
+void enrollCourse(Login &data);
 void viewCourse(Login data);
 void removeCourse(Login data);
 

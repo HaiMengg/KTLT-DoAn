@@ -99,7 +99,7 @@ void showCourses(Course* data)
 }
 
 // Enroll in a course
-void enrollCourse(Login data)
+void enrollCourse(Login &data)
 {
     std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
     std::string enrollId;
@@ -183,6 +183,38 @@ void enrollCourse(Login data)
             curCourse -> sem3Courses += "-" + cur -> courseId;
 
             writeStudent(data.student);
+
+            Student* curCourseStudent = cur -> courseStudentHead;
+            while (curCourseStudent != nullptr && curCourseStudent -> nodeNext != nullptr)
+            {
+                curCourseStudent = curCourseStudent -> nodeNext;
+            }
+
+            Student* newStudent = new Student;
+            newStudent -> studentID = data.curStudent -> studentID;
+            newStudent -> firstName = data.curStudent -> firstName;
+            newStudent -> lastName = data.curStudent -> lastName;
+            newStudent -> dob = data.curStudent -> dob;
+            newStudent -> gender = data.curStudent -> gender;
+            newStudent -> socialID = data.curStudent -> socialID;
+            newStudent -> classID = data.curStudent -> classID;
+
+            if (curCourseStudent == nullptr)
+            {
+                cur -> courseStudentHead = new Student;
+                cur -> courseStudentHead = newStudent;
+                cur -> courseStudentHead -> nodeNext = nullptr;
+            }
+
+            else
+            {
+                curCourseStudent -> nodeNext = newStudent;
+                newStudent -> nodeNext = nullptr;
+                newStudent -> nodePrev = curCourseStudent;
+            }
+
+            writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
+
             std::cout << "Course enrolled!\n" << "----------------\n";
             studentMenu(data);
 
