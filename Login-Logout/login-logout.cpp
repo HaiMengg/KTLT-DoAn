@@ -14,15 +14,15 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
 
     std::cout << "Input: ";
     std::string option;
-    std::cin >> option;
+    std::getline(std::cin, option);
 
     if (option == "1" || option == "2" || option == "3")
     {
         std::cout << "Username: ";
-        std::cin >> data.username;
+        std::getline(std::cin, data.username);
 
         std::cout << "Password: ";
-        std::cin >> data.password;
+        std::getline(std::cin, data.password);
 
         if (option == "1")
         {
@@ -83,7 +83,7 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
-            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Access teacher's available actions\n[5] Exit program\n"
+            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Available actions\n[5] Exit program\n"
             << "----------------\n";
             loginMenu(data, node, sY, cl, stu, sem);
         }
@@ -96,7 +96,7 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
         }
     }
 
-    else if (option == "5") return;
+    else if (option == "4") return;
 
     else
     {
@@ -111,12 +111,20 @@ void loginMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std:
 {
     std::cout << "Input: ";
     std::string option;
-    std::cin >> option;
+    std::getline(std::cin, option);
 
     if (option == "1") viewInfo(data, node, sY, cl, stu, sem);
     else if (option == "2") changePassword(data, node, sY, cl, stu, sem);
     else if (option == "3") logOut(data, node, sY, cl, stu, sem);
-    else if (option == "4") currentMenu(node, sY, cl, stu, sem);
+    else if (option == "4") {
+        system("cls");
+        currentMenu(node, sY, cl, stu, sem);
+        std::cout << "----------------\n"
+        "Welcome " << data.username << "!\n\n"
+        << "[1] View info\n[2] Change password\n[3] Log out\n[4] Available actions\n[5] Exit program\n"
+        << "----------------\n";
+        return loginMenu(data, node, sY, cl, stu, sem);
+    }
     else if (option == "5") return;
     else
     {

@@ -29,7 +29,7 @@ int countElement(std::string givenString, char needle) {
     return count;
 }
 
-bool isValidDate(std::string givenDate, int givenYear) {
+bool isValidDate(std::string givenDate) {
     int d, m, y;
     int previousSlash = 0;
 
@@ -44,17 +44,19 @@ bool isValidDate(std::string givenDate, int givenYear) {
     y = stoi(givenDate);
 
     if (y < 0) return 0;
-    if (y != givenYear) return 0;
-    if (m <= 0 || m >= 12) return 0;
+    if (m <= 0 || m > 12) return 0;
     if (d <= 0) return 0;
     
-    if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) 
+    if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) {
         if (d > 31) return 0;
+    }
     else {
-        if (m != 2) 
+        if (m != 2) {
             if (d > 30) return 0;
+        }
         else {
-            if (y % 4 != 0 && y % 400 != 0) return 0;
+            if (d == 29 && y % 4 != 0 && y % 400 != 0) return 0;
+            if (d > 29) return 0;
         }
     }
     return 1;

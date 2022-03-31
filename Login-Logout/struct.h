@@ -33,6 +33,8 @@ struct Login
     int semester = 0, identity = 0;
 };
 
+void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes);
+
 void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head);
 void readStaff(Staff* &data, std::fstream &input);
 void readTeacher(Teacher* &data, std::fstream &input);
@@ -43,7 +45,7 @@ void writeStudent(Student* data);
 void deleteData(Login &data);
 
 bool checkSemester(std::string start, std::string end);
-int getSemester();
+int getSemester(std::fstream &input);
 void readCourse(Course* &data, std::fstream &input);
 void replaceAll(std::string& str, const std::string& from, const std::string& to);
 void showCourseNode(Course* data);

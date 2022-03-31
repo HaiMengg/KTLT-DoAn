@@ -5,6 +5,42 @@
 
 #include "struct.h"
 
+void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes) {
+    // Get CSV files
+    std::fstream staff, teacher, student, course;
+    staff.open("data/staff.csv", std::ios::in);
+    teacher.open("data/teacher.csv", std::ios::in);
+    student.open("data/student.csv", std::ios::in);
+
+    // // Get semester
+    // std::fstream semester;
+    // semester.open("data/semesters/semester.csv", std::ios::in);
+    // int sem = getSemester(semester);
+    // course.open("data/semesters/" + std::to_string(sem) + "/course.csv", std::ios::in);
+
+    // Linked lists
+    Staff* staffData = new Staff;
+    Teacher* teacherData = new Teacher;
+    Student* studentData = new Student;
+    Course* courseData = new Course;
+
+    // Read CSV files
+    readStaff(staffData, staff);
+    readTeacher(teacherData, teacher);
+    readStudent(studentData, student);
+    readCourse(courseData, course);
+
+    // Log in to the system
+    Login data;
+    data.staff = staffData;
+    data.teacher = teacherData;
+    data.student = studentData;
+    data.course = courseData;
+    // data.semester = sem;
+    loginCheck(data, node, sY, cl, stu, semes);
+    deleteData(data);
+}
+
 // Read student's courses
 void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head)
 {
@@ -154,7 +190,7 @@ void readStudent(Student* &data, std::fstream &input)
 void writeStaff(Staff* data)
 {
     std::fstream output;
-    output.open("staff.csv", std::ios::out);
+    output.open("data/staff.csv", std::ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     Staff* cur = data;
@@ -178,7 +214,7 @@ void writeStaff(Staff* data)
 void writeTeacher(Teacher* data)
 {
     std::fstream output;
-    output.open("teacher.csv", std::ios::out);
+    output.open("data/teacher.csv", std::ios::out);
     output << "usr,pwd,firstName,lastName,dob,gender\n";
 
     Teacher* cur = data;
@@ -202,7 +238,7 @@ void writeTeacher(Teacher* data)
 void writeStudent(Student* data)
 {
     std::fstream output;
-    output.open("student.csv", std::ios::out);
+    output.open("data/student.csv", std::ios::out);
     output << "usr,pwd,studentID,firstName,lastName,dob,gender,socialID,startYear,classID,coursesID\n";
 
     Student* cur = data;

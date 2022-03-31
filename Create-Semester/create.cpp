@@ -39,7 +39,6 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
                         appendNewSemesterList(semestersHead, semesterInput, startYear, true);
                         appendNewSemesterFile(dataFile, semesterInput, startYear, true);
                         appendNewSemesterFile(currentSemesters, semesterInput, startYear);
-                        appendNewSemesterFolder(semesterInput, startYear);
                         inserted = 1;
                     }
                     else choice = "0";
@@ -61,7 +60,6 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
                                 appendBatchSemesterList(semestersHead, fInputBatch, startYear, true);
                                 appendBatchSemesterFile(dataFile, fInputBatch, startYear, true);
                                 appendBatchSemesterFile(currentSemesters, fInputBatch, startYear);
-                                appendBatchSemesterFolder(fInputBatch, startYear);
 
                                 destructList(fInputBatch);
 
@@ -125,6 +123,8 @@ void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, 
 
     dataFile.clear();
     dataFile.seekg(0); //Move to beginning of file
+
+    appendNewSemesterFolder(newSemesterData, schoolYear);
 }
 void appendNewSemesterFolder(std::string newSemesterData, int startYear) {
     mkdir(std::string("data/" + std::to_string(startYear) + "/semesters/" + newSemesterData.substr(0, 1)).c_str());
@@ -192,7 +192,7 @@ bool semesterCheckBool(std::string semesterData, int schoolYear) {
                         }
                         if (j == semesterData.size() - 1) return 0;     //This means the string doesn't have a second comma -> invalid format
                     }
-                    if (!isValidDate(semesterData.substr(i, secondComma - i), schoolYear)) return 0;
+                    if (!isValidDate(semesterData.substr(i, secondComma - i))) return 0;
                     for (int j = i; j < secondComma - j; j++) {
                         if (semesterData[j] == '/') {
                             if (semesterData.substr(i + 1, 1) == "/") return 0;
@@ -212,7 +212,7 @@ bool semesterCheckBool(std::string semesterData, int schoolYear) {
                 case 1: {
                     //Check after the second comma
                     int slashCount = 0;
-                    if (!isValidDate(semesterData.substr(i+ 1), schoolYear)) return 0;
+                    if (!isValidDate(semesterData.substr(i+ 1))) return 0;
                     for (int j = i + 1; j < semesterData.size(); j++) {
                         if (semesterData[j] == '/') {
                             if (semesterData.substr(i + 1, 1) == "/") return 0;

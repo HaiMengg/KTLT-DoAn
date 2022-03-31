@@ -457,7 +457,7 @@ bool studentFormatCheck(std::string studentData, int schoolYear) {
                     break;
                 }
                 case 5: {
-                    if (!isValidDate(studentData.substr(i + 1), schoolYear)) return 0;
+                    int startComma = i;     //Mark the start of date string
                     int slashCount = 0;
                     for (int j = i + 1; j < studentData.size(); j++) {
                         if (studentData[j] == '/') {
@@ -474,6 +474,7 @@ bool studentFormatCheck(std::string studentData, int schoolYear) {
                             break;
                         }
                     }
+                    if (!isValidDate(studentData.substr(startComma + 1, i - startComma - 1))) return 0;
                     if (!isDigit_w(studentData.substr(i + 1, studentData.size() - i))) return 0;
                     count++;
                     break;
