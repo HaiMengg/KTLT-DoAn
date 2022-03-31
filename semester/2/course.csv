@@ -1,7 +1,7 @@
 courseid,coursename,teachername,numberofcredits,studentmax,day-session(ex: MON-S1|TUE-S4|....)
 VTP10002,Vi tich phan 1B,Ly Kim Ha,1,50,MON-S3|THU-S3
 VLDC10002,Vat ly dai cuong 1,Nguyen Nhat Kim Ngan,2,50,TUE-S1|SAT-S2
-TH10003,Triet hoc Mac-lenin,Nguyen Van A,2,50,WED-S3|WED-S4
+THML10003,Triet hoc Mac-lenin,Nguyen Van A,2,50,WED-S3|WED-S4
 KTLT10004,Ky thuat lap trinh,Nguyen Thi B,1,50,MON-S1|TUE-S2
 NMLT10004,Nhap mon lap trinh,Le Van C,2,50,MON-S1|TUE-S2
-FK10003,Ky nang mem,Ly Kim D,2,50,FRI-S1|FRI-S4
+KNM10003,Ky nang mem,Ly Kim D,2,50,FRI-S1|FRI-S4
