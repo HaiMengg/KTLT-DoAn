@@ -6,7 +6,7 @@
 #include "struct.h"
 
 // Read course.csv
-void readCourse(Course* &data, std::fstream &input)
+void readCourse(Course* &data, std::fstream &input, int year, int sem)
 {
     // Track current pointer
     Course* cur = data;
@@ -25,10 +25,39 @@ void readCourse(Course* &data, std::fstream &input)
         getline(input, str, ',');
         getline(input, cur -> daySession);
 
-        Student* curCourseStudent = cur -> courseStudentHead;
-        while (curCourseStudent != nullptr && curCourseStudent -> nodeNext != nullptr)
+        std::fstream inputStudent;
+        inputStudent.open(
+            "data/" + std::to_string(year) + "/semesters/" + std::to_string(sem) + "/"
+            + cur -> courseId + "/student.csv",
+            std::ios::in
+        );
+        std::getline(inputStudent, str);
+
+        if (!inputStudent.eof())
         {
-            curCourseStudent = curCourseStudent -> nodeNext;
+            cur -> courseStudentHead = new Student;
+            Student* curCourseStudent = cur -> courseStudentHead;
+
+            while (true)
+            {
+                getline(inputStudent, curCourseStudent -> studentID, ',');
+                getline(inputStudent, curCourseStudent -> firstName, ',');
+                getline(inputStudent, curCourseStudent -> lastName, ',');
+                getline(inputStudent, curCourseStudent -> dob, ',');
+                getline(inputStudent, curCourseStudent -> gender, ',');
+                getline(inputStudent, curCourseStudent -> socialID, ',');
+                getline(inputStudent, curCourseStudent -> classID);
+
+                if (inputStudent.eof())
+                {
+                    curCourseStudent -> nodeNext = nullptr;
+                    break;
+                }
+
+                curCourseStudent -> nodeNext = new Student;
+                curCourseStudent -> nodeNext -> nodePrev = curCourseStudent;
+                curCourseStudent = curCourseStudent -> nodeNext;
+            }
         }
 
         if (input.eof())
@@ -192,19 +221,20 @@ void readStudent(Student* &data, std::fstream &input)
 // Write to each course.csv
 void writeCourseStudent(Course* data, std::string schoolYear, int semester)
 {
-    std::fstream output;
-
     Course* cur = data;
     while (cur != nullptr)
     {
+        std::fstream output;
         output.open(
             "data/" + schoolYear + "/semesters/" + std::to_string(semester) + "/"
             + cur -> courseId + "/student.csv",
             std::ios::out
         );
-        output << "studentID,firstName,lastName,dob,gender,socialID,classID\n";
+        output << "studentID,firstName,lastName,dob,gender,socialID,classID";
 
         Student* curStudent = cur -> courseStudentHead;
+
+        if (curStudent != nullptr) output << std::endl;
         while (curStudent != nullptr)
         {
             output << curStudent -> studentID << ","

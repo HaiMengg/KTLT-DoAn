@@ -15,7 +15,7 @@ int getYear()
     iss.ignore(20);
     int year;
     iss >> year;
-    return year;
+    return year - 1;
 }
 
 // Check if current time is between startDate and endDate

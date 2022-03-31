@@ -30,7 +30,7 @@ int main()
     Student* studentData = new Student;
 
     // Read CSV files
-    readCourse(courseData, course);
+    readCourse(courseData, course, schoolYear, sem);
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
