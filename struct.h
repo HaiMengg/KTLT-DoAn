@@ -86,6 +86,7 @@ struct Login
     int semester = 0, identity = 0;
 };
 
+int getYear();
 bool checkSemester(std::string start, std::string end);
 int getSemester();
 void replaceAll(std::string& str, const std::string& from, const std::string& to);

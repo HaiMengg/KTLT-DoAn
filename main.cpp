@@ -14,6 +14,9 @@ int main()
     teacher.open("teacher.csv", std::ios::in);
     student.open("student.csv", std::ios::in);
 
+    // Get year
+    int schoolYear = getYear();
+
     // Get semester
     std::fstream semester;
     semester.open("semester/semester.csv", std::ios::in);

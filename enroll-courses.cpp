@@ -6,6 +6,18 @@
 #include <time.h>
 #include <string>
 
+// Get current year
+int getYear()
+{
+    std::time_t result = std::time(nullptr);
+    std::istringstream iss(ctime(&result));
+
+    iss.ignore(20);
+    int year;
+    iss >> year;
+    return year;
+}
+
 // Check if current time is between startDate and endDate
 bool checkSemester(std::string start, std::string end)
 {
