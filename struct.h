@@ -104,4 +104,4 @@ void viewInfo(Login data);
 void changePassword(Login &data);
 void logOut(Login &data);
 
-void exportCourseStudent(Login data);
+bool exportCourseStudent(Login data);

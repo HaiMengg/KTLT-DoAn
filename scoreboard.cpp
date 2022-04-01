@@ -4,7 +4,7 @@
 
 #include "struct.h"
 
-void exportCourseStudent(Login data)
+bool exportCourseStudent(Login data)
 {
     std::cout << "Input ID of a course to export students (or input 1 to go back): ";
     std::string courseId;
@@ -14,7 +14,7 @@ void exportCourseStudent(Login data)
     {
         std::cout << "----------------\n";
         staffMenu(data);
-        return;
+        return false;
     }
 
     std::fstream output;
@@ -43,11 +43,14 @@ void exportCourseStudent(Login data)
 
                 curStudent = curStudent -> nodeNext;
             }
-
             std::cout << "File exported successfully!\n";
             std::cout << "----------------\n";
-            return staffMenu(data);
+            return true;
         }
         cur = cur -> nodeNext;
     }
+
+    std::cout << "Could not find that course. Please try again.\n";
+    exportCourseStudent(data);
+    return false;
 }

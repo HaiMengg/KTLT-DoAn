@@ -142,7 +142,11 @@ void staffMenu(Login &data)
     std::cin >> option;
 
     if (option == "1") viewInfo(data);
-    else if (option == "2") exportCourseStudent(data);
+    else if (option == "2")
+    {
+        if (exportCourseStudent(data))
+        staffMenu(data);
+    }
     else if (option == "3") changePassword(data);
     else if (option == "4") logOut(data);
     else if (option == "5") return;
