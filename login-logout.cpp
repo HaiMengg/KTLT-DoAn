@@ -70,7 +70,25 @@ void loginCheck(Login &data)
             }
         }
 
-        if (data.identity == 3)
+        if (data.identity == 1)
+        {
+            std::cout << "----------------\n"
+            "Welcome " << data.username << "!\n\n"
+            << "[1] View info\n[2] Export students in a course\n[3] Change password\n[4] Log out\n[5] Exit program\n"
+            << "----------------\n";
+            staffMenu(data);
+        }
+
+        else if (data.identity == 2)
+        {
+            std::cout << "----------------\n"
+            "Welcome " << data.username << "!\n\n"
+            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Exit program\n"
+            << "----------------\n";
+            loginMenu(data);
+        }
+
+        else if (data.identity == 3)
         {
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
@@ -78,15 +96,6 @@ void loginCheck(Login &data)
             << "[5] Change password\n[6] Log out\n[7] Exit program\n"
             << "----------------\n";
             studentMenu(data);
-        }
-
-        else if (data.identity > 0)
-        {
-            std::cout << "----------------\n"
-            "Welcome " << data.username << "!\n\n"
-            << "[1] View info\n[2] Change password\n[3] Log out\n[4] Exit program\n"
-            << "----------------\n";
-            loginMenu(data);
         }
 
         else
@@ -122,6 +131,25 @@ void loginMenu(Login &data)
     {
         std::cout << "Invalid input. Please try again.\n\n";
         return loginMenu(data);
+    }
+}
+
+// Staff menu
+void staffMenu(Login &data)
+{
+    std::cout << "Input: ";
+    std::string option;
+    std::cin >> option;
+
+    if (option == "1") viewInfo(data);
+    else if (option == "2") exportCourseStudent(data);
+    else if (option == "3") changePassword(data);
+    else if (option == "4") logOut(data);
+    else if (option == "5") return;
+    else
+    {
+        std::cout << "Invalid input. Please try again.\n\n";
+        return staffMenu(data);
     }
 }
 
@@ -163,7 +191,7 @@ void viewInfo(Login data)
         std::cout << "Date of Birth: " << cur -> dob << std::endl;
         std::cout << "Gender: " << cur -> gender << std::endl;
         std::cout << "----------------\n";
-        return loginMenu(data);
+        return staffMenu(data);
     }
 
     else if (data.identity == 2)
@@ -237,8 +265,9 @@ void changePassword(Login &data)
     data.password = pass;
     std::cout << "Password changed successfully!\n" << "----------------\n";
 
-    if (data.identity == 3) studentMenu(data);
-    else loginMenu(data);
+    if (data.identity == 1) staffMenu(data);
+    else if (data.identity == 2) loginMenu(data);
+    else studentMenu(data);
 }
 
 // Log out

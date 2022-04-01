@@ -83,7 +83,7 @@ struct Login
     Student* curStudent;
     Course* course;
     std::string username, password;
-    int semester = 0, identity = 0;
+    int year = 0, semester = 0, identity = 0;
 };
 
 int getYear();
@@ -98,7 +98,10 @@ void removeCourse(Login &data);
 
 void loginCheck(Login &data);
 void loginMenu(Login &data);
+void staffMenu(Login &data);
 void studentMenu(Login &data);
 void viewInfo(Login data);
 void changePassword(Login &data);
 void logOut(Login &data);
+
+void exportCourseStudent(Login data);

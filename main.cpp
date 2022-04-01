@@ -5,6 +5,7 @@
 
 #include "login-logout.cpp"
 #include "enroll-courses.cpp"
+#include "scoreboard.cpp"
 
 int main()
 {
@@ -18,10 +19,10 @@ int main()
     int schoolYear = getYear();
 
     // Get semester
-    std::fstream semester;
-    semester.open("semester/semester.csv", std::ios::in);
-    int sem = getSemester(semester);
-    course.open("semester/" + std::to_string(sem) + "/course.csv", std::ios::in);
+    std::fstream semesterInput;
+    semesterInput.open("semester/semester.csv", std::ios::in);
+    int semester = getSemester(semesterInput);
+    course.open("semester/" + std::to_string(semester) + "/course.csv", std::ios::in);
 
     // Linked lists
     Course* courseData = new Course;
@@ -30,7 +31,7 @@ int main()
     Student* studentData = new Student;
 
     // Read CSV files
-    readCourse(courseData, course, schoolYear, sem);
+    readCourse(courseData, course, schoolYear, semester);
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
@@ -41,7 +42,8 @@ int main()
     data.staff = staffData;
     data.teacher = teacherData;
     data.student = studentData;
-    data.semester = sem;
+    data.semester = semester;
+    data.year = schoolYear;
     loginCheck(data);
 
     // Delete data before exiting program
