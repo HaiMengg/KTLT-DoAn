@@ -11,7 +11,7 @@ float getTotalMark(float mid, float final, float other)
 }
 
 // Export students in a course to a csv file
-void exportCourseStudent(Login data)
+void exportScoreboard(Login data)
 {
     std::cout << "Input ID of a course to export students (or input 1 to go back): ";
     std::string courseId;
@@ -169,6 +169,56 @@ void updateScoreboard(Login data)
     }
 
     std::cout << "Scoreboard updated!\n";
+    std::cout << "----------------\n";
+    return;
+}
+
+// Import all scoreboards
+void importScoreboard(Login data)
+{
+    std::string course, temp;
+    std::string dir = "data/" + std::to_string(data.year) + "/semesters/"
+    + std::to_string(data.semester);
+
+    std::fstream output;
+    output.open(dir + "/scoreboard.csv", std::ios::out);
+    output << "no,courseID,studentID,fullname,midtermmark,finalmark,othermark,totalmark\n";
+
+    int count = 1;
+    Course* curCourse = data.course;
+    while (curCourse != nullptr)
+    {
+        course = curCourse -> courseId;
+
+        std::fstream input;
+        input.open(dir + "/" + course + "/scoreboard.csv", std::ios::in);
+        getline(input, temp);
+
+        while (!input.eof())
+        {
+            getline(input, temp, ',');
+            output << count << ",";
+            count++;
+
+            output << course << ",";
+
+            for (int i = 0; i < 5; i++)
+            {
+                getline(input, temp, ',');
+                output << temp << ",";
+            }
+
+            getline(input, temp);
+            output << temp;
+
+            if (curCourse -> nodeNext != nullptr || !input.eof())
+            output << std::endl;
+        }
+
+        curCourse = curCourse -> nodeNext;
+    }
+
+    std::cout << "Scoreboard imported!\n";
     std::cout << "----------------\n";
     return;
 }

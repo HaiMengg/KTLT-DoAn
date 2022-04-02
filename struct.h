@@ -106,5 +106,6 @@ void changePassword(Login &data);
 void logOut(Login &data);
 
 float getTotalMark(float mid, float final, float other);
-void exportCourseStudent(Login data);
+void exportScoreboard(Login data);
 void updateScoreboard(Login data);
+void importScoreboard(Login data);
