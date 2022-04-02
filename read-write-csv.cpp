@@ -218,6 +218,42 @@ void readStudent(Student* &data, std::fstream &input)
     cur = nullptr;
 }
 
+// Read scoreboard.csv
+void readScoreboard(CourseScore* &data, int year, int semester)
+{
+    std::fstream input;
+    std::string dir = "data/" + std::to_string(year) + "/semesters/"
+    + std::to_string(semester) + "/scoreboard.csv";
+
+    input.open(dir, std::ios::in);
+    if (!input.good()) return;
+
+    std::string str;
+    getline(input, str);
+
+    CourseScore* curCourseScore = data;
+    while (true)
+    {
+        getline(input, str, ',');
+        getline(input, curCourseScore -> courseID, ',');
+        getline(input, curCourseScore -> studentID, ',');
+        getline(input, curCourseScore -> fullname, ',');
+        getline(input, curCourseScore -> midterm, ',');
+        getline(input, curCourseScore -> final, ',');
+        getline(input, curCourseScore -> other, ',');
+        getline(input, curCourseScore -> total);
+
+        if (input.eof())
+        {
+            curCourseScore -> nodeNext = nullptr;
+            break;
+        }
+
+        curCourseScore -> nodeNext = new CourseScore;
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+}
+
 // Write to each course.csv
 void writeCourseStudent(Course* data, std::string schoolYear, int semester)
 {
@@ -362,6 +398,39 @@ void writeStudent(Student* data)
     }
 }
 
+// Write to scoreboard.csv
+void writeScoreboard(CourseScore* data, int year, int semester)
+{
+    std::fstream output;
+    std::string dir = "data/" + std::to_string(year) + "/semesters/"
+    + std::to_string(semester) + "/scoreboard.csv";
+
+    output.open(dir, std::ios::out);
+    if (!output.good()) return;
+
+    output << "no,courseID,studentID,fullname,midtermmark,finalmark,othermark,totalmark\n";
+
+    int count = 1;
+    CourseScore* curCourseScore = data;
+    while (curCourseScore != nullptr)
+    {
+        output << count << ","
+        << curCourseScore -> courseID << ","
+        << curCourseScore -> studentID << ","
+        << curCourseScore -> fullname << ","
+        << curCourseScore -> midterm << ","
+        << curCourseScore -> final << ","
+        << curCourseScore -> other << ","
+        << curCourseScore -> total;
+
+        if (curCourseScore -> nodeNext != nullptr)
+        output << std::endl;
+
+        count++;
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+}
+
 // Delete data
 void deleteData(Login &data)
 {
@@ -369,6 +438,7 @@ void deleteData(Login &data)
     Teacher *rCur = data.teacher, *rDel;
     Student *tCur = data.student, *tDel;
     Course *cCur = data.course, *cDel;
+    CourseScore *csCur = data.courseScore, *csDel;
 
     while (fCur != nullptr)
     {
@@ -398,8 +468,16 @@ void deleteData(Login &data)
         cCur = cDel;
     }
 
+    while (csCur != nullptr)
+    {
+        csDel = csCur -> nodeNext;
+        delete csCur;
+        csCur = csDel;
+    }
+
     data.staff = nullptr;
     data.teacher = nullptr;
     data.staff = nullptr;
     data.course = nullptr;
+    data.courseScore = nullptr;
 }
