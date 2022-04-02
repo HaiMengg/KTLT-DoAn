@@ -118,3 +118,4 @@ void importScoreboard(Login data);
 void viewScoreboardCourse(Login data);
 void updateStudentResult(Login data);
 void viewScoreboardStudent(Login data, std::string studentID);
+void viewScoreboardClass(Login data);
