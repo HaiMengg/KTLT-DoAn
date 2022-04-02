@@ -4,26 +4,26 @@
 #include <string>
 
 #include "struct.h"
-#include "../Main-Menu/menu.h"
+#include "read-write-csv.cpp"
 
 // Login
-void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
-{   
+void loginCheck(Login &data)
+{
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Change current date\n[5] Exit program\n"
+    std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
     << "----------------\n";
 
     std::cout << "Input: ";
     std::string option;
-    std::getline(std::cin, option);
+    std::cin >> option;
 
     if (option == "1" || option == "2" || option == "3")
     {
         std::cout << "Username: ";
-        std::getline(std::cin, data.username);
+        std::cin >> data.username;
 
         std::cout << "Password: ";
-        std::getline(std::cin, data.password);
+        std::cin >> data.password;
 
         if (option == "1")
         {
@@ -76,10 +76,9 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
             "Welcome " << data.username << "!\n\n"
             << "[1] View info\n[2] Export students in a course\n[3] Import all scoreboards\n"
             << "[4] View scoreboard of a course\n[5] Update a student result\n"
-            << "[6] Other actions\n[7] Change password\n"
-            << "[8] Log out\n[9] Change current date\n[10] Exit program\n"
+            << "[6] Change password\n[7] Log out\n[8] Exit program\n"
             << "----------------\n";
-            staffMenu(data, node, sY, cl, stu, sem, currentDate);
+            staffMenu(data);
         }
 
         else if (data.identity == 2)
@@ -88,7 +87,7 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
             "Welcome " << data.username << "!\n\n"
             << "[1] View info\n[2] Update scoreboard\n[3] Change password\n[4] Log out\n[5] Exit program\n"
             << "----------------\n";
-            teacherMenu(data, node, sY, cl, stu, sem, currentDate);
+            teacherMenu(data);
         }
 
         else if (data.identity == 3)
@@ -96,143 +95,120 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
             << "[1] View info\n[2] View my courses\n[3] Enroll in a course\n[4] Remove a course\n"
-            << "[5] Change password\n[6] Log out\n[7] Change current date\n[8] Exit program\n"
+            << "[5] Change password\n[6] Log out\n[7] Exit program\n"
             << "----------------\n";
-            studentMenu(data, node, sY, cl, stu, sem, currentDate);
+            studentMenu(data);
         }
 
         else
         {
             std::cout << "Incorrect username or password. Please try again.\n\n";
             data.identity = -1;
-            return loginCheck(data, node, sY, cl, stu, sem, currentDate);
+            return loginCheck(data);
         }
     }
-    else if (option == "4") {
-        updateDate(currentDate);
-        printCurrentDate(currentDate, node.semesterHead);
-        return loginCheck(data, node, sY, cl, stu, sem, currentDate); 
-    }
-    else if (option == "5") return;
+
+    else if (option == "4") return;
 
     else
     {
         std::cout << "Invalid input. Please try again.\n\n";
         data.identity = -1;
-        return loginCheck(data, node, sY, cl, stu, sem, currentDate);
+        return loginCheck(data);
     }
 }
 
-// Basic menu
-void staffMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+// Staff menu
+void staffMenu(Login &data)
 {
     std::cout << "Input: ";
     std::string option;
-    std::getline(std::cin, option);
+    std::cin >> option;
 
-    if (option == "1") viewInfo(data, node, sY, cl, stu, sem, currentDate);
+    if (option == "1") viewInfo(data);
     else if (option == "2")
     {
         exportScoreboard(data);
-        staffMenu(data, node, sY, cl, stu, sem, currentDate);
+        staffMenu(data);
     }
     else if (option == "3")
     {
         importScoreboard(data);
-        staffMenu(data, node, sY, cl, stu, sem, currentDate);
+        staffMenu(data);
     }
     else if (option == "4")
     {
         viewScoreboardCourse(data);
-        staffMenu(data, node, sY, cl, stu, sem, currentDate);
+        staffMenu(data);
     }
     else if (option == "5")
     {
         updateStudentResult(data);
-        staffMenu(data, node, sY, cl, stu, sem, currentDate);
+        staffMenu(data);
     }
-    else if (option == "6") {
-        system("cls");
-        currentMenu(node, sY, cl, stu, sem, currentDate);
-        std::cout << "----------------\n"
-        "Welcome " << data.username << "!\n\n"
-        << "[1] View info\n[2] Change password\n[3] Log out\n[4] Available actions\n[5] Change current date\n[6] Exit program\n"
-        << "----------------\n";
-        return loginMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
-    else if (option == "7") changePassword(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "8") logOut(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "9") {
-        updateDate(currentDate);
-        printCurrentDate(currentDate, node.semesterHead);
-        return loginMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
-    else if (option == "10") return;
-    else
-    {
-        std::cout << "Invalid input. Please try again.\n\n";
-        std::cout << "----------------\n";
-        return loginMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
-}
-
-// Teacher menu
-void teacherMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
-{
-    std::cout << "Input: ";
-    std::string option;
-    std::cin >> option;
-
-    if (option == "1") viewInfo(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "2")
-    {
-        updateScoreboard(data);
-        teacherMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
-    else if (option == "3") changePassword(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "4") logOut(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "5") return;
-    else
-    {
-        std::cout << "Invalid input. Please try again.\n";
-        std::cout << "----------------\n";
-        return teacherMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
-}
-
-// Student menu
-void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
-{
-    std::cout << "Input: ";
-    std::string option;
-    std::cin >> option;
-
-    if (option == "1") viewInfo(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "2") viewCourse(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "3")
-    {
-        showCourses(data.course);
-        enrollCourse(data, node, sY, cl, stu, sem, currentDate);
-    }
-    else if (option == "4") removeCourse(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "5") changePassword(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "6") logOut(data, node, sY, cl, stu, sem, currentDate);
-    else if (option == "7") {
-        updateDate(currentDate);
-        printCurrentDate(currentDate, node.semesterHead);
-        return studentMenu(data, node, sY, cl, stu, sem, currentDate);
-    }
+    else if (option == "6") changePassword(data);
+    else if (option == "7") logOut(data);
     else if (option == "8") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n";
         std::cout << "----------------\n";
-        return studentMenu(data, node, sY, cl, stu, sem, currentDate);
+        return staffMenu(data);
+    }
+}
+
+// Teacher menu
+void teacherMenu(Login &data)
+{
+    std::cout << "Input: ";
+    std::string option;
+    std::cin >> option;
+
+    if (option == "1") viewInfo(data);
+    else if (option == "2")
+    {
+        updateScoreboard(data);
+        teacherMenu(data);
+    }
+    else if (option == "3") changePassword(data);
+    else if (option == "4") logOut(data);
+    else if (option == "5") return;
+    else
+    {
+        std::cout << "Invalid input. Please try again.\n";
+        std::cout << "----------------\n";
+        return teacherMenu(data);
+    }
+}
+
+// Student menu
+void studentMenu(Login &data)
+{
+    std::cout << "Input: ";
+    std::string option;
+    std::cin >> option;
+
+    if (option == "1") viewInfo(data);
+    else if (option == "2") viewCourse(data);
+    else if (option == "3")
+    {
+        showCourses(data.course);
+        enrollCourse(data);
+    }
+    else if (option == "4") removeCourse(data);
+    else if (option == "5") changePassword(data);
+    else if (option == "6") logOut(data);
+    else if (option == "7") return;
+    else
+    {
+        std::cout << "Invalid input. Please try again.\n";
+        std::cout << "----------------\n";
+        return studentMenu(data);
     }
 }
 
 // View info
-void viewInfo(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void viewInfo(Login data)
 {
     if (data.identity == 1)
     {
@@ -244,7 +220,7 @@ void viewInfo(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::f
         std::cout << "Date of Birth: " << cur -> dob << std::endl;
         std::cout << "Gender: " << cur -> gender << std::endl;
         std::cout << "----------------\n";
-        return staffMenu(data, node, sY, cl, stu, sem, currentDate);
+        return staffMenu(data);
     }
 
     else if (data.identity == 2)
@@ -257,7 +233,7 @@ void viewInfo(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::f
         std::cout << "Date of Birth: " << cur -> dob << std::endl;
         std::cout << "Gender: " << cur -> gender << std::endl;
         std::cout << "----------------\n";
-        return teacherMenu(data, node, sY, cl, stu, sem, currentDate);
+        return teacherMenu(data);
     }
 
     else
@@ -274,12 +250,12 @@ void viewInfo(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::f
         std::cout << "Start Year: " << cur -> startYear << std::endl;
         std::cout << "Class ID: " << cur -> classID << std::endl;
         std::cout << "----------------\n";
-        return studentMenu(data, node, sY, cl, stu, sem, currentDate);
+        return studentMenu(data);
     }
 }
 
 // Change password
-void changePassword(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void changePassword(Login &data)
 {
     std::string pass;
     std::cout << "Input current password: ";
@@ -318,13 +294,13 @@ void changePassword(Login &data, Node& node, std::fstream& sY, std::fstream& cl,
     data.password = pass;
     std::cout << "Password changed successfully!\n" << "----------------\n";
 
-    if (data.identity == 1) staffMenu(data, node, sY, cl, stu, sem, currentDate);
-    else if (data.identity == 2) teacherMenu(data, node, sY, cl, stu, sem, currentDate);
-    else studentMenu(data, node, sY, cl, stu, sem, currentDate);
+    if (data.identity == 1) staffMenu(data);
+    else if (data.identity == 2) teacherMenu(data);
+    else studentMenu(data);
 }
 
 // Log out
-void logOut(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void logOut(Login &data)
 {
     data.username = "";
     data.password = "";
@@ -332,5 +308,5 @@ void logOut(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fs
     data.curStaff = nullptr;
     data.curTeacher = nullptr;
     data.curStudent = nullptr;
-    loginCheck(data, node, sY, cl, stu, sem, currentDate);
+    loginCheck(data);
 }

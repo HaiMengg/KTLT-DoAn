@@ -19,6 +19,11 @@ struct Teacher
     Teacher* nodeNext;
 };
 
+struct CourseScore {
+    std::string studentID, fullname, courseID, final, total, midterm, other;
+    CourseScore* nodeNext;
+};
+
 struct Login
 {
     Staff* staff;
@@ -28,8 +33,9 @@ struct Login
     Student* student;
     Student* curStudent;
     Course* course;
+    CourseScore* courseScore;
     std::string username, password;
-    int semester = 0, identity = 0;
+    int year = 0, semester = 0, identity = 0;
 };
 
 void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes, std::string& currentDate);
@@ -57,7 +63,16 @@ void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
 
 void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
 void loginMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
+void staffMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
+void teacherMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
 void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
 void viewInfo(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
 void changePassword(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
 void logOut(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate);
+
+float getTotalMark(float mid, float final, float other);
+void exportScoreboard(Login data);
+void updateScoreboard(Login data);
+void importScoreboard(Login data);
+void viewScoreboardCourse(Login data);
+void updateStudentResult(Login data);
