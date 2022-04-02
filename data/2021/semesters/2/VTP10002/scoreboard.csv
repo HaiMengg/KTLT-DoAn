@@ -1,7 +1,7 @@
 no,studentID,fullname,midtermmark,finalmark,othermark,totalmark
-1,21127517,Nguyen Anh Khoa,0,0,0,0
-2,21127000,Truong Vy Thanh,0,0,0,0
-3,21127611,Nguyen Thi B,0,0,0,0
-4,21127019,Le Quang Ngo,0,0,0,0
-5,21127873,Nguyen Minh Duc,0,0,0,0
-6,21127111,Cao Huu Quoc,0,0,0,0
+1,21127517,Nguyen Anh Khoa,8,9,9,8.66667
+1,21127000,Truong Vy Thanh,6,7,8,6.83333
+1,21127611,Nguyen Thi B,7,8,6,7.33333
+1,21127019,Le Quang Ngo,3,4,5,3.83333
+1,21127873,Nguyen Minh Duc,6,1,10,4.16667
+1,21127111,Cao Huu Quoc,9,9,9,9
