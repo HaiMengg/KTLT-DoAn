@@ -13,7 +13,8 @@ void appendBatchSemesterFile(std::fstream& dataFile, SNode* batch, int schoolYea
 void appendBatchSemesterFolder(SNode* batch, int startYear);
 bool semesterListSearchBool(Semesters* semestersHead, int searchSemester, int startYear);
 bool semesterFileSearchBool(std::fstream& semestersTotalFile, int searchSemester, int startYear, bool = true);
-bool semesterCheckBool(std::string semesterData, int schoolYear);
+bool semesterCheckBool(std::string semesterData, int schoolYear, Semesters* semesterHead);
+bool isValidSemesterDate(std::string startDate, std::string endDate, Semesters* semesterHead, int schoolYear);
 
 void addCourseToSemester(Semesters*& semestersHead, int startYear);
 void appendNewCourse(Semesters*& semestersHead, std::string newCourseData, int schoolYear);

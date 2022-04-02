@@ -5,18 +5,19 @@
 
 #include "struct.h"
 
-void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes) {
+void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes, std::string& currentDate) {
     // Get CSV files
     std::fstream staff, teacher, student, course;
     staff.open("data/staff.csv", std::ios::in);
     teacher.open("data/teacher.csv", std::ios::in);
     student.open("data/student.csv", std::ios::in);
 
-    // // Get semester
-    // std::fstream semester;
-    // semester.open("data/semesters/semester.csv", std::ios::in);
-    // int sem = getSemester(semester);
-    // course.open("data/semesters/" + std::to_string(sem) + "/course.csv", std::ios::in);
+    //Get current semester
+    Semesters* semesList = nullptr;
+    createList(semesList, semes);
+    printCurrentDate(currentDate, semesList);
+    int sem = getCurrentSemester(currentDate, semesList);
+    destructList(semesList);
 
     // Linked lists
     Staff* staffData = new Staff;
@@ -36,8 +37,8 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     data.teacher = teacherData;
     data.student = studentData;
     data.course = courseData;
-    // data.semester = sem;
-    loginCheck(data, node, sY, cl, stu, semes);
+    data.semester = sem;
+    loginCheck(data, node, sY, cl, stu, semes, currentDate);
     deleteData(data);
 }
 

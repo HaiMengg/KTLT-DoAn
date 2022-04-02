@@ -76,7 +76,7 @@ void createClass(Classes*& classHead, std::fstream& dataFile, int startYear) {
             std::cout << "Choose the input method by which students' data are to be entered:\n"
             << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
-            if (!isDigit_w(choice)) {
+            if (!isDigit_w(choice) || choice == "") {
                 std::cout << "Invalid format for choice\n";
                 continue;
             }
@@ -239,12 +239,12 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
         std::string choice = "0";
         while (choice == "0") {
             do {
-                if (!isDigit_w(choice)) std::cout << "Invalid format for choice\n";
+                if (choice == "" || !isDigit_w(choice)) std::cout << "Invalid format for choice\n";
                 std::cout << "Choose the input method by which students' data are to be entered:\n"
                 << "1. Single input (manually)\n2. CSV file\n0. Back to previous menu\n: ";
                 std::getline(std::cin, choice);
                 if (choice == "0") return;
-            } while (!isDigit_w(choice));
+            } while (choice == "" || !isDigit_w(choice));
             switch(stoi(choice)) {
                 case 1: {
                     std::string studentInput;

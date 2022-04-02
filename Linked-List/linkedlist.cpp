@@ -382,17 +382,22 @@ void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool 
                         semestersHead->schoolYear = stoi(semesterData.substr(afterComma, i - afterComma));
                         afterComma = i + 1;
                     }
+                    else {
+                        semestersHead->startDate = semesterData.substr(afterComma, i - afterComma);
+                        afterComma = i + 1;
+                    }
                     break;
                 }
                 case 3: {
                     semestersHead->startDate = semesterData.substr(afterComma, i - afterComma);
-                    semestersHead->endDate = semesterData.substr(i + 1, semesterData.size() - i);
+                    semestersHead->endDate = semesterData.substr(i + 1);
                     break;
                 }
             }
         
             level++;
         }
+        if (!full && i == semesterData.size() - 1) semestersHead->endDate = semesterData.substr(afterComma);
     }
 
     std::fstream semesterCourseFile(std::string("data/" + std::to_string(semestersHead->schoolYear) + "/semesters/" + std::to_string(semestersHead->semester) + "/course.csv"), std::ios::in);

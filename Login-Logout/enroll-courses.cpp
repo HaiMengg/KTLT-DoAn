@@ -7,6 +7,7 @@
 #include <string>
 
 #include "struct.h"
+#include "../Main-Menu/menu.h"
 
 // Check if current time is between startDate and endDate
 bool checkSemester(std::string start, std::string end)
@@ -48,6 +49,35 @@ int getSemester(std::fstream &input)
     }
 
     return 0;
+}
+
+int getCurrentSemester(std::string givenDate, Semesters* semesterHead) {
+    Semesters* curr = semesterHead;
+    while (curr != nullptr) {
+        if (getDateData(givenDate, 'y') == curr->schoolYear) {
+            if (getDateData(curr->startDate, 'y') == getDateData(curr->endDate, 'y') + 1) return curr->semester;
+            
+            if (getDateData(curr->startDate, 'y') == getDateData(curr->endDate, 'y')) {
+                if (getDateData(givenDate, 'm') >= getDateData(curr->startDate, 'm') && getDateData(givenDate, 'm') <= getDateData(curr->endDate, 'm')) {
+                    if (getDateData(curr->startDate, 'm') < getDateData(curr->endDate, 'm')) return curr->semester;
+                    else if ((getDateData(curr->startDate, 'm') == getDateData(curr->endDate, 'm'))) {
+                        if (getDateData(givenDate, 'd') >= getDateData(curr->startDate, 'd') && getDateData(givenDate, 'd') <= getDateData(curr->endDate, 'd')) return curr->semester;
+                    }
+                }
+            }
+        }
+        curr = curr->nodeNext;
+    }
+
+    return -1;
+}
+
+void printCurrentDate(std::string givenDate, Semesters* semesterHead) {
+    std::cout << "Today is " << givenDate << std::endl;
+    if (getCurrentSemester(givenDate, semesterHead) != -1) {
+        std::cout << "It is currently semester " << getCurrentSemester(givenDate, semesterHead) << " of the school year " 
+        << getDateData(givenDate, 'y') << "-" << getDateData(givenDate, 'y') + 1 << std::endl;
+    }
 }
 
 // Read course.csv
@@ -134,7 +164,7 @@ void showCourses(Course* data)
 }
 
 // Enroll in a course
-void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem)
+void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
 {
     std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
     std::string enrollId;
@@ -143,7 +173,7 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     if (enrollId == "1")
     {
         std::cout << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem);
+        studentMenu(data, node, sY, cl, stu, sem, currentDate);
         return;
     }
 
@@ -191,7 +221,7 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     {
         std::cout << "You have reached the maximum amount of courses to enroll in a semester.\n";
         std::cout << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem);
+        studentMenu(data, node, sY, cl, stu, sem, currentDate);
         return;
     }
 
@@ -219,7 +249,7 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
 
             writeStudent(data.student);
             std::cout << "Course enrolled!\n" << "----------------\n";
-            studentMenu(data, node, sY, cl, stu, sem);
+            studentMenu(data, node, sY, cl, stu, sem, currentDate);
 
             return;
         }
@@ -229,11 +259,11 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     if (reason) std::cout << "Could not find that course. Please try again.\n";
     else std::cout << "You have already enrolled in this course or another one with conflicting sessions. Please try again.\n";
 
-    enrollCourse(data, node, sY, cl, stu, sem);
+    enrollCourse(data, node, sY, cl, stu, sem, currentDate);
 }
 
 // View courses that are enrolled
-void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem)
+void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
 {
     Course* cur;
     std::string enrolled;
@@ -259,7 +289,7 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
         std::cout << "----------------\n"
         << "Nothing to see here.\n"
         << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem);
+        studentMenu(data, node, sY, cl, stu, sem, currentDate);
         return;
     }
 
@@ -286,11 +316,11 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
     }
 
     std::cout << "----------------\n";
-    studentMenu(data, node, sY, cl, stu, sem);
+    studentMenu(data, node, sY, cl, stu, sem, currentDate);
 }
 
 // Remove an enrolled course
-void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem)
+void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
 {
     std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
     std::string removeId;
@@ -332,11 +362,11 @@ void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
 
             writeStudent(data.student);
             std::cout << "Course removed!\n" << "----------------\n";
-            studentMenu(data, node, sY, cl, stu, sem);
+            studentMenu(data, node, sY, cl, stu, sem, currentDate);
             return;
         }
     }
 
     std::cout << "Could not find that course. Please try again.\n";
-    removeCourse(data, node, sY, cl, stu, sem);
+    removeCourse(data, node, sY, cl, stu, sem, currentDate);
 }

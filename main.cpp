@@ -5,6 +5,7 @@
 
 #include "Login-Logout/struct.h"
 #include "Linked-List/linkedlist.h"
+#include "Functions/func.h"
 
 int main() {
     Node allData;
@@ -16,8 +17,11 @@ int main() {
     createList(allData.classesHead, classData);
     createList(allData.studentHead, studentData);
     createList(allData.semesterHead, semesterData);
+
+    std::string currentDate;
+    updateDate(currentDate);
     
-    loginInit(allData, schoolYearData, classData, studentData, semesterData);
+    loginInit(allData, schoolYearData, classData, studentData, semesterData, currentDate);
 
     destructList(allData);
 }

@@ -21,11 +21,11 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
     bool inserted = 0;
     while (!inserted) {
         std::string choice = "a";
-        while (!isDigit_w(choice)) {
+        while (choice == "" || !isDigit_w(choice)) {
             std::cout << "Choose the input method by which semesters' data are to be entered:\n"
             << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
-            if (!isDigit_w(choice)) {
+            if (choice == "" || !isDigit_w(choice)) {
                 std::cout << "Invalid format for choice\n";
                 continue;
             }
@@ -36,7 +36,7 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
                     std::getline(std::cin, semesterInput);
                     semesterInput = toLower_w(semesterInput);
                     if (semesterInput != "0") {
-                        appendNewSemesterList(semestersHead, semesterInput, startYear, true);
+                        appendNewSemesterList(semestersHead, semesterInput, startYear, false);
                         appendNewSemesterFile(dataFile, semesterInput, startYear, true);
                         appendNewSemesterFile(currentSemesters, semesterInput, startYear);
                         inserted = 1;
@@ -57,7 +57,7 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
                                 SNode* fInputBatch = nullptr;
 
                                 createList(fInputBatch, fileClass);
-                                appendBatchSemesterList(semestersHead, fInputBatch, startYear, true);
+                                appendBatchSemesterList(semestersHead, fInputBatch, startYear, false);
                                 appendBatchSemesterFile(dataFile, fInputBatch, startYear, true);
                                 appendBatchSemesterFile(currentSemesters, fInputBatch, startYear);
 
@@ -81,13 +81,13 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
     destructList(currentSemestersList);
 }
 void appendNewSemesterList(Semesters*& semestersHead, std::string newSemesterData, int schoolYear, bool full) {
-    if (!semesterCheckBool(newSemesterData, schoolYear)) return;
+    if (!semesterCheckBool(newSemesterData, schoolYear, semestersHead)) return;
 
     if (semesterListSearchBool(semestersHead, stoi(newSemesterData.substr(0, 1)), schoolYear)) return;
 
     Semesters* nodeNew = new Semesters;
     readSemesterData(nodeNew, newSemesterData, full);
-    if (!full) semestersHead->schoolYear = schoolYear;
+    if (!full) nodeNew->schoolYear = schoolYear;
 
 	if (semestersHead == nullptr) {
 		nodeNew->nodePrev = nullptr;
@@ -105,7 +105,14 @@ void appendNewSemesterList(Semesters*& semestersHead, std::string newSemesterDat
 	nodeCurr->nodeNext = nodeNew;
 }
 void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, int schoolYear, bool full) {
-    if (!semesterCheckBool(newSemesterData, schoolYear)) return;
+    Semesters* semesterHead = nullptr;
+    if (full) createList(semesterHead, dataFile);
+    else createList(semesterHead, dataFile, schoolYear);
+    if (!semesterCheckBool(newSemesterData, schoolYear, semesterHead)) {
+        destructList(semesterHead);
+        return;
+    }
+    destructList(semesterHead);
     
     if (semesterFileSearchBool(dataFile, stoi(newSemesterData.substr(0, 1)), schoolYear, full)) return;
 
@@ -172,7 +179,8 @@ bool semesterFileSearchBool(std::fstream& semestersTotalFile, int semester, int 
     return 0;
 }
 
-bool semesterCheckBool(std::string semesterData, int schoolYear) {
+bool semesterCheckBool(std::string semesterData, int schoolYear, Semesters* semesterHead) {
+    std::string startDate, endDate;
     int count = 0;
     for (int i = 0; i < semesterData.size(); i++) {
         if (semesterData[i] == ',') {
@@ -192,19 +200,19 @@ bool semesterCheckBool(std::string semesterData, int schoolYear) {
                         }
                         if (j == semesterData.size() - 1) return 0;     //This means the string doesn't have a second comma -> invalid format
                     }
-                    if (!isValidDate(semesterData.substr(i, secondComma - i))) return 0;
+                    startDate = semesterData.substr(i, secondComma - i);
+                    if (!isValidDate(startDate)) return 0;
                     for (int j = i; j < secondComma - j; j++) {
                         if (semesterData[j] == '/') {
-                            if (semesterData.substr(i + 1, 1) == "/") return 0;
-                            if (!isDigit_w(semesterData.substr(i + 1, j - i - 1))) return 0;
-                            if (stoi(semesterData.substr(i + 1, j - i - 1)) < 1 && stoi(semesterData.substr(i + 1, j - i - 1)) > 31) return 0;
+                            if (!isDigit_w(semesterData.substr(i, j - i))) return 0;
+                            if (stoi(semesterData.substr(i, j - i)) < 1 && stoi(semesterData.substr(i, j - i)) > 31) return 0;
                             else { i = j + 1; slashCount++; }
-                            if (slashCount == 1 && (stoi(semesterData.substr(i + 1, j - i - 1)) < 1 || stoi(semesterData.substr(i + 1, j - i - 1))) > 12) return 0;
+                            if (slashCount == 1 && (stoi(semesterData.substr(i, j - i)) < 1 || stoi(semesterData.substr(i, j - i)) > 12)) return 0;
                             else { i = j + 1; slashCount++; }
                         }
                         if (j == secondComma - j) {
                             if (!isDigit_w(semesterData.substr(i + 1, j - i - 1))) return 0;
-                            if (slashCount == 2 && stoi(semesterData.substr(i + 1, j - i - 1)) < 0) return 0;
+                            if (slashCount == 2 && stoi(semesterData.substr(i, j - i)) < 0) return 0;
                         }
                     }
                     break;
@@ -212,10 +220,10 @@ bool semesterCheckBool(std::string semesterData, int schoolYear) {
                 case 1: {
                     //Check after the second comma
                     int slashCount = 0;
-                    if (!isValidDate(semesterData.substr(i+ 1))) return 0;
+                    endDate = semesterData.substr(i+ 1);
+                    if (!isValidDate(endDate)) return 0;
                     for (int j = i + 1; j < semesterData.size(); j++) {
                         if (semesterData[j] == '/') {
-                            if (semesterData.substr(i + 1, 1) == "/") return 0;
                             if (!isDigit_w(semesterData.substr(i + 1, j - i - 1))) return 0;
                             if (stoi(semesterData.substr(i + 1, j - i - 1)) < 1 && stoi(semesterData.substr(i + 1, j - i - 1)) > 31) return 0;
                             else { i = j + 1; slashCount++; }
@@ -233,7 +241,62 @@ bool semesterCheckBool(std::string semesterData, int schoolYear) {
             count++;
         }
     }
+    if (!isValidSemesterDate(startDate, endDate, semesterHead, schoolYear)) return 0;
+
     if (count != 2) return 0;
+    return 1;
+}
+
+bool isValidSemesterDate(std::string startDate, std::string endDate, Semesters* semesterHead, int schoolYear) {
+    if (startDate == endDate) return 0;
+    if (getDateData(endDate, 'y') - getDateData(startDate, 'y') > 1) return 0;
+
+    //Check if start-end period can actually exist and if it lasts for more than 4 months
+    if (schoolYear - getDateData(startDate, 'y') > 1 || schoolYear - getDateData(endDate, 'y') > 1) return 0;
+    if (getDateData(startDate, 'y') == getDateData(endDate, 'y')) {
+        if (getDateData(endDate, 'm') - getDateData(startDate, 'm') < 0) return 0;
+        else if (getDateData(endDate, 'm') - getDateData(startDate, 'm') > 4) return 0;
+    }
+    if (getDateData(startDate, 'y') == getDateData(endDate, 'y') - 1) {
+        if (12 - getDateData(startDate, 'm') + getDateData(endDate, 'm') > 4) return 0;
+    }
+
+    //Check if the current start-end period overlaps with any other periods of the same school year or of the previous or the next school year
+    Semesters* curr = semesterHead;
+    while (curr != nullptr) {
+        if (curr->schoolYear == schoolYear) {
+            //The current period can only exist either before or after
+            bool checked = 0;
+            if (!checked && getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) return 0;
+            else if (!checked && getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
+                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) return 0;
+                else checked = 1;
+            }
+            else checked = 1;
+
+            if (!checked && getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) return 0;
+            else if (!checked && getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
+                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) return 0;
+            }
+        }
+
+        if (curr->schoolYear - schoolYear == -1) {
+            if (getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) return 0;
+            else if (getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
+                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) return 0;
+            }
+        }
+
+        if (curr->schoolYear - schoolYear == 1) {
+            if (getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) return 0;
+            else if (getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
+                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) return 0;
+            }
+        }
+
+        curr = curr->nodeNext;
+    }
+
     return 1;
 }
 
@@ -242,11 +305,11 @@ void addCourseToSemester(Semesters*& semestersHead, int schoolYear) {
     bool inserted = 0;
     while (!inserted) {
         std::string choice = "a";
-        while (!isDigit_w(choice)) {
+        while (choice == "" || !isDigit_w(choice)) {
             std::cout << "Choose the input method by which courses' data are to be entered:\n"
             << "1. Single input (manually)\n2. CSV file\n0. Back to main menu\n: ";
             std::getline(std::cin, choice);
-            if (!isDigit_w(choice)) {
+            if (choice == "" || !isDigit_w(choice)) {
                 std::cout << "Invalid format for choice\n";
                 continue;
             }

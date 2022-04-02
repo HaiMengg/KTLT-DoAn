@@ -30,18 +30,12 @@ int countElement(std::string givenString, char needle) {
 }
 
 bool isValidDate(std::string givenDate) {
-    int d, m, y;
-    int previousSlash = 0;
+    if (countElement(givenDate, '/') != 2) return 0;
 
-    int firstSlash = givenDate.find('/');
-    d = stoi(givenDate.substr(0, firstSlash));
-    givenDate = givenDate.substr(firstSlash + 1);
-
-    firstSlash = givenDate.find('/');
-    m = stoi(givenDate.substr(0, firstSlash));
-    givenDate = givenDate.substr(firstSlash + 1);
-
-    y = stoi(givenDate);
+    int d = getDateData(givenDate, 'd');
+    int m = getDateData(givenDate, 'm');
+    int y = getDateData(givenDate, 'y');
+    if (d == -1 || m == -1 || y == -1) return 0;
 
     if (y < 0) return 0;
     if (m <= 0 || m > 12) return 0;
@@ -60,4 +54,34 @@ bool isValidDate(std::string givenDate) {
         }
     }
     return 1;
+}
+
+int getDateData(std::string givenDate, char mode) {
+    int d, m, y;
+
+    int firstSlash = givenDate.find('/');
+    d = (givenDate.substr(0, firstSlash) != "" && isDigit_w(givenDate.substr(0, firstSlash))) ? stoi(givenDate.substr(0, firstSlash)) : -1;
+    if (mode == 'd') return d;
+    givenDate = givenDate.substr(firstSlash + 1);
+
+    firstSlash = givenDate.find('/');
+    m = (givenDate.substr(0, firstSlash) != "" && isDigit_w(givenDate.substr(0, firstSlash))) ? stoi(givenDate.substr(0, firstSlash)) : -1;
+    if (mode == 'm') return m;
+    givenDate = givenDate.substr(firstSlash + 1);
+
+    y = (givenDate != "" && isDigit_w(givenDate)) ? stoi(givenDate) : -1;
+    if (mode == 'y') return y;
+}
+
+void updateDate(std::string& currentDate) {
+    std::cout << "Enter the current date: ";
+    std::getline(std::cin, currentDate);
+    while (!isValidDate(currentDate)) {
+        std::cout << "Invalid date. Re-enter: ";
+        std::getline(std::cin, currentDate);
+    }
+}
+
+void dateZeroFill(std::string& givenDate) {
+    
 }
