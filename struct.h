@@ -99,9 +99,12 @@ void removeCourse(Login &data);
 void loginCheck(Login &data);
 void loginMenu(Login &data);
 void staffMenu(Login &data);
+void teacherMenu(Login &data);
 void studentMenu(Login &data);
 void viewInfo(Login data);
 void changePassword(Login &data);
 void logOut(Login &data);
 
-bool exportCourseStudent(Login data);
+float getTotalMark(float mid, float final, float other);
+void exportCourseStudent(Login data);
+void updateScoreboard(Login data);
