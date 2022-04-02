@@ -398,7 +398,7 @@ void updateStudentResult(Login data)
 }
 
 // View the scoreboard of a student
-void viewScoreboardStudent(Login data)
+void viewScoreboardStudent(Login data, std::string studentID)
 {
     std::cout << std::left
     << std::setw(15) << "Course"
@@ -413,7 +413,7 @@ void viewScoreboardStudent(Login data)
     CourseScore* curCourseScore = data.courseScore;
     while (curCourseScore != nullptr)
     {
-        if (curCourseScore -> studentID == data.curStudent -> studentID)
+        if (curCourseScore -> studentID == studentID)
         {
             sum += std::stof(curCourseScore -> total);
             count++;

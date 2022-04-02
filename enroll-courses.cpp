@@ -305,6 +305,12 @@ void removeCourse(Login &data)
     std::string removeId;
     std::cin >> removeId;
 
+    if (removeId == "1")
+    {
+        std::cout << "----------------\n";
+        return studentMenu(data);
+    }
+
     std::string enrolled;
     StudentCourse* curCourse = data.curStudent -> studentCourseHead;
     while (curCourse != nullptr)

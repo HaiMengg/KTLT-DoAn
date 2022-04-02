@@ -117,4 +117,4 @@ void updateScoreboard(Login data);
 void importScoreboard(Login data);
 void viewScoreboardCourse(Login data);
 void updateStudentResult(Login data);
-void viewScoreboardStudent(Login data);
+void viewScoreboardStudent(Login data, std::string studentID);

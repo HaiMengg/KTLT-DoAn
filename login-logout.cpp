@@ -198,7 +198,7 @@ void studentMenu(Login &data)
     else if (option == "4") removeCourse(data);
     else if (option == "5")
     {
-        viewScoreboardStudent(data);
+        viewScoreboardStudent(data, data.curStudent -> studentID);
         studentMenu(data);
     }
     else if (option == "6") changePassword(data);
