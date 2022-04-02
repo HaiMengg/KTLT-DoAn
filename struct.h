@@ -73,6 +73,11 @@ struct Node {
     Semesters* semesterHead = nullptr;
 };
 
+struct CourseScore {
+    std::string studentID, fullname, courseID, final, total, midterm, other;
+    CourseScore* nodeNext;
+};
+
 struct Login
 {
     Staff* staff;
@@ -82,6 +87,7 @@ struct Login
     Student* student;
     Student* curStudent;
     Course* course;
+    CourseScore* courseScore;
     std::string username, password;
     int year = 0, semester = 0, identity = 0;
 };
@@ -110,3 +116,4 @@ void exportScoreboard(Login data);
 void updateScoreboard(Login data);
 void importScoreboard(Login data);
 void viewScoreboardCourse(Login data);
+void updateStudentResult(Login data);

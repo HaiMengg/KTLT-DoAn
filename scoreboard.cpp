@@ -301,3 +301,98 @@ void viewScoreboardCourse(Login data)
     std::cout << "----------------\n";
     return;
 }
+
+// Update a student result
+void updateStudentResult(Login data)
+{
+    std::string courseId, studentId;
+    float mid, final, other, total;
+    bool check = false;
+
+    std::cout << "Input student ID to update result (or input 1 to go back): ";
+    std::cin >> studentId;
+
+    if (studentId == "1")
+    {
+        std::cout << "----------------\n";
+        return;
+    }
+
+    Student* curStudent = data.student;
+    while (curStudent != nullptr)
+    {
+        if (curStudent -> studentID == studentId)
+        {
+            check = true;
+            break;
+        }
+        curStudent = curStudent -> nodeNext;
+    }
+
+    if (!check)
+    {
+        std::cout << "Could not find that student.\n";
+        std::cout << "----------------\n";
+        return;
+    }
+
+    check = false;
+
+    std::cout << "Input course ID to update result (or input 1 to go back): ";
+    std::cin >> courseId;
+
+    if (courseId == "1")
+    {
+        std::cout << "----------------\n";
+        return;
+    }
+
+    Course* curCourse = data.course;
+    while (curCourse != nullptr)
+    {
+        if (curCourse -> courseId == courseId)
+        {
+            check = true;
+            break;
+        }
+        curCourse = curCourse -> nodeNext;
+    }
+
+    if (!check)
+    {
+        std::cout << "Could not find that course.\n";
+        std::cout << "----------------\n";
+        return;
+    }
+
+    std::cout << "Input Midterm Mark: ";
+    std::cin >> mid;
+
+    std::cout << "Input Final Mark: ";
+    std::cin >> final;
+
+    std::cout << "Input Other Mark: ";
+    std::cin >> other;
+
+    total = getTotalMark(mid, final, other);
+
+    CourseScore* curCourseScore = data.courseScore;
+    while (true)
+    {
+        if (curCourseScore -> studentID == studentId && curCourseScore -> courseID == courseId)
+        {
+            curCourseScore -> midterm = std::to_string(mid);
+            curCourseScore -> final = std::to_string(final);
+            curCourseScore -> other = std::to_string(other);
+            curCourseScore -> total = std::to_string(total);
+            break;
+        }
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+
+    writeScoreboard(data.courseScore, data.year, data.semester);
+
+    std::cout << "Student result updated!\n";
+    std::cout << "----------------\n";
+    return;
+}

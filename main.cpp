@@ -29,12 +29,14 @@ int main()
     Staff* staffData = new Staff;
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
+    CourseScore* courseScoreData = new CourseScore;
 
     // Read CSV files
     readCourse(courseData, course, schoolYear, semester);
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
+    readScoreboard(courseScoreData, schoolYear, semester);
 
     // Log in to the system
     Login data;
@@ -42,6 +44,7 @@ int main()
     data.staff = staffData;
     data.teacher = teacherData;
     data.student = studentData;
+    data.courseScore = courseScoreData;
     data.semester = semester;
     data.year = schoolYear;
     loginCheck(data);

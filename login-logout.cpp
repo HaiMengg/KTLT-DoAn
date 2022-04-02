@@ -75,7 +75,8 @@ void loginCheck(Login &data)
             std::cout << "----------------\n"
             "Welcome " << data.username << "!\n\n"
             << "[1] View info\n[2] Export students in a course\n[3] Import all scoreboards\n"
-            << "[4] View scoreboard of a course\n[5] Change password\n[6] Log out\n[7] Exit program\n"
+            << "[4] View scoreboard of a course\n[5] Update a student result\n"
+            << "[6] Change password\n[7] Log out\n[8] Exit program\n"
             << "----------------\n";
             staffMenu(data);
         }
@@ -140,9 +141,14 @@ void staffMenu(Login &data)
         viewScoreboardCourse(data);
         staffMenu(data);
     }
-    else if (option == "5") changePassword(data);
-    else if (option == "6") logOut(data);
-    else if (option == "7") return;
+    else if (option == "5")
+    {
+        updateStudentResult(data);
+        staffMenu(data);
+    }
+    else if (option == "6") changePassword(data);
+    else if (option == "7") logOut(data);
+    else if (option == "8") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n";
