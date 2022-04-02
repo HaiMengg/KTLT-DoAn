@@ -13,14 +13,18 @@ bool exportCourseStudent(Login data)
     if (courseId == "1")
     {
         std::cout << "----------------\n";
-        staffMenu(data);
-        return false;
+        return true;
     }
 
     std::fstream output;
-    output.open("exportedStudent.csv", std::ios::out);
-    output << "studentID,firstName,lastName,dob,gender,socialID,classID";
+    output.open(
+        "data/" + std::to_string(data.year) + "/semesters/" + std::to_string(data.semester) + "/"
+        + courseId + "/scoreboard.csv",
+        std::ios::out
+    );
+    output << "no,studentID,fullname,midtermmark,finalmark,othermark,totalmark";
 
+    int count = 1;
     Course* cur = data.course;
     while (cur != nullptr)
     {
@@ -30,17 +34,15 @@ bool exportCourseStudent(Login data)
             if (curStudent != nullptr) output << std::endl;
             while (curStudent != nullptr)
             {
-                output << curStudent -> studentID << ","
-                << curStudent -> firstName << ","
-                << curStudent -> lastName << ","
-                << curStudent -> dob << ","
-                << curStudent -> gender << ","
-                << curStudent -> socialID << ","
-                << curStudent -> classID;
+                output << count << ","
+                << curStudent -> studentID << ","
+                << curStudent -> firstName + " " + curStudent -> lastName << ","
+                << "0,0,0,0";
 
                 if (curStudent -> nodeNext != nullptr)
                 output << std::endl;
 
+                count++;
                 curStudent = curStudent -> nodeNext;
             }
             std::cout << "File exported successfully!\n";
@@ -50,7 +52,7 @@ bool exportCourseStudent(Login data)
         cur = cur -> nodeNext;
     }
 
-    std::cout << "Could not find that course. Please try again.\n";
-    exportCourseStudent(data);
-    return false;
+    std::cout << "Could not find that course.\n";
+    std::cout << "----------------\n";
+    return true;
 }

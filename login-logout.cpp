@@ -144,7 +144,7 @@ void staffMenu(Login &data)
     if (option == "1") viewInfo(data);
     else if (option == "2")
     {
-        if (exportCourseStudent(data))
+        exportCourseStudent(data);
         staffMenu(data);
     }
     else if (option == "3") changePassword(data);
