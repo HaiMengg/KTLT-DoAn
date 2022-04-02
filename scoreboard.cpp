@@ -396,3 +396,39 @@ void updateStudentResult(Login data)
     std::cout << "----------------\n";
     return;
 }
+
+// View the scoreboard of a student
+void viewScoreboardStudent(Login data)
+{
+    std::cout << std::left
+    << std::setw(15) << "Course"
+    << std::setw(10) << "Midterm"
+    << std::setw(10) << "Final"
+    << std::setw(10) << "Other"
+    << std::setw(10) << "Total" << std::endl;
+
+    float sum;
+    int count = 0;
+
+    CourseScore* curCourseScore = data.courseScore;
+    while (curCourseScore != nullptr)
+    {
+        if (curCourseScore -> studentID == data.curStudent -> studentID)
+        {
+            sum += std::stof(curCourseScore -> total);
+            count++;
+
+            std::cout << std::setw(15) << curCourseScore -> courseID
+            << std::setw(10) << curCourseScore -> midterm
+            << std::setw(10) << curCourseScore -> final
+            << std::setw(10) << curCourseScore -> other
+            << std::setw(10) << curCourseScore -> total << std::endl;
+        }
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+
+    std::cout << "Average: " << sum / count << std::endl
+    << "GPA: " << (sum / (10 * count)) * 4 << std::endl;
+    std::cout << "----------------\n";
+    return;
+}
