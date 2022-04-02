@@ -109,3 +109,4 @@ float getTotalMark(float mid, float final, float other);
 void exportScoreboard(Login data);
 void updateScoreboard(Login data);
 void importScoreboard(Login data);
+void viewScoreboardCourse(Login data);

@@ -157,6 +157,7 @@ void updateScoreboard(Login data)
         if (cur -> nodeNext != nullptr)
         output << std::endl;
 
+        count++;
         cur = cur -> nodeNext;
     }
 
@@ -219,6 +220,84 @@ void importScoreboard(Login data)
     }
 
     std::cout << "Scoreboard imported!\n";
+    std::cout << "----------------\n";
+    return;
+}
+
+// View the scoreboard of a course
+void viewScoreboardCourse(Login data)
+{
+    std::cout << "Input ID of a course to view (or input 1 to go back): ";
+    std::string courseId;
+    std::cin >> courseId;
+
+    if (courseId == "1")
+    {
+        std::cout << "----------------\n";
+        return;
+    }
+
+    bool check = false;
+    Course* curCourse = data.course;
+    while (curCourse != nullptr)
+    {
+        if (curCourse -> courseId == courseId)
+        {
+            check = true;
+            break;
+        }
+        curCourse = curCourse -> nodeNext;
+    }
+
+    if (!check)
+    {
+        std::cout << "Could not find that course.\n";
+        std::cout << "----------------\n";
+        return;
+    }
+
+    std::fstream input;
+    std::string dir = "data/" + std::to_string(data.year) + "/semesters/"
+    + std::to_string(data.semester) + "/" + courseId + "/scoreboard.csv";
+
+    input.open(dir, std::ios::in);
+
+    std::string str;
+    std::getline(input, str);
+
+    std::cout << "----------------\n";
+    std::cout << std::left
+    << std::setw(5) << "No"
+    << std::setw(13) << "Student ID"
+    << std::setw(20) << "Full Name"
+    << std::setw(10) << "Midterm"
+    << std::setw(10) << "Final"
+    << std::setw(10) << "Other"
+    << std::setw(10) << "Total" << std::endl;
+
+    while (!input.eof())
+    {
+        std::getline(input, str, '\n');
+        std::istringstream iss(str);
+        std::string item;
+
+        std::getline(iss, item, ',');
+        std::cout << std::setw(5) << item;
+
+        std::getline(iss, item, ',');
+        std::cout << std::setw(13) << item;
+
+        std::getline(iss, item, ',');
+        std::cout << std::setw(20) << item;
+
+        while (std::getline(iss, item, ','))
+        {
+            std::cout << std::setw(10) << item;
+        }
+
+        std::cout << std::endl;
+    }
+
     std::cout << "----------------\n";
     return;
 }
