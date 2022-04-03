@@ -1,6 +1,9 @@
 no,studentID,fullname,midtermmark,finalmark,othermark,totalmark
-1,21127019,Le Quang Ngo,4,6,5,5.16667
-2,21127964,Nguyen Trong Anh,6,7,4,6.16667
-3,21127873,Nguyen Minh Duc,8,7,9,7.66667
-4,21127000,Truong Vy Thanh,10,10,9,9.83333
-5,21127611,Nguyen Thi B,4,8,9,6.83333
+1,21127517,Nguyen Anh Khoa,5,6,7,5.83333
+2,21127459,Nguyen Van A,8,9,10,8.83333
+3,21127611,Nguyen Thi B,7,6.5,5.5,6.5
+4,21127019,Le Quang Ngo,8,9,7.6,8.43333
+5,21127964,Nguyen Trong Anh,4.6,7.1,2.9,5.56667
+6,21127873,Nguyen Minh Duc,10,10,10,10
+7,21127111,Cao Huu Quoc,5,4,8.8,5.13333
+8,21127000,Truong Vy Thanh,5.5,6.7,9.9,6.83333
