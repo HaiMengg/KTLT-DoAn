@@ -21,7 +21,7 @@ int main()
     // Get semester
     std::fstream semesterInput;
     semesterInput.open("semester/semester.csv", std::ios::in);
-    int semester = 1;//getSemester(semesterInput);
+    int semester = getSemester(semesterInput);
     course.open("semester/" + std::to_string(semester) + "/course.csv", std::ios::in);
 
     // Linked lists
