@@ -308,7 +308,7 @@ void removeCourse(Login &data)
     if (removeId == "1")
     {
         std::cout << "----------------\n";
-        return studentMenu(data);
+        return;
     }
 
     std::string enrolled;
@@ -379,11 +379,10 @@ void removeCourse(Login &data)
             writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
 
             std::cout << "Course removed!\n" << "----------------\n";
-            studentMenu(data);
             return;
         }
     }
 
-    std::cout << "Could not find that course. Please try again.\n";
-    removeCourse(data);
+    std::cout << "Could not find that course.\n" << "----------------\n";
+    return;
 }

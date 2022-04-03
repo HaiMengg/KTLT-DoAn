@@ -200,7 +200,11 @@ void studentMenu(Login &data)
         showCourses(data.course);
         enrollCourse(data);
     }
-    else if (option == "4") removeCourse(data);
+    else if (option == "4")
+    {
+        removeCourse(data);
+        studentMenu(data);
+    }
     else if (option == "5")
     {
         viewScoreboardStudent(data, data.curStudent -> studentID);
