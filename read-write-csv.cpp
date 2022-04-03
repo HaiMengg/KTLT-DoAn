@@ -432,7 +432,7 @@ void writeScoreboard(CourseScore* data, int year, int semester)
 }
 
 // Delete data
-void deleteData(Login &data)
+void deleteData(Global &data)
 {
     Staff *fCur = data.staff, *fDel;
     Teacher *rCur = data.teacher, *rDel;

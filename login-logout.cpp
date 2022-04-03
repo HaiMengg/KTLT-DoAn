@@ -6,11 +6,11 @@
 #include "struct.h"
 #include "read-write-csv.cpp"
 
-// Login
-void loginCheck(Login &data)
+// Global
+void loginCheck(Global &data)
 {
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
+    std::cout << "[1] Global as staff\n[2] Global as teacher\n[3] Global as student\n[4] Exit program\n"
     << "----------------\n";
 
     std::cout << "Input: ";
@@ -119,7 +119,7 @@ void loginCheck(Login &data)
 }
 
 // Staff menu
-void staffMenu(Login &data)
+void staffMenu(Global &data)
 {
     std::cout << "Input: ";
     std::string option;
@@ -163,7 +163,7 @@ void staffMenu(Login &data)
 }
 
 // Teacher menu
-void teacherMenu(Login &data)
+void teacherMenu(Global &data)
 {
     std::cout << "Input: ";
     std::string option;
@@ -187,7 +187,7 @@ void teacherMenu(Login &data)
 }
 
 // Student menu
-void studentMenu(Login &data)
+void studentMenu(Global &data)
 {
     std::cout << "Input: ";
     std::string option;
@@ -222,7 +222,7 @@ void studentMenu(Login &data)
 }
 
 // View info
-void viewInfo(Login data)
+void viewInfo(Global data)
 {
     if (data.identity == 1)
     {
@@ -269,7 +269,7 @@ void viewInfo(Login data)
 }
 
 // Change password
-void changePassword(Login &data)
+void changePassword(Global &data)
 {
     std::string pass;
     std::cout << "Input current password: ";
@@ -314,7 +314,7 @@ void changePassword(Login &data)
 }
 
 // Log out
-void logOut(Login &data)
+void logOut(Global &data)
 {
     data.username = "";
     data.password = "";

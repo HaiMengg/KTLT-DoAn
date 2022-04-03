@@ -78,7 +78,7 @@ struct CourseScore {
     CourseScore* nodeNext;
 };
 
-struct Login
+struct Global
 {
     Staff* staff;
     Staff* curStaff;
@@ -87,6 +87,9 @@ struct Login
     Student* student;
     Student* curStudent;
     Course* course;
+    Course* courseSem1;
+    Course* courseSem2;
+    Course* courseSem3;
     CourseScore* courseScore;
     std::string username, password;
     int year = 0, semester = 0, identity = 0;
@@ -98,24 +101,24 @@ int getSemester();
 void replaceAll(std::string& str, const std::string& from, const std::string& to);
 void showCourseNode(Course* data);
 void showCourses(Course* data);
-void enrollCourse(Login &data);
-void viewCourse(Login data);
-void removeCourse(Login &data);
+void enrollCourse(Global &data);
+void viewCourse(Global data);
+void removeCourse(Global &data);
 
-void loginCheck(Login &data);
-void loginMenu(Login &data);
-void staffMenu(Login &data);
-void teacherMenu(Login &data);
-void studentMenu(Login &data);
-void viewInfo(Login data);
-void changePassword(Login &data);
-void logOut(Login &data);
+void loginCheck(Global &data);
+void loginMenu(Global &data);
+void staffMenu(Global &data);
+void teacherMenu(Global &data);
+void studentMenu(Global &data);
+void viewInfo(Global data);
+void changePassword(Global &data);
+void logOut(Global &data);
 
 float getTotalMark(float mid, float final, float other);
-void exportScoreboard(Login data);
-void updateScoreboard(Login data);
-void importScoreboard(Login data);
-void viewScoreboardCourse(Login data);
-void updateStudentResult(Login data);
-void viewScoreboardStudent(Login data, std::string studentID);
-void viewScoreboardClass(Login data);
+void exportScoreboard(Global data);
+void updateScoreboard(Global data);
+void importScoreboard(Global data);
+void viewScoreboardCourse(Global data);
+void updateStudentResult(Global data);
+void viewScoreboardStudent(Global data, std::string studentID);
+void viewScoreboardClass(Global data);

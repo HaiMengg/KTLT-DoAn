@@ -111,7 +111,7 @@ void showCourses(Course* data)
 }
 
 // Enroll in a course
-void enrollCourse(Login &data)
+void enrollCourse(Global &data)
 {
     std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
     std::string enrollId;
@@ -242,7 +242,7 @@ void enrollCourse(Login &data)
 }
 
 // View courses that are enrolled
-void viewCourse(Login data)
+void viewCourse(Global data)
 {
     Course* cur;
     std::string enrolled;
@@ -299,7 +299,7 @@ void viewCourse(Login data)
 }
 
 // Remove an enrolled course
-void removeCourse(Login &data)
+void removeCourse(Global &data)
 {
     std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
     std::string removeId;

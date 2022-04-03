@@ -11,7 +11,7 @@ float getTotalMark(float mid, float final, float other)
 }
 
 // Export students in a course to a csv file
-void exportScoreboard(Login data)
+void exportScoreboard(Global data)
 {
     std::cout << "Input ID of a course to export students (or input 1 to go back): ";
     std::string courseId;
@@ -65,7 +65,7 @@ void exportScoreboard(Login data)
 }
 
 // Update scoreboard of a course
-void updateScoreboard(Login data)
+void updateScoreboard(Global data)
 {
     std::cout << "Input ID of a course to update scoreboard (or input 1 to go back): ";
     std::string courseId;
@@ -175,7 +175,7 @@ void updateScoreboard(Login data)
 }
 
 // Import all scoreboards
-void importScoreboard(Login data)
+void importScoreboard(Global data)
 {
     std::string course, temp;
     std::string dir = "data/" + std::to_string(data.year) + "/semesters/"
@@ -225,7 +225,7 @@ void importScoreboard(Login data)
 }
 
 // View scoreboard of a course
-void viewScoreboardCourse(Login data)
+void viewScoreboardCourse(Global data)
 {
     std::cout << "Input ID of a course to view (or input 1 to go back): ";
     std::string courseId;
@@ -303,7 +303,7 @@ void viewScoreboardCourse(Login data)
 }
 
 // Update a student result
-void updateStudentResult(Login data)
+void updateStudentResult(Global data)
 {
     std::string courseId, studentId;
     float mid, final, other, total;
@@ -398,7 +398,7 @@ void updateStudentResult(Login data)
 }
 
 // View scoreboard of a student
-void viewScoreboardStudent(Login data, std::string studentID)
+void viewScoreboardStudent(Global data, std::string studentID)
 {
     std::cout << std::left
     << std::setw(15) << "Course"
@@ -434,7 +434,7 @@ void viewScoreboardStudent(Login data, std::string studentID)
 }
 
 // View scoreboard of a class
-void viewScoreboardClass(Login data)
+void viewScoreboardClass(Global data)
 {
     std::string classID;
     std::cout << "Input class ID to view scoreboard (or input 1 to go back): ";
