@@ -8,6 +8,8 @@
 // Read course.csv
 void readCourse(Course* &data, std::fstream &input, int year, int sem)
 {
+    if (!input.good()) return;
+
     // Track current pointer
     Course* cur = data;
 

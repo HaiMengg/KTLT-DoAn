@@ -6,11 +6,11 @@
 #include "struct.h"
 #include "read-write-csv.cpp"
 
-// Global
+// Login
 void loginCheck(Global &data)
 {
     if (data.identity == 0) std::cout << "----------------\n" << "Welcome!\nPlease login to continue.\n\n";
-    std::cout << "[1] Global as staff\n[2] Global as teacher\n[3] Global as student\n[4] Exit program\n"
+    std::cout << "[1] Login as staff\n[2] Login as teacher\n[3] Login as student\n[4] Exit program\n"
     << "----------------\n";
 
     std::cout << "Input: ";
