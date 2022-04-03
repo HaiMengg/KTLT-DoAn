@@ -80,17 +80,11 @@ struct CourseScore {
 
 struct Global
 {
-    Staff* staff;
-    Staff* curStaff;
-    Teacher* teacher;
-    Teacher* curTeacher;
-    Student* student;
-    Student* curStudent;
-    Course* course;
-    Course* courseSem1;
-    Course* courseSem2;
-    Course* courseSem3;
-    CourseScore* courseScore;
+    Staff *staff, *curStaff;
+    Teacher *teacher, *curTeacher;
+    Student *student, *curStudent;
+    Course *course;
+    CourseScore *courseScore, *courseSem1, *courseSem2, *courseSem3;
     std::string username, password;
     int year = 0, semester = 0, identity = 0;
 };

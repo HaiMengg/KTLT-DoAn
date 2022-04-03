@@ -477,9 +477,36 @@ void deleteData(Global &data)
         csCur = csDel;
     }
 
-    data.staff = nullptr;
-    data.teacher = nullptr;
-    data.staff = nullptr;
-    data.course = nullptr;
-    data.courseScore = nullptr;
+    if (data.semester > 0)
+    {
+        CourseScore *cs1Cur = data.courseSem1, *cs1Del;
+        while (cs1Cur != nullptr)
+        {
+            cs1Del = cs1Cur -> nodeNext;
+            delete cs1Cur;
+            cs1Cur = cs1Del;
+        }
+    }
+
+    if (data.semester > 1)
+    {
+        CourseScore *cs2Cur = data.courseSem2, *cs2Del;
+        while (cs2Cur != nullptr)
+        {
+            cs2Del = cs2Cur -> nodeNext;
+            delete cs2Cur;
+            cs2Cur = cs2Del;
+        }
+    }
+
+    if (data.semester > 2)
+    {
+        CourseScore *cs3Cur = data.courseSem3, *cs3Del;
+        while (cs3Cur != nullptr)
+        {
+            cs3Del = cs3Cur -> nodeNext;
+            delete cs3Cur;
+            cs3Cur = cs3Del;
+        }
+    }
 }

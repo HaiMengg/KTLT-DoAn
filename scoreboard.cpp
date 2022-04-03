@@ -407,8 +407,61 @@ void viewScoreboardStudent(Global data, std::string studentID)
     << std::setw(10) << "Other"
     << std::setw(10) << "Total" << std::endl;
 
-    float sum;
+    float sum, gpa;
     int count = 0;
+
+    if (data.semester > 0)
+    {
+        CourseScore* curSem1 = data.courseSem1;
+        while (curSem1 != nullptr)
+        {
+            if (curSem1 -> studentID == studentID)
+            {
+                sum += std::stof(curSem1 -> total);
+                count++;
+            }
+            curSem1 = curSem1 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        sum = 0, count = 0;
+    }
+
+    if (data.semester > 1)
+    {
+        CourseScore* curSem2 = data.courseSem2;
+        while (curSem2 != nullptr)
+        {
+            if (curSem2 -> studentID == studentID)
+            {
+                sum += std::stof(curSem2 -> total);
+                count++;
+            }
+            curSem2 = curSem2 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        if (data.semester == 2) gpa = gpa / 2;
+        sum = 0, count = 0;
+    }
+
+    if (data.semester > 2)
+    {
+        CourseScore* curSem3 = data.courseSem3;
+        while (curSem3 != nullptr)
+        {
+            if (curSem3 -> studentID == studentID)
+            {
+                sum += std::stof(curSem3 -> total);
+                count++;
+            }
+            curSem3 = curSem3 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        gpa = gpa / 3;
+        sum = 0, count = 0;
+    }
 
     CourseScore* curCourseScore = data.courseScore;
     while (curCourseScore != nullptr)
@@ -428,7 +481,8 @@ void viewScoreboardStudent(Global data, std::string studentID)
     }
 
     std::cout << "Average: " << sum / count << std::endl
-    << "GPA: " << (sum / (10 * count)) * 4 << std::endl;
+    << "GPA: " << (sum / (10 * count)) * 4 << std::endl
+    << "Overall GPA: " << gpa << std::endl;
     std::cout << "----------------\n";
     return;
 }

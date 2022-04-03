@@ -10,7 +10,7 @@
 int main()
 {
     // Get CSV files
-    std::fstream staff, teacher, student;
+    std::fstream staff, teacher, student, course;
     staff.open("staff.csv", std::ios::in);
     teacher.open("teacher.csv", std::ios::in);
     student.open("student.csv", std::ios::in);
@@ -19,44 +19,46 @@ int main()
     int schoolYear = getYear();
 
     // Get semester
-    std::fstream semesterInput, courseSem1, courseSem2, courseSem3;
+    std::fstream semesterInput;
     semesterInput.open("semester/semester.csv", std::ios::in);
     int semester = getSemester(semesterInput);
-    courseSem1.open("semester/1/course.csv", std::ios::in);
-    courseSem2.open("semester/2/course.csv", std::ios::in);
-    courseSem3.open("semester/3/course.csv", std::ios::in);
+    course.open("semester/" + std::to_string(semester) + "/course.csv", std::ios::in);
 
     // Linked lists
-    Course *courseDataSem1 = new Course, *courseDataSem2 = new Course, *courseDataSem3 = new Course;
+    Course *courseData = new Course;
     Staff* staffData = new Staff;
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
     CourseScore* courseScoreData = new CourseScore;
+    CourseScore* courseSem1Data = new CourseScore;
+    CourseScore* courseSem2Data = new CourseScore;
+    CourseScore* courseSem3Data = new CourseScore;
 
     // Read CSV files
-    readCourse(courseDataSem1, courseSem1, schoolYear, 1);
-    readCourse(courseDataSem2, courseSem2, schoolYear, 2);
-    readCourse(courseDataSem3, courseSem3, schoolYear, 3);
+    readCourse(courseData, course, schoolYear, semester);
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
-    readScoreboard(courseScoreData, schoolYear, semester);
+    readScoreboard(courseSem1Data, schoolYear, 1);
+    readScoreboard(courseSem2Data, schoolYear, 2);
+    readScoreboard(courseSem3Data, schoolYear, 3);
 
     // Log in to the system
     Global data;
 
-    data.courseSem1 = courseDataSem1;
-    data.courseSem2 = courseDataSem2;
-    data.courseSem3 = courseDataSem3;
-
-    if (semester == 1) data.course = courseDataSem1;
-    if (semester == 2) data.course = courseDataSem2;
-    if (semester == 3) data.course = courseDataSem3;
-
+    data.course = courseData;
     data.staff = staffData;
     data.teacher = teacherData;
     data.student = studentData;
-    data.courseScore = courseScoreData;
+
+    data.courseSem1 = courseSem1Data;
+    data.courseSem2 = courseSem2Data;
+    data.courseSem3 = courseSem3Data;
+
+    if (semester == 1) data.courseScore = courseSem1Data;
+    if (semester == 2) data.courseScore = courseSem2Data;
+    if (semester == 3) data.courseScore = courseSem3Data;
+
     data.semester = semester;
     data.year = schoolYear;
     loginCheck(data);
