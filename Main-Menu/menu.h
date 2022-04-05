@@ -10,7 +10,7 @@
 #include "../Create-Semester/create.h"
 #include "../Functions/func.h"
 
-void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::string& currentDate);
+void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::string& currentDate);
 
 void viewMenu(Node allData);
 void createSchoolYearMenu(SchoolYear*& schoolYearHead, std::fstream& schoolYearData, std::string currentDate);
@@ -20,6 +20,9 @@ void addStudentMenu(Student*& studentHead, std::fstream& studentData, SchoolYear
 
 void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, SchoolYear* schoolYearHead);
 void addCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead);
+void updateCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead);
+void deleteCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead);
+void createCourseRegMenu(CourseReg*& courseRegHead, std::fstream& courseRegData, SchoolYear* schoolYearHead, Semesters* semestersHead);
 
 int getCurrSemester(std::string, Semesters*);
 void printCurrDate(std::string, Semesters*);

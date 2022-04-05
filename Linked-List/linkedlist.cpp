@@ -483,6 +483,98 @@ void readCourseData(Course*& courseHead, std::string courseData) {
     }
 }
 
+void readList(Course* courseHead, std::fstream& courseFile) {
+    Course* curr = courseHead;
+    courseFile << "courseid,coursename,teachername,numberofcredits,studentmax,daySession (ex: MON-S1|TUE-S4|....)";
+    while (curr != nullptr) {
+        courseFile << "\n" << curr->courseId << "," << curr->courseName << "," << curr->teacherName << "," << curr->numOfCredits << "," << curr->studentMax << "," << curr->daySession;
+        curr = curr->nodeNext;
+    }
+
+    courseFile.flush();
+
+    courseFile.clear();
+    courseFile.seekg(0);
+}
+
+void createList(CourseReg*& courseRegHead, std::fstream& dataFile) {
+    if (courseRegHead == nullptr) {
+        CourseReg* curr = nullptr;
+        std::string categories;
+        std::getline(dataFile, categories);
+
+        while (!dataFile.eof()) {
+            std::string currentLine;
+            std::getline(dataFile, currentLine);
+            if (currentLine != "") {    //In case there are unneccessary extra empty lines in the file
+                if (courseRegHead == nullptr) {
+                    courseRegHead = new CourseReg;
+                    courseRegHead->nodePrev = nullptr;
+
+                    readCourseRegData(courseRegHead, currentLine);
+
+                    courseRegHead->nodeNext = nullptr;
+                    curr = courseRegHead;
+                }
+                else {
+                    CourseReg* prev = curr;
+                    curr->nodeNext = new CourseReg;
+                    curr = curr->nodeNext;
+                    curr->nodePrev = prev;
+
+                    readCourseRegData(curr, currentLine);
+                    
+                    curr->nodeNext = nullptr;
+                }
+            }
+        }
+    }
+
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
+}
+
+void readCourseRegData(CourseReg*& courseRegHead, std::string courseRegData) {
+    int level = 1;
+    int afterComma;
+    for (int i = 0; i < courseRegData.size(); i++) {
+        if (courseRegData[i] == ',') {
+            switch(level) {
+                case 1: {
+                    courseRegHead->semester = stoi(courseRegData.substr(0, i));
+                    afterComma = i + 1;
+                    break;
+                }
+                case 2: {
+                    courseRegHead->schoolYear = stoi(courseRegData.substr(afterComma, i - afterComma));
+                    afterComma = i + 1;
+                }
+                case 3: {
+                    courseRegHead->startDate = courseRegData.substr(afterComma, i - afterComma);
+                    courseRegHead->endDate = courseRegData.substr(i + 1);
+                    break;
+                }
+            }
+        
+            level++;
+        }
+    }
+}
+
+void readList(CourseReg* courseRegHead, std::fstream& dataFile) {
+    CourseReg* curr = courseRegHead;
+    dataFile << "1/2/3,schoolyear,startdate,enddate";
+    while (curr != nullptr) {
+        dataFile << "\n" << curr->semester << "," << curr->schoolYear << "," << curr->startDate << "," << curr->endDate;
+        curr = curr->nodeNext;
+    }
+
+    dataFile.flush();
+
+    dataFile.clear();
+    dataFile.seekg(0);
+}
+
 //Returns true on search found, false otherwise
 bool listSearchBool(SchoolYear* schoolYearHead, int searchSchoolYear) {
     while (schoolYearHead != nullptr) {

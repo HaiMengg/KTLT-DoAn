@@ -85,3 +85,31 @@ void updateDate(std::string& currentDate) {
 void dateZeroFill(std::string& givenDate) {
     
 }
+
+//Check if date1 is later than or equal to date2
+bool isDateLaterThanOrEqualTo(std::string date1, std::string date2) {
+    if (getDateData(date1, 'y') < getDateData(date2, 'y')) return 0;
+    else if (getDateData(date1, 'y') == getDateData(date2, 'y')) {
+        if (getDateData(date1, 'm') < getDateData(date2, 'm')) return 0;
+        else if (getDateData(date1, 'm') == getDateData(date2, 'm')) {
+            if (getDateData(date1, 'd') < getDateData(date2, 'd')) return 0;
+            else return 1;
+        }
+        else return 1;
+    }
+    else return 1;
+}
+
+//Check if date1 is earlier than or equal to date2
+bool isDateEarlierThanOrEqualTo(std::string date1, std::string date2) {
+    if (getDateData(date1, 'y') > getDateData(date2, 'y')) return 0;
+    else if (getDateData(date1, 'y') == getDateData(date2, 'y')) {
+        if (getDateData(date1, 'm') > getDateData(date2, 'm')) return 0;
+        else if (getDateData(date1, 'm') == getDateData(date2, 'm')) {
+            if (getDateData(date1, 'd') > getDateData(date2, 'd')) return 0;
+            else return 1;
+        }
+        else return 1;
+    }
+    else return 1;
+}

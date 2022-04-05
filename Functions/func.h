@@ -14,3 +14,5 @@ bool isValidDate(std::string);
 int getDateData(std::string, char);
 void updateDate(std::string&);
 void dateZeroFill(std::string&);
+bool isDateLaterThanOrEqualTo(std::string date1, std::string date2);
+bool isDateEarlierThanOrEqualTo(std::string date1, std::string date2);

@@ -5,18 +5,21 @@
 
 #include "struct.h"
 
-void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes, std::string& currentDate) {
+void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& semes, std::fstream& cR, std::string& currentDate) {
     // Get CSV files
     std::fstream staff, teacher, student, course;
     staff.open("data/staff.csv", std::ios::in);
     teacher.open("data/teacher.csv", std::ios::in);
     student.open("data/student.csv", std::ios::in);
 
+    int schoolYear = getDateData(currentDate, 'y');
+
     //Get current semester
     Semesters* semesList = nullptr;
     createList(semesList, semes);
     printCurrentDate(currentDate, semesList);
     int sem = getCurrentSemester(currentDate, semesList);
+    course.open("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(sem) + "/course.csv", std::ios::in);
     destructList(semesList);
 
     // Linked lists
@@ -24,12 +27,20 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
     Course* courseData = new Course;
+    CourseScore* courseScoreData = new CourseScore;
 
     // Read CSV files
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
-    readCourse(courseData, course);
+    if (sem != -1) {
+        readCourse(courseData, course);
+        readScoreboard(courseScoreData, schoolYear, sem);
+    }
+    else {
+        delete courseData; courseData = nullptr;
+        delete courseScoreData; courseScoreData = nullptr;
+    }
 
     // Log in to the system
     Login data;
@@ -38,7 +49,7 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     data.student = studentData;
     data.course = courseData;
     data.semester = sem;
-    loginCheck(data, node, sY, cl, stu, semes, currentDate);
+    loginCheck(data, node, sY, cl, stu, semes, cR, currentDate);
     deleteData(data);
 }
 

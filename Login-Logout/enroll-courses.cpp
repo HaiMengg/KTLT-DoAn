@@ -9,6 +9,18 @@
 #include "struct.h"
 #include "../Main-Menu/menu.h"
 
+// Get current year
+int getYear()
+{
+    std::time_t result = std::time(nullptr);
+    std::istringstream iss(ctime(&result));
+
+    iss.ignore(20);
+    int year;
+    iss >> year;
+    return year - 1;
+}
+
 // Check if current time is between startDate and endDate
 bool checkSemester(std::string start, std::string end)
 {
@@ -164,7 +176,7 @@ void showCourses(Course* data)
 }
 
 // Enroll in a course
-void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
     std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
     std::string enrollId;
@@ -173,7 +185,7 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     if (enrollId == "1")
     {
         std::cout << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem, currentDate);
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
 
@@ -221,7 +233,7 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     {
         std::cout << "You have reached the maximum amount of courses to enroll in a semester.\n";
         std::cout << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem, currentDate);
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
 
@@ -248,8 +260,40 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
             curCourse -> sem3Courses += "-" + cur -> courseId;
 
             writeStudent(data.student);
+
+            Student* curCourseStudent = cur -> courseStudentHead;
+            while (curCourseStudent != nullptr && curCourseStudent -> nodeNext != nullptr)
+            {
+                curCourseStudent = curCourseStudent -> nodeNext;
+            }
+
+            Student* newStudent = new Student;
+            newStudent -> studentID = data.curStudent -> studentID;
+            newStudent -> firstName = data.curStudent -> firstName;
+            newStudent -> lastName = data.curStudent -> lastName;
+            newStudent -> dob = data.curStudent -> dob;
+            newStudent -> gender = data.curStudent -> gender;
+            newStudent -> socialID = data.curStudent -> socialID;
+            newStudent -> classID = data.curStudent -> classID;
+
+            if (curCourseStudent == nullptr)
+            {
+                cur -> courseStudentHead = new Student;
+                cur -> courseStudentHead = newStudent;
+                cur -> courseStudentHead -> nodeNext = nullptr;
+            }
+
+            else
+            {
+                curCourseStudent -> nodeNext = newStudent;
+                newStudent -> nodeNext = nullptr;
+                newStudent -> nodePrev = curCourseStudent;
+            }
+
+            writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
+
             std::cout << "Course enrolled!\n" << "----------------\n";
-            studentMenu(data, node, sY, cl, stu, sem, currentDate);
+            studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
 
             return;
         }
@@ -259,11 +303,11 @@ void enrollCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
     if (reason) std::cout << "Could not find that course. Please try again.\n";
     else std::cout << "You have already enrolled in this course or another one with conflicting sessions. Please try again.\n";
 
-    enrollCourse(data, node, sY, cl, stu, sem, currentDate);
+    enrollCourse(data, node, sY, cl, stu, sem, cR, currentDate);
 }
 
 // View courses that are enrolled
-void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
     Course* cur;
     std::string enrolled;
@@ -289,7 +333,7 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
         std::cout << "----------------\n"
         << "Nothing to see here.\n"
         << "----------------\n";
-        studentMenu(data, node, sY, cl, stu, sem, currentDate);
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
 
@@ -316,11 +360,11 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
     }
 
     std::cout << "----------------\n";
-    studentMenu(data, node, sY, cl, stu, sem, currentDate);
+    studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
 }
 
 // Remove an enrolled course
-void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::string& currentDate)
+void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
     std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
     std::string removeId;
@@ -361,12 +405,44 @@ void removeCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, st
             curCourse -> sem3Courses = enrolled;
 
             writeStudent(data.student);
+
+            Course* cur = data.course;
+            while (cur != nullptr)
+            {
+                if (cur -> courseId == removeId)
+                {
+                    Student* curCourseStudent = cur -> courseStudentHead;
+                    while (curCourseStudent != nullptr)
+                    {
+                        if (curCourseStudent -> studentID == data.curStudent -> studentID)
+                        {
+                            if (curCourseStudent == cur -> courseStudentHead)
+                            {
+                                cur -> courseStudentHead = curCourseStudent -> nodeNext;
+                                delete curCourseStudent;
+                                break;
+                            }
+
+                            curCourseStudent -> nodePrev -> nodeNext = curCourseStudent -> nodeNext;
+                            curCourseStudent -> nodeNext -> nodePrev = curCourseStudent -> nodePrev;
+                            delete curCourseStudent;
+                            break;
+                        }
+                        curCourseStudent = curCourseStudent -> nodeNext;
+                    }
+                    break;
+                }
+                cur = cur -> nodeNext;
+            }
+
+            writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
+
             std::cout << "Course removed!\n" << "----------------\n";
-            studentMenu(data, node, sY, cl, stu, sem, currentDate);
+            studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
             return;
         }
     }
 
     std::cout << "Could not find that course. Please try again.\n";
-    removeCourse(data, node, sY, cl, stu, sem, currentDate);
+    removeCourse(data, node, sY, cl, stu, sem, cR, currentDate);
 }

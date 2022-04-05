@@ -59,12 +59,19 @@ struct Semesters {
     Course* semesterCourseHead = nullptr;
     Semesters* nodeNext;
 };
+struct CourseReg {
+    CourseReg* nodePrev;
+    int schoolYear, semester;
+    std::string startDate, endDate;
+    CourseReg* nodeNext;
+};
 
 struct Node {
     SchoolYear* schoolYearHead = nullptr;
     Classes* classesHead = nullptr;
     Student* studentHead = nullptr;
     Semesters* semesterHead = nullptr;
+    CourseReg* courseRegHead = nullptr;
 };
 
 void createList(SNode*& nodeHead, std::fstream& dataFile);
@@ -83,6 +90,11 @@ void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool 
 
 void createList(Course*& courseHead, std::fstream& dataFile);
 void readCourseData(Course*& courseHead, std::string courseData);
+void readList(Course* courseHead, std::fstream& courseFile);
+
+void createList(CourseReg*& courseRegHead, std::fstream& dataFile);
+void readCourseRegData(CourseReg*& courseHead, std::string courseData);
+void readList(CourseReg* courseRegHead, std::fstream& dataFile);
 
 // bool appendListSingle(Node*& nodeHead, std::string newValue);
 // bool appendListBatch(Node*& nodeHead, SNode* batch);

@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <direct.h>
+#include <winbase.h>
 #include "../Linked-List/linkedlist.h"
 
 void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int startYear);
@@ -20,8 +21,14 @@ void addCourseToSemester(Semesters*& semestersHead, int startYear);
 void appendNewCourse(Semesters*& semestersHead, std::string newCourseData, int schoolYear);
 void appendNewCourseFile(std::fstream& dataFile, Course* newCourseNode, int schoolYear);
 void appendBatchCourse(Semesters*& semestersHead, SNode* batch, int schoolYear);
+void updateCourse(Semesters* semestersHead, int schoolYear);
+void updateCourseNext(Course*& currentCourseHead, std::fstream& currentCourseFile, std::string& courseID);
+void deleteCourse(Semesters* semestersHead, int schoolYear);
+void deleteCourseNext(Course*& currentCourseHead, std::fstream& currentCourseFile, std::string& courseID);
 void readCourseData(Course*& courseHead, std::string courseData);
 bool courseFormatCheck(std::string courseData);
 bool courseListSearchBool(Course* courseHead, std::string courseID);
+void createCourseReg(CourseReg*& courseRegHead, std::fstream& dataFile, int schoolYear, Semesters* semestersHead);
+bool courseRegSearchBool(CourseReg* courseHead, int schoolYear, int semester);
 
 bool checkInputFormatSC(std::fstream& inputFile, int mode);

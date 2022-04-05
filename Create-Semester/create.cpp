@@ -253,6 +253,7 @@ bool isValidSemesterDate(std::string startDate, std::string endDate, Semesters* 
 
     //Check if start-end period can actually exist and if it lasts for more than 4 months
     if (schoolYear - getDateData(startDate, 'y') > 1 || schoolYear - getDateData(endDate, 'y') > 1) return 0;
+    if (schoolYear > getDateData(startDate, 'y')) return 0;
     if (getDateData(startDate, 'y') == getDateData(endDate, 'y')) {
         if (getDateData(endDate, 'm') - getDateData(startDate, 'm') < 0) return 0;
         else if (getDateData(endDate, 'm') - getDateData(startDate, 'm') > 4) return 0;
@@ -441,6 +442,219 @@ void appendBatchCourse(Semesters*& semestersHead, SNode* batch, int schoolYear) 
     }
 }
 
+void updateCourse(Semesters* semestersHead, int schoolYear) {
+    Semesters* curr;
+    std::string cont = "y";
+    while (cont == "y") {
+        curr = semestersHead;
+        bool isFound = 0;
+        std::cout << "Enter the ID of the course whose information you want to update (enter \"0\" to return to previous menu): ";
+        std::string courseID;
+        std::getline(std::cin, courseID);
+        while (curr != nullptr) {
+            if (curr->schoolYear == schoolYear) {
+                Course* semesterCourseHead = curr->semesterCourseHead;
+
+                if (courseID == "0") return;
+
+                while (semesterCourseHead != nullptr) {
+                    if (semesterCourseHead->courseId == courseID) {
+                        std::string originalCourseID = courseID;
+
+                        isFound = 1;
+                        std::fstream currentCourseFile;
+                        currentCourseFile.open(std::string("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(curr->semester) + "/course.csv").c_str(), std::ios::out);
+                        updateCourseNext(semesterCourseHead, currentCourseFile, courseID);
+
+                        //Rename course ID folder to suit change
+                        if (originalCourseID != courseID) {
+                            std::string oldDir = "data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(curr->semester) + "/" + originalCourseID;
+                            std::string newDir = "data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(curr->semester) + "/" + courseID;
+                            MoveFile(std::string(oldDir).c_str(), std::string(newDir).c_str());
+                        }
+
+                        currentCourseFile.close();
+                        break;
+                    }
+                    semesterCourseHead = semesterCourseHead->nodeNext;
+                }
+            }
+            curr = curr->nodeNext;
+        }
+        if (!isFound) std::cout << "No course with the given ID found\n";
+
+        std::cout << "Do you want to choose another course? \"y\" to continue, \"n\" or anything else to return to previous menu: ";
+        std::getline(std::cin, cont);
+    }
+}
+
+void updateCourseNext(Course*& currentCourseNode, std::fstream& currentCourseFile, std::string& courseID) {
+    std::string newCourseID = courseID;
+    std::string courseName,teacherName,creditNum,maxStudent,daySession;
+    bool validForFile = 1;
+    while (true) {
+        system("cls");
+        std::cout << "Enter \"0\" at anytime to return to previous menu and for changes to be applied\n\nWhich data of course " << courseID << " do you want to change?\n";
+
+        std::cout << "[1] Course ID\n[2] Course name\n[3] Teacher name\n[4] Number of credits\n[5] Max number of students\n[6] Day-session's of the week (ex: MON-S1|TUE-S4)\n[0] Return to previous menu\n: ";
+        std::string choice;
+        std::getline(std::cin, choice);
+
+        if (choice == "0") {
+            if (validForFile) {
+                readList(currentCourseNode, currentCourseFile);
+            }
+            return;
+        }
+
+        while (choice != "0") {
+            if (choice == "1") {
+                std::cout << "Enter the new course ID for course " << courseID << ": ";
+                std::getline(std::cin, courseID);
+                if (courseID == "0") break;
+                currentCourseNode->courseId = courseID;
+                std::cout << "Course ID changed successfully\n";
+                system("pause");
+                system("cls");
+            }
+            else if (choice == "2") {
+                std::cout << "Enter the new course name for course " << courseID << ": ";
+                std::getline(std::cin, courseName);
+                if (courseName == "0") break;
+                currentCourseNode->courseName = courseName;
+                std::cout << "Course name changed successfully\n";
+                system("pause");
+                system("cls");
+            }
+            else if (choice == "3") {
+                std::cout << "Enter the new teacher name for course " << courseID << ": ";
+                std::getline(std::cin, teacherName);
+                if (teacherName == "0") break;
+                currentCourseNode->teacherName = teacherName;
+                std::cout << "Teacher name changed successfully\n";
+                system("pause");
+                system("cls");
+            }
+            else if (choice == "5") {
+                std::cout << "Enter the new maximum number of student for course " << courseID << ": ";
+                std::getline(std::cin, maxStudent);
+                if (maxStudent == "0") break;
+                if (isDigit_w(maxStudent)) {
+                    std::cout << "Max number of student changed successfully\n";
+                    currentCourseNode->studentMax = stoi(maxStudent);
+                }
+                else {
+                    std::cout << "Input error: value entered is not a number\n";
+                    validForFile = 0;
+                }
+                system("pause");
+                system("cls");
+            }
+            else if (choice == "4") {
+                std::cout << "Enter the new number of credits for course " << courseID << ": ";
+                std::getline(std::cin, creditNum);
+                if (creditNum == "0") break;
+                if (isDigit_w(creditNum)) {
+                    std::cout << "Number of credits changed successfully\n";
+                    currentCourseNode->numOfCredits = creditNum;
+                }
+                else {
+                    std::cout << "Input error: value entered is not a number\n";
+                    validForFile = 0;
+                }
+                system("pause");
+                system("cls");
+            }
+            else if (choice == "6") {
+                std::cout << "Enter the day-session (format: [weekday1]-[S1/S2/S3/S4]|[weekday2]-[S1/S2/S3/S4]|...) for course " << courseID << ": ";
+                std::getline(std::cin, daySession);
+                if (daySession == "0") break;
+                currentCourseNode->daySession = daySession;
+                std::cout << "Course name changed successfully\n";
+                system("pause");
+                system("cls");
+            }
+            choice = "0";
+        }
+    }
+}
+
+void deleteCourse(Semesters* semestersHead, int schoolYear) {
+    Semesters* curr;
+    std::string cont = "y";
+    while (cont == "y") {
+        std::cout << "Enter the ID of the course whose information you want to delete (enter \"0\" to return to previous menu): ";
+        std::string courseID;
+        std::getline(std::cin, courseID);
+        bool isFound = 0;
+        curr = semestersHead;
+        while (curr != nullptr) {
+            if (curr->schoolYear == schoolYear) {
+                Course* semesterCourseHead = curr->semesterCourseHead;
+
+                if (courseID == "0") return;
+
+                Course* semesterCourseCurr = semesterCourseHead;
+                while (semesterCourseCurr != nullptr) {
+                    if (semesterCourseCurr->courseId == courseID) {
+                        std::string originalCourseID = courseID;
+                        isFound = 1;
+                        std::fstream currentCourseFile;
+                        currentCourseFile.open(std::string("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(curr->semester) + "/course.csv").c_str(), std::ios::out);
+                        //If there is only one node in the list, the program has no way to know that there is no node left so the head itself is assigned to point to null right before the deletion
+                        if (semesterCourseCurr->nodePrev == nullptr && semesterCourseHead->nodeNext == nullptr) semesterCourseHead = nullptr;
+                        deleteCourseNext(semesterCourseCurr, currentCourseFile, courseID);
+
+                        if (courseID == "") {
+                            std::string rmvDir = "data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(curr->semester) + "/" + originalCourseID;
+                            remove(std::string(rmvDir + "/student.csv").c_str());
+                            rmdir(rmvDir.c_str());
+                        }
+
+                        currentCourseFile.close();
+
+                        system("pause");
+                        break;
+                    }
+                    semesterCourseCurr = semesterCourseCurr->nodeNext;
+                }
+            }
+            curr = curr->nodeNext;
+        }
+        if (!isFound) std::cout << "No course with the given ID found\n";
+
+        std::cout << "Do you want to choose another course? \"y\" to continue, \"n\" or anything else to return to previous menu: ";
+        std::getline(std::cin, cont);
+        system("cls");
+    }
+}
+
+void deleteCourseNext(Course*& currentCourseHead, std::fstream& currentCourseFile, std::string& courseID) {
+    Course* rmv = currentCourseHead;
+    if (rmv->nodePrev != nullptr || rmv->nodeNext != nullptr) {
+        if (rmv->nodePrev != nullptr) {
+            rmv->nodePrev->nodeNext = rmv->nodeNext;
+            currentCourseHead = rmv->nodePrev;
+        }
+        if (rmv->nodeNext != nullptr) {
+            rmv->nodeNext->nodePrev = rmv->nodePrev;
+            currentCourseHead = rmv->nodeNext;
+        }
+    }
+    else if (rmv->nodePrev == nullptr && rmv->nodeNext == nullptr) currentCourseHead = nullptr;
+    delete rmv;
+    std::cout << "Course " << courseID << " deleted successfully\n";
+    courseID = "";
+
+    Course* curr = currentCourseHead;
+    if (curr != nullptr) {
+        while (curr->nodePrev != nullptr) {
+            curr = curr->nodePrev;
+        }
+    }
+    readList(curr, currentCourseFile);
+}
+
 bool courseFormatCheck(std::string courseData) {
     int level = 0;
     int commaCount = 0;
@@ -478,6 +692,21 @@ bool courseFormatCheck(std::string courseData) {
             std::string daySession = courseData.substr(afterComma + 1);
             if (daySession == "") return 0;
             if (daySession[daySession.size() - 1] == '|') return 0;
+            if (countElement(daySession, '|') > 1) return 0;
+
+            bool isWDay = 0;
+            if (daySession.substr(0, 3) == "MON" || daySession.substr(0, 3) == "TUE" || daySession.substr(0, 3) == "WED" || daySession.substr(0, 3) == "THU") isWDay = 1;
+            if (daySession.substr(0, 3) == "FRI" || daySession.substr(0, 3) == "SAT" || daySession.substr(0, 3) == "SUN") isWDay = 1;
+            if (!isWDay) return 0;
+            isWDay = 0;
+            if (daySession.substr(7, 3) == "MON" || daySession.substr(7, 3) == "TUE" || daySession.substr(7, 3) == "WED" || daySession.substr(7, 3) == "THU") isWDay = 1;
+            if (daySession.substr(7, 3) == "FRI" || daySession.substr(7, 3) == "SAT" || daySession.substr(7, 3) == "SUN") isWDay = 1;
+            if (!isWDay) return 0;
+
+            bool isValidSession = 0;
+            if (daySession.substr(4, 2) == "S1" || daySession.substr(4, 2) == "S2" || daySession.substr(4, 2) == "S3" || daySession.substr(4, 2) == "S4") isValidSession = 1;
+            if (daySession.substr(11, 2) == "S1" || daySession.substr(11, 2) == "S2" || daySession.substr(11, 2) == "S3" || daySession.substr(11, 2) == "S4") isValidSession = 1;
+            if (!isValidSession) return 0;
         }
     }
     if (commaCount != 5) return 0;
@@ -515,4 +744,91 @@ bool checkInputFormatSC(std::fstream& inputFile, int mode) {
     inputFile.clear();
     inputFile.seekg(0);
     return 1;
+}
+
+void createCourseReg(CourseReg*& courseRegHead, std::fstream& dataFile, int schoolYear, Semesters* semestersHead) {
+    std::string input;
+    std::string cont = "y";
+    CourseReg* newNode = nullptr;
+
+    CourseReg* curr = courseRegHead;
+    if (curr != nullptr) {
+        while (curr->nodeNext != nullptr) {
+            curr = curr->nodeNext;
+        }
+    }
+    
+    while (cont == "y") {
+        while (input != "0") {
+            std::cout << "\n====================================\n\nEnter \"0\" at anytime to return to previous menu\n\n";
+            if (newNode == nullptr) newNode = new CourseReg;
+            newNode->schoolYear = schoolYear;
+
+            std::cout << "Enter the semester this course registration session belongs to: ";
+            std::getline(std::cin, input);
+            if (input == "0") break;
+            if (!isDigit_w(input)) break;
+            newNode->semester = stoi(input);
+
+            if (!courseRegSearchBool(courseRegHead, newNode->schoolYear, newNode->semester)) {
+                std::cout << "Enter the date this course registration session starts: ";
+                std::getline(std::cin, input);
+                if (input == "0") break;
+                newNode->startDate = input;
+
+                std::cout << "Enter the date this course registration session ends: ";
+                std::getline(std::cin, input);
+                if (input == "0") break;
+                newNode->endDate = input;
+
+                Semesters* currSem = semestersHead;
+                while (currSem != nullptr) {
+                    if (currSem->schoolYear == schoolYear && currSem->semester == newNode->semester) {
+                        if (isDateLaterThanOrEqualTo(newNode->startDate, currSem->startDate) && isDateEarlierThanOrEqualTo(newNode->endDate, currSem->endDate)) {
+                            newNode->nodeNext = nullptr;
+                            newNode->nodePrev = curr;
+                            if (courseRegHead != nullptr) curr->nodeNext = newNode;
+                            else courseRegHead = newNode;
+                            readList(courseRegHead, dataFile);
+                            std::cout << "Course registration session successfully created\n";
+                            system("pause");
+                        }
+                        else {
+                            std::cout << "This course registration session exceeds the time span allowed for semester " << newNode->semester
+                            << " of school year " << schoolYear << "-" << schoolYear + 1 << "\n";
+                        }
+                        break;
+                    }
+                    currSem = currSem->nodeNext;
+                }
+                if (currSem == nullptr) {
+                    std::cout << "The school year " << schoolYear << "-" << schoolYear + 1 << " has no semester " << newNode->semester << "\n";
+                }
+                
+            }
+            else {
+                delete newNode;
+            }
+            break;
+        }
+        
+        if (input != "0") {
+            std::cout << "Do you want to continue creating course registration session(s)? \"y\" to continue, \"n\" or anything else to return to previous menu: ";
+            std::getline(std::cin, cont);
+        }
+        else {
+            delete newNode;
+            break;
+        }
+    }
+    system("cls");
+}
+
+bool courseRegSearchBool(CourseReg* courseRegHead, int schoolYear, int semester) {
+    CourseReg* curr = courseRegHead;
+    while (curr != nullptr) {
+        if (curr->schoolYear == schoolYear && curr->semester == semester) return 1;
+        curr = curr->nodeNext;
+    }
+    return 0;
 }
