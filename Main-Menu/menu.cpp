@@ -16,7 +16,6 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
         << "delete course: delete existing course/course\n"
         << "create course registration: create a course registration session\n"
         << "view: get access to the view feature (from which you can perform further actions)\n"
-        << "change date: change the current date\n"
         << "back: return to previous menu\n: ";
 
         std::string choice;
@@ -42,8 +41,6 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
             createCourseRegMenu(data.courseRegHead, courseRegData, data.schoolYearHead, data.semesterHead);
         else if (choice == "view")
             viewMenu(data);
-        else if (choice == "change date")
-            updateDate(currentDate);
         else if (choice == "back") cont = 0;
         else std::cout << "Invalid action\n";
 

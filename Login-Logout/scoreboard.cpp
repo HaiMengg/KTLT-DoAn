@@ -13,11 +13,11 @@ float getTotalMark(float mid, float final, float other)
 // Export students in a course to a csv file
 void exportScoreboard(Login data)
 {
-    std::cout << "Input ID of a course to export students (or input 1 to go back): ";
+    std::cout << "Input ID of a course to export students (or input 0 to go back): ";
     std::string courseId;
     std::cin >> courseId;
 
-    if (courseId == "1")
+    if (courseId == "0")
     {
         std::cout << "----------------\n";
         return;
@@ -67,11 +67,11 @@ void exportScoreboard(Login data)
 // Update scoreboard of a course
 void updateScoreboard(Login data)
 {
-    std::cout << "Input ID of a course to update scoreboard (or input 1 to go back): ";
+    std::cout << "Input ID of a course to update scoreboard (or input 0 to go back): ";
     std::string courseId;
     std::cin >> courseId;
 
-    if (courseId == "1")
+    if (courseId == "0")
     {
         std::cout << "----------------\n";
         return;
@@ -224,14 +224,14 @@ void importScoreboard(Login data)
     return;
 }
 
-// View the scoreboard of a course
+// View scoreboard of a course
 void viewScoreboardCourse(Login data)
 {
-    std::cout << "Input ID of a course to view (or input 1 to go back): ";
+    std::cout << "Input ID of a course to view (or input 0 to go back): ";
     std::string courseId;
     std::cin >> courseId;
 
-    if (courseId == "1")
+    if (courseId == "0")
     {
         std::cout << "----------------\n";
         return;
@@ -309,10 +309,10 @@ void updateStudentResult(Login data)
     float mid, final, other, total;
     bool check = false;
 
-    std::cout << "Input student ID to update result (or input 1 to go back): ";
+    std::cout << "Input student ID to update result (or input 0 to go back): ";
     std::cin >> studentId;
 
-    if (studentId == "1")
+    if (studentId == "0")
     {
         std::cout << "----------------\n";
         return;
@@ -338,10 +338,10 @@ void updateStudentResult(Login data)
 
     check = false;
 
-    std::cout << "Input course ID to update result (or input 1 to go back): ";
+    std::cout << "Input course ID to update result (or input 0 to go back): ";
     std::cin >> courseId;
 
-    if (courseId == "1")
+    if (courseId == "0")
     {
         std::cout << "----------------\n";
         return;
@@ -394,5 +394,154 @@ void updateStudentResult(Login data)
 
     std::cout << "Student result updated!\n";
     std::cout << "----------------\n";
+    return;
+}
+
+// View scoreboard of a student
+void viewScoreboardStudent(Login data, std::string studentID)
+{
+    std::cout << std::left
+    << std::setw(15) << "Course"
+    << std::setw(10) << "Midterm"
+    << std::setw(10) << "Final"
+    << std::setw(10) << "Other"
+    << std::setw(10) << "Total" << std::endl;
+
+    float sum, gpa;
+    int count = 0;
+
+    if (data.semester > 0)
+    {
+        CourseScore* curSem1 = data.courseSem1;
+        while (curSem1 != nullptr)
+        {
+            if (curSem1 -> studentID == studentID)
+            {
+                sum += std::stof(curSem1 -> total);
+                count++;
+            }
+            curSem1 = curSem1 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        sum = 0, count = 0;
+    }
+
+    if (data.semester > 1)
+    {
+        CourseScore* curSem2 = data.courseSem2;
+        while (curSem2 != nullptr)
+        {
+            if (curSem2 -> studentID == studentID)
+            {
+                sum += std::stof(curSem2 -> total);
+                count++;
+            }
+            curSem2 = curSem2 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        if (data.semester == 2) gpa = gpa / 2;
+        sum = 0, count = 0;
+    }
+
+    if (data.semester > 2)
+    {
+        CourseScore* curSem3 = data.courseSem3;
+        while (curSem3 != nullptr)
+        {
+            if (curSem3 -> studentID == studentID)
+            {
+                sum += std::stof(curSem3 -> total);
+                count++;
+            }
+            curSem3 = curSem3 -> nodeNext;
+        }
+
+        gpa += (sum / (10 * count)) * 4;
+        gpa = gpa / 3;
+        sum = 0, count = 0;
+    }
+
+    CourseScore* curCourseScore = data.courseScore;
+    while (curCourseScore != nullptr)
+    {
+        if (curCourseScore -> studentID == studentID)
+        {
+            sum += std::stof(curCourseScore -> total);
+            count++;
+
+            std::cout << std::setw(15) << curCourseScore -> courseID
+            << std::setw(10) << curCourseScore -> midterm
+            << std::setw(10) << curCourseScore -> final
+            << std::setw(10) << curCourseScore -> other
+            << std::setw(10) << curCourseScore -> total << std::endl;
+        }
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+
+    std::cout << "Average: " << sum / count << std::endl
+    << "GPA: " << (sum / (10 * count)) * 4 << std::endl
+    << "Overall GPA: " << gpa << std::endl;
+    std::cout << "----------------\n";
+    return;
+}
+
+// View scoreboard of a class
+void viewScoreboardClass(Login data)
+{
+    std::string classID;
+    std::cout << "Input class ID to view scoreboard (or input 0 to go back): ";
+    std::cin >> classID;
+
+    if (classID == "0")
+    {
+        std::cout << "----------------\n";
+        return;
+    }
+
+    bool check = false;
+    Student* curStudent = data.student;
+    while (curStudent != nullptr)
+    {
+        if (curStudent -> classID == classID)
+        {
+            check = true;
+            break;
+        }
+        curStudent = curStudent -> nodeNext;
+    }
+
+    if (!check)
+    {
+        std::cout << "Could not find that class.\n";
+        std::cout << "----------------\n";
+        return;
+    }
+
+    std::cout << "----------------\n";
+    std::string studentPrinted;
+
+    CourseScore* curCourseScore = data.courseScore;
+    while (curCourseScore != nullptr)
+    {
+        Student* curStudent = data.student;
+        while (curStudent != nullptr)
+        {
+            if (curCourseScore -> studentID == curStudent -> studentID && curStudent -> classID == classID)
+            {
+                if (studentPrinted.find(curCourseScore -> studentID) == std::string::npos)
+                {
+                    studentPrinted += "-" + curCourseScore -> studentID;
+                    std::cout << curCourseScore -> studentID << " - " << curCourseScore -> fullname << std::endl;
+                    viewScoreboardStudent(data, curCourseScore -> studentID);
+                    break;
+                }
+            }
+            curStudent = curStudent -> nodeNext;
+        }
+        curCourseScore = curCourseScore -> nodeNext;
+    }
+
     return;
 }

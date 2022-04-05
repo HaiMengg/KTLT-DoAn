@@ -9,6 +9,42 @@
 #include "struct.h"
 #include "../Main-Menu/menu.h"
 
+int getCurrentSchoolYear(Semesters* semestersHead, int semester, std::string currentDate) {
+    Semesters* curr = semestersHead;
+    while (curr != nullptr) {
+        if (curr->semester == semester && isDateLaterThanOrEqualTo(currentDate, curr->startDate) && isDateEarlierThanOrEqualTo(currentDate, curr->endDate))
+            return curr->schoolYear;
+        curr = curr->nodeNext;
+    }
+    return -1;
+}
+
+void updateCourseHead(Course*& currentCourseList, std::string currentDate, Semesters* semestersHead) {
+    int semester = getCurrentSemester(currentDate, semestersHead);
+    if (semester == -1) {
+        currentCourseList = nullptr;
+        return;
+    }
+    int schoolYear = getCurrentSchoolYear(semestersHead, semester, currentDate);
+    if (schoolYear == -1) {
+        currentCourseList = nullptr;
+        return;
+    }
+
+    Semesters* curr = semestersHead;
+    bool found = 0;
+    while (curr != nullptr) {
+        if (curr->schoolYear == schoolYear && curr->semester == semester) {
+            found = 1;
+            std::fstream currentCourseFile("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(semester) + "/course.csv", std::ios::in);
+            createList(currentCourseList, currentCourseFile);
+            break;
+        }
+        curr = curr->nodeNext;
+    }
+    if (!found) currentCourseList = nullptr;
+}
+
 // Get current year
 int getYear()
 {
@@ -166,6 +202,7 @@ void showCourses(Course* data)
     << std::setw(20) << "Sessions" << std::endl;
 
     Course* cur = data;
+    if (cur == nullptr) std::cout << "No course available to show\n";
     while (cur != nullptr)
     {
         showCourseNode(cur);
@@ -178,11 +215,11 @@ void showCourses(Course* data)
 // Enroll in a course
 void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
-    std::cout << "Input ID of a course to enroll in (or input 1 to go back): ";
+    std::cout << "Input ID of a course to enroll in (or input 0 to go back): ";
     std::string enrollId;
-    std::cin >> enrollId;
+    std::getline(std::cin, enrollId);
 
-    if (enrollId == "1")
+    if (enrollId == "0")
     {
         std::cout << "----------------\n";
         studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
@@ -366,9 +403,15 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
 // Remove an enrolled course
 void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
-    std::cout << "Input ID of an enrolled course to remove (or input 1 to go back): ";
+    std::cout << "Input ID of an enrolled course to remove (or input 0 to go back): ";
     std::string removeId;
     std::cin >> removeId;
+    
+    if (removeId == "0")
+    {
+        std::cout << "----------------\n";
+        return;
+    }
 
     std::string enrolled;
     StudentCourse* curCourse = data.curStudent -> studentCourseHead;

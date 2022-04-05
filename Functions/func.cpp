@@ -74,11 +74,14 @@ int getDateData(std::string givenDate, char mode) {
 }
 
 void updateDate(std::string& currentDate) {
-    std::cout << "Enter the current date: ";
+    std::cout << "Enter the current date (enter \"0\" to return to previous menu): ";
     std::getline(std::cin, currentDate);
+    if (currentDate == "0") return;
+    
     while (!isValidDate(currentDate)) {
-        std::cout << "Invalid date. Re-enter: ";
+        std::cout << "Invalid date. Re-enter (enter \"0\" to return to previous menu): ";
         std::getline(std::cin, currentDate);
+        if (currentDate == "0") return;
     }
 }
 

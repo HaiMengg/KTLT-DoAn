@@ -27,14 +27,11 @@ struct CourseScore {
 
 struct Login
 {
-    Staff* staff;
-    Staff* curStaff;
-    Teacher* teacher;
-    Teacher* curTeacher;
-    Student* student;
-    Student* curStudent;
-    Course* course;
-    CourseScore* courseScore;
+    Staff *staff, *curStaff;
+    Teacher *teacher, *curTeacher;
+    Student *student, *curStudent;
+    Course *course;
+    CourseScore *courseScore, *courseSem1, *courseSem2, *courseSem3;
     std::string username, password;
     int year = 0, semester = 0, identity = 0;
 };
@@ -43,9 +40,11 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
 void printStaffMenu(std::string username, std::string currentDate, Semesters* semesterHead);
 void printTeacherMenu(std::string username, std::string currentDate, Semesters* semesterHead);
 void printStudentMenu(std::string username, std::string currentDate, Semesters* semesterHead);
-
+void updateCourseHead(Course*& currentCourseList, std::string currentDate, Semesters* semestersHead);
+int getCurrentSchoolYear(Semesters* semestersHead, int semester, std::string currentDate);
 
 void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head);
+void readCourse(Course* &data, std::fstream &input, int year, int sem);
 void readStaff(Staff* &data, std::fstream &input);
 void readTeacher(Teacher* &data, std::fstream &input);
 void readStudent(Student* &data, std::fstream &input);
@@ -61,7 +60,7 @@ bool checkSemester(std::string start, std::string end);
 int getSemester(std::fstream &input);
 int getCurrentSemester(std::string, Semesters*);
 void printCurrentDate(std::string, Semesters*);
-void readCourse(Course* &data, std::fstream &input);
+//void readCourse(Course* &data, std::fstream &input);
 void replaceAll(std::string& str, const std::string& from, const std::string& to);
 void showCourseNode(Course* data);
 void showCourses(Course* data);
@@ -84,3 +83,5 @@ void updateScoreboard(Login data);
 void importScoreboard(Login data);
 void viewScoreboardCourse(Login data);
 void updateStudentResult(Login data);
+void viewScoreboardStudent(Login data, std::string studentID);
+void viewScoreboardClass(Login data);

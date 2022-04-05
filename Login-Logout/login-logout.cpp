@@ -98,6 +98,7 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
     else if (option == "4") {
         updateDate(currentDate);
         printCurrentDate(currentDate, node.semesterHead);
+        updateCourseHead(data.course, currentDate, node.semesterHead);
         return loginCheck(data, node, sY, cl, stu, sem, cR, currentDate); 
     }
     else if (option == "5") return;
@@ -116,8 +117,8 @@ void printStaffMenu(std::string username, std::string currentDate, Semesters* se
     "Welcome " << username << "!\n\n"
     << "[1] View info\n[2] Export students in a course\n[3] Import all scoreboards\n"
     << "[4] View scoreboard of a course\n[5] Update a student result\n"
-    << "[6] Other actions\n[7] Change password\n"
-    << "[8] Log out\n[9] Change current date\n[10] Exit program\n"
+    << "[6] View scoreboard of a class\n[7] Other actions\n[8] Change password\n"
+    << "[9] Log out\n[10] Change current date\n[11] Exit program\n"
     << "----------------\n";
 }
 void printTeacherMenu(std::string username, std::string currentDate, Semesters* semesterHead) {
@@ -170,23 +171,29 @@ void staffMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std:
         updateStudentResult(data);
         staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "6") {
+    else if (option == "6")
+    {
+        viewScoreboardClass(data);
+        staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
+    }
+    else if (option == "7") {
         system("cls");
         currentMenu(node, sY, cl, stu, sem, cR, currentDate);
         return staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "7") {
+    else if (option == "8") {
         changePassword(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "8") {
+    else if (option == "9") {
         system("cls");
         logOut(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "9") {
+    else if (option == "10") {
         updateDate(currentDate);
+        updateCourseHead(data.course, currentDate, node.semesterHead);
         return staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "10") return;
+    else if (option == "11") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n\n";
@@ -281,6 +288,7 @@ void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, st
     }
     else if (option == "7") {
         updateDate(currentDate);
+        updateCourseHead(data.course, currentDate, node.semesterHead);
         return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "8") return;

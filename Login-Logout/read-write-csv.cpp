@@ -26,19 +26,18 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     Staff* staffData = new Staff;
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
-    Course* courseData = new Course;
+    Course* courseData = nullptr;
     CourseScore* courseScoreData = new CourseScore;
 
     // Read CSV files
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
+    updateCourseHead(courseData, currentDate, node.semesterHead);
     if (sem != -1) {
-        readCourse(courseData, course);
         readScoreboard(courseScoreData, schoolYear, sem);
     }
     else {
-        delete courseData; courseData = nullptr;
         delete courseScoreData; courseScoreData = nullptr;
     }
 
@@ -49,6 +48,7 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     data.student = studentData;
     data.course = courseData;
     data.semester = sem;
+    data.courseScore = courseScoreData;
     loginCheck(data, node, sY, cl, stu, semes, cR, currentDate);
     deleteData(data);
 }
