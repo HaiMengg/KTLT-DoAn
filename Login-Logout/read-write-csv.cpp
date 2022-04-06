@@ -17,9 +17,9 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
     Course* courseData = nullptr;
-    CourseScore* courseSem1Data = new CourseScore;
-    CourseScore* courseSem2Data = new CourseScore;
-    CourseScore* courseSem3Data = new CourseScore;
+    CourseScore* courseSem1Data = nullptr;
+    CourseScore* courseSem2Data = nullptr;
+    CourseScore* courseSem3Data = nullptr;
 
     // Read CSV files
     int sem, schoolYear;
@@ -31,11 +31,6 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
         readScoreboard(courseSem1Data, schoolYear, 1);
         readScoreboard(courseSem2Data, schoolYear, 2);
         readScoreboard(courseSem3Data, schoolYear, 3);
-    }
-    else {
-        delete courseSem1Data; courseSem1Data = nullptr;
-        delete courseSem2Data; courseSem2Data = nullptr;
-        delete courseSem3Data; courseSem3Data = nullptr;
     }
 
     // Log in to the system
@@ -283,6 +278,12 @@ void readScoreboard(CourseScore* &data, int year, int semester)
     std::string str;
     getline(input, str);
 
+    if (input.eof()) {
+        input.close();
+        return;
+    }
+
+    data = new CourseScore;
     CourseScore* curCourseScore = data;
     while (true)
     {
@@ -304,6 +305,7 @@ void readScoreboard(CourseScore* &data, int year, int semester)
         curCourseScore -> nodeNext = new CourseScore;
         curCourseScore = curCourseScore -> nodeNext;
     }
+    input.close();
 }
 
 // Write to each course.csv

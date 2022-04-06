@@ -48,12 +48,8 @@ void updateCourseHead(Course*& currentCourseList, int& sY, int& sem, std::string
 }
 
 void updateCourseScoreHead(CourseScore*& currentCourseScoreList, int schoolYear, int semester) {
-    if (currentCourseScoreList == nullptr) currentCourseScoreList = new CourseScore;
     if (semester != -1 && schoolYear != -1) {
         readScoreboard(currentCourseScoreList, schoolYear, semester);
-    }
-    else {
-        delete currentCourseScoreList; currentCourseScoreList = nullptr;
     }
 }
 
@@ -417,12 +413,12 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
 {
     std::cout << "Input ID of an enrolled course to remove (or input 0 to go back): ";
     std::string removeId;
-    std::cin >> removeId;
+    std::getline(std::cin, removeId);
     
     if (removeId == "0")
     {
         std::cout << "----------------\n";
-        return;
+        return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
 
     std::string enrolled;

@@ -487,6 +487,7 @@ void createList(Course*& courseHead, std::fstream& dataFile, int schoolYear, int
                     if (courseStudentFile.is_open()) {
                         createStuCoList(courseHead->courseStudentHead, courseStudentFile);
                     }
+                    courseStudentFile.close();
 
                     curr = courseHead;
                 }
@@ -500,9 +501,11 @@ void createList(Course*& courseHead, std::fstream& dataFile, int schoolYear, int
                     
                     curr->nodeNext = nullptr;
                     
+                    courseStudentFile.open(std::string("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(semester) + "/" + curr->courseId + "/student.csv"), std::ios::in);
                     if (courseStudentFile.is_open()) {
                         createStuCoList(curr->courseStudentHead, courseStudentFile);
                     }
+                    courseStudentFile.close();
                 }
             }
         }
@@ -737,8 +740,7 @@ void destructList(Node& node) {
     SchoolYear* sy = node.schoolYearHead;
     Classes* cl = node.classesHead;
     Semesters* sem = node.semesterHead;
-    Student* stu = node.studentHead;
-    while (sy != nullptr || cl != nullptr || sem != nullptr || stu != nullptr) {
+    while (sy != nullptr || cl != nullptr || sem != nullptr) {
         if (sy != nullptr) {
             SchoolYear* rmv = sy;
             sy = sy->nodeNext;
@@ -754,13 +756,8 @@ void destructList(Node& node) {
             sem = sem->nodeNext;
             delete rmv;
         }
-        if (stu != nullptr) {
-            Student* rmv = stu;
-            stu = stu->nodeNext;
-            delete rmv;
-        }
     }
-    sy, cl, sem, stu = nullptr;
+    sy, cl, sem = nullptr;
 }
 void destructList(SNode*& nodeHead) {
     while (nodeHead != nullptr) {

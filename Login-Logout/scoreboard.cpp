@@ -152,6 +152,8 @@ void updateScoreboard(Login data)
         std::cin >> other;
         output << other << ",";
 
+        std::cin.ignore(10000, '\n');
+
         output << getTotalMark(mid, final, other);
 
         if (cur -> nodeNext != nullptr)
@@ -175,7 +177,7 @@ void updateScoreboard(Login data)
 }
 
 // Import all scoreboards
-void importScoreboard(Login data)
+void importScoreboard(Login& data)
 {
     std::string course, temp;
     std::string dir = "data/" + std::to_string(data.year) + "/semesters/"
@@ -223,6 +225,14 @@ void importScoreboard(Login data)
 
         curCourse = curCourse -> nodeNext;
     }
+
+    readScoreboard(data.courseSem1, data.year, 1);
+    readScoreboard(data.courseSem2, data.year, 2);
+    readScoreboard(data.courseSem3, data.year, 3);
+    if (data.semester == 1) data.courseScore = data.courseSem1;
+    else if (data.semester == 2) data.courseScore = data.courseSem2;
+    else if (data.semester == 3) data.courseScore = data.courseSem3;
+    else data.courseScore = nullptr;
 
     std::cout << "Scoreboard imported!\n";
     std::cout << "----------------\n";
@@ -385,10 +395,12 @@ void updateStudentResult(Login data)
     std::cout << "Input Other Mark: ";
     std::cin >> other;
 
+    std::cin.ignore(10000, '\n');
+
     total = getTotalMark(mid, final, other);
 
     CourseScore* curCourseScore = data.courseScore;
-    while (true)
+    while (curCourseScore != nullptr)
     {
         if (curCourseScore -> studentID == studentId && curCourseScore -> courseID == courseId)
         {
@@ -511,6 +523,8 @@ void viewScoreboardClass(Login data)
         return;
     }
 
+    classID = toUpper_w(classID);
+
     bool check = false;
     Student* curStudent = data.student;
     while (curStudent != nullptr)
@@ -536,7 +550,7 @@ void viewScoreboardClass(Login data)
     CourseScore* curCourseScore = data.courseScore;
     while (curCourseScore != nullptr)
     {
-        Student* curStudent = data.student;
+        curStudent = data.student;
         while (curStudent != nullptr)
         {
             if (curCourseScore -> studentID == curStudent -> studentID && curStudent -> classID == classID)
