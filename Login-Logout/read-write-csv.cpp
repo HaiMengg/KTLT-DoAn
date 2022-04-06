@@ -12,43 +12,45 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     teacher.open("data/teacher.csv", std::ios::in);
     student.open("data/student.csv", std::ios::in);
 
-    int schoolYear = getDateData(currentDate, 'y');
-
-    //Get current semester
-    Semesters* semesList = nullptr;
-    createList(semesList, semes);
-    printCurrentDate(currentDate, semesList);
-    int sem = getCurrentSemester(currentDate, semesList);
-    course.open("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(sem) + "/course.csv", std::ios::in);
-    destructList(semesList);
-
     // Linked lists
     Staff* staffData = new Staff;
     Teacher* teacherData = new Teacher;
     Student* studentData = new Student;
     Course* courseData = nullptr;
-    CourseScore* courseScoreData = new CourseScore;
+    CourseScore* courseSem1Data = new CourseScore;
+    CourseScore* courseSem2Data = new CourseScore;
+    CourseScore* courseSem3Data = new CourseScore;
 
     // Read CSV files
+    int sem, schoolYear;
     readStaff(staffData, staff);
     readTeacher(teacherData, teacher);
     readStudent(studentData, student);
-    updateCourseHead(courseData, currentDate, node.semesterHead);
+    updateCourseHead(courseData, schoolYear, sem, currentDate, node.semesterHead);
     if (sem != -1) {
-        readScoreboard(courseScoreData, schoolYear, sem);
+        readScoreboard(courseSem1Data, schoolYear, 1);
+        readScoreboard(courseSem2Data, schoolYear, 2);
+        readScoreboard(courseSem3Data, schoolYear, 3);
     }
     else {
-        delete courseScoreData; courseScoreData = nullptr;
+        delete courseSem1Data; courseSem1Data = nullptr;
+        delete courseSem2Data; courseSem2Data = nullptr;
+        delete courseSem3Data; courseSem3Data = nullptr;
     }
 
     // Log in to the system
     Login data;
     data.staff = staffData;
     data.teacher = teacherData;
-    data.student = studentData;
+    data.student = node.studentHead;
     data.course = courseData;
+    data.year = schoolYear;
     data.semester = sem;
-    data.courseScore = courseScoreData;
+    if (sem == 1) data.courseScore = courseSem1Data;
+    else if (sem == 2) data.courseScore = courseSem2Data;
+    else if (sem == 3) data.courseScore = courseSem3Data;
+    else data.courseScore = nullptr;
+    printCurrentDate(currentDate, node.semesterHead);
     loginCheck(data, node, sY, cl, stu, semes, cR, currentDate);
     deleteData(data);
 }
@@ -274,7 +276,9 @@ void readScoreboard(CourseScore* &data, int year, int semester)
     + std::to_string(semester) + "/scoreboard.csv";
 
     input.open(dir, std::ios::in);
-    if (!input.good()) return;
+    if (!input.good()) {
+        return;
+    }
 
     std::string str;
     getline(input, str);

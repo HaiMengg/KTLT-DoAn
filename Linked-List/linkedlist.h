@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <direct.h>
 #include "../Functions/func.h"
@@ -83,14 +84,18 @@ void createList(Classes*& classHead, std::fstream& dataFile);
 void createList(Student*& studentHead, std::fstream& dataFile);
 //For reading students of a single class
 void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, std::string currentClass);
+//For reading students of a single course
+void createStuCoList(Student*& studentHead, std::fstream& dataFile);
 void readStudentData(Student*& studentNode, std::string studentData, bool = true);
 
 void createList(Semesters*& semestersHead, std::fstream& dataFile, int = -1);
 void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool = true);
 
-void createList(Course*& courseHead, std::fstream& dataFile);
+void createList(Course*& courseHead, std::fstream& dataFile, int schoolYear, int semester);
 void readCourseData(Course*& courseHead, std::string courseData);
 void readList(Course* courseHead, std::fstream& courseFile);
+
+void createList(StudentCourse*& studentCourseHead, std::string courseData, int schoolYear);
 
 void createList(CourseReg*& courseRegHead, std::fstream& dataFile);
 void readCourseRegData(CourseReg*& courseHead, std::string courseData);

@@ -40,7 +40,8 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
 void printStaffMenu(std::string username, std::string currentDate, Semesters* semesterHead);
 void printTeacherMenu(std::string username, std::string currentDate, Semesters* semesterHead);
 void printStudentMenu(std::string username, std::string currentDate, Semesters* semesterHead);
-void updateCourseHead(Course*& currentCourseList, std::string currentDate, Semesters* semestersHead);
+void updateCourseHead(Course*& currentCourseList, int& sY, int& sem, std::string currentDate, Semesters* semestersHead);
+void updateCourseScoreHead(CourseScore*& currentCourseScoreList, int schoolYear, int semester);
 int getCurrentSchoolYear(Semesters* semestersHead, int semester, std::string currentDate);
 
 void readCourse(std::string courses, std::string schoolYear, StudentCourse* &head);

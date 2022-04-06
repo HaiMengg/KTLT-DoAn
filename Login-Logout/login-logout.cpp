@@ -98,7 +98,8 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
     else if (option == "4") {
         updateDate(currentDate);
         printCurrentDate(currentDate, node.semesterHead);
-        updateCourseHead(data.course, currentDate, node.semesterHead);
+        updateCourseHead(data.course, data.year, data.semester, currentDate, node.semesterHead);
+        updateCourseScoreHead(data.courseScore, data.year, data.semester);
         return loginCheck(data, node, sY, cl, stu, sem, cR, currentDate); 
     }
     else if (option == "5") return;
@@ -153,7 +154,6 @@ void staffMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std:
     else if (option == "2")
     {
         exportScoreboard(data);
-        system("pause");
         staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "3")
@@ -190,7 +190,8 @@ void staffMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std:
     }
     else if (option == "10") {
         updateDate(currentDate);
-        updateCourseHead(data.course, currentDate, node.semesterHead);
+        updateCourseHead(data.course, data.year, data.semester, currentDate, node.semesterHead);
+        updateCourseScoreHead(data.courseScore, data.year, data.semester);
         return staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "11") return;
@@ -288,7 +289,8 @@ void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, st
     }
     else if (option == "7") {
         updateDate(currentDate);
-        updateCourseHead(data.course, currentDate, node.semesterHead);
+        updateCourseHead(data.course, data.year, data.semester, currentDate, node.semesterHead);
+        updateCourseScoreHead(data.courseScore, data.year, data.semester);
         return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "8") return;
@@ -418,4 +420,7 @@ void logOut(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fs
     data.curTeacher = nullptr;
     data.curStudent = nullptr;
     loginCheck(data, node, sY, cl, stu, sem, cR, currentDate);
+
+    system("cls");
+    printCurrentDate(currentDate, node.semesterHead);
 }

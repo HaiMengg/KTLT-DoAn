@@ -19,13 +19,15 @@ int getCurrentSchoolYear(Semesters* semestersHead, int semester, std::string cur
     return -1;
 }
 
-void updateCourseHead(Course*& currentCourseList, std::string currentDate, Semesters* semestersHead) {
+void updateCourseHead(Course*& currentCourseList, int& sY, int& sem, std::string currentDate, Semesters* semestersHead) {
     int semester = getCurrentSemester(currentDate, semestersHead);
+    sem = semester;
     if (semester == -1) {
         currentCourseList = nullptr;
         return;
     }
     int schoolYear = getCurrentSchoolYear(semestersHead, semester, currentDate);
+    sY = schoolYear;
     if (schoolYear == -1) {
         currentCourseList = nullptr;
         return;
@@ -37,12 +39,22 @@ void updateCourseHead(Course*& currentCourseList, std::string currentDate, Semes
         if (curr->schoolYear == schoolYear && curr->semester == semester) {
             found = 1;
             std::fstream currentCourseFile("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(semester) + "/course.csv", std::ios::in);
-            createList(currentCourseList, currentCourseFile);
+            createList(currentCourseList, currentCourseFile, sY, sem);
             break;
         }
         curr = curr->nodeNext;
     }
     if (!found) currentCourseList = nullptr;
+}
+
+void updateCourseScoreHead(CourseScore*& currentCourseScoreList, int schoolYear, int semester) {
+    if (currentCourseScoreList == nullptr) currentCourseScoreList = new CourseScore;
+    if (semester != -1 && schoolYear != -1) {
+        readScoreboard(currentCourseScoreList, schoolYear, semester);
+    }
+    else {
+        delete currentCourseScoreList; currentCourseScoreList = nullptr;
+    }
 }
 
 // Get current year

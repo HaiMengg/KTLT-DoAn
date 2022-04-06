@@ -15,7 +15,7 @@ void exportScoreboard(Login data)
 {
     std::cout << "Input ID of a course to export students (or input 0 to go back): ";
     std::string courseId;
-    std::cin >> courseId;
+    std::getline(std::cin, courseId);
 
     if (courseId == "0")
     {
@@ -69,7 +69,7 @@ void updateScoreboard(Login data)
 {
     std::cout << "Input ID of a course to update scoreboard (or input 0 to go back): ";
     std::string courseId;
-    std::cin >> courseId;
+    std::getline(std::cin, courseId);
 
     if (courseId == "0")
     {
@@ -193,6 +193,11 @@ void importScoreboard(Login data)
 
         std::fstream input;
         input.open(dir + "/" + course + "/scoreboard.csv", std::ios::in);
+        if (!input.good()) {
+            std::cout << "No appropriate \"scoreboard.csv\" found. Consider exporting students from course " << course << " to \"scoreboard.csv\" first.\n";
+            return;
+        }
+
         getline(input, temp);
 
         while (!input.eof())
@@ -229,7 +234,7 @@ void viewScoreboardCourse(Login data)
 {
     std::cout << "Input ID of a course to view (or input 0 to go back): ";
     std::string courseId;
-    std::cin >> courseId;
+    std::getline(std::cin, courseId);
 
     if (courseId == "0")
     {
@@ -262,6 +267,11 @@ void viewScoreboardCourse(Login data)
 
     input.open(dir, std::ios::in);
 
+    if (!input.good()) {
+        std::cout << "No appropriate \"scoreboard.csv\" found. Consider exporting students from course " << courseId << " to \"scoreboard.csv\" first.\n";
+        return;
+    }
+
     std::string str;
     std::getline(input, str);
 
@@ -275,6 +285,7 @@ void viewScoreboardCourse(Login data)
     << std::setw(10) << "Other"
     << std::setw(10) << "Total" << std::endl;
 
+    if (input.eof()) std::cout << "No course score data found\n";
     while (!input.eof())
     {
         std::getline(input, str, '\n');
@@ -310,7 +321,7 @@ void updateStudentResult(Login data)
     bool check = false;
 
     std::cout << "Input student ID to update result (or input 0 to go back): ";
-    std::cin >> studentId;
+    std::getline(std::cin, studentId);
 
     if (studentId == "0")
     {
@@ -339,7 +350,7 @@ void updateStudentResult(Login data)
     check = false;
 
     std::cout << "Input course ID to update result (or input 0 to go back): ";
-    std::cin >> courseId;
+    std::getline(std::cin, courseId);
 
     if (courseId == "0")
     {
@@ -492,7 +503,7 @@ void viewScoreboardClass(Login data)
 {
     std::string classID;
     std::cout << "Input class ID to view scoreboard (or input 0 to go back): ";
-    std::cin >> classID;
+    std::getline(std::cin, classID);
 
     if (classID == "0")
     {

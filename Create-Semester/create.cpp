@@ -387,7 +387,7 @@ void appendNewCourse(Semesters*& semestersHead, std::string newCoursedata, int s
         courseFileData << "courseid,coursename,teachername,numberofcredits,studentmax,daySession (ex: MON-S1|TUE-S4|....)";
     }
     courseFileData.seekg(0);
-    createList(semestersHead->semesterCourseHead, courseFileData);
+    createList(semestersHead->semesterCourseHead, courseFileData, schoolYear, semester);
 
     Course* nodeNew = new Course;
     readCourseData(nodeNew, newCoursedata);

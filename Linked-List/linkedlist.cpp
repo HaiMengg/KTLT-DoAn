@@ -240,6 +240,55 @@ void createList(Student*& studentHead, std::fstream& dataFile, int schoolYear, s
     dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
 }
 
+//For reading students of a single course
+void createStuCoList(Student*& studentHead, std::fstream& dataFile) {
+    if (studentHead == nullptr) {
+        Student* curr = nullptr;
+        std::string categories;
+        std::getline(dataFile, categories);
+
+        Student* prev = nullptr;
+        while (!dataFile.eof()) {
+            if (studentHead == nullptr) {
+                studentHead = new Student;
+
+                studentHead->nodePrev = nullptr;
+
+                std::getline(dataFile, studentHead->studentID, ',');
+                std::getline(dataFile, studentHead->firstName, ',');
+                std::getline(dataFile, studentHead->lastName, ',');
+                std::getline(dataFile, studentHead->dob, ',');
+                std::getline(dataFile, studentHead->gender, ',');
+                std::getline(dataFile, studentHead->socialID, ',');
+                std::getline(dataFile, studentHead->classID);
+
+                studentHead->nodeNext = nullptr;
+                curr = studentHead;
+            }
+            else {
+                Student* prev = curr;
+                curr->nodeNext = new Student;
+                curr = curr->nodeNext;
+                
+                curr->nodePrev = prev;
+
+                std::getline(dataFile, curr->studentID, ',');
+                std::getline(dataFile, curr->firstName, ',');
+                std::getline(dataFile, curr->lastName, ',');
+                std::getline(dataFile, curr->dob, ',');
+                std::getline(dataFile, curr->gender, ',');
+                std::getline(dataFile, curr->socialID, ',');
+                std::getline(dataFile, curr->classID);
+                
+                curr->nodeNext = nullptr;
+            }
+        }
+    }
+    
+    dataFile.clear();
+    dataFile.seekg(0);      //Reset cursor's position so the file will be more controller the next time it is used (since you will know where the cursor will be)
+}
+
 void readStudentData(Student*& studentNode, std::string studentData, bool full) {
     int level;
     level = 0;
@@ -313,6 +362,9 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
             }
             previousComma = i;
             level++;
+        }
+        if (full && i == studentData.size() - 1) {
+            createList(studentNode->studentCourseHead, studentData.substr(previousComma + 1), stoi(studentNode->startYear));
         }
         //Only runs when reading a class' student.csv file
         if (!full && i == studentData.size() - 1) {
@@ -406,17 +458,18 @@ void readSemesterData(Semesters*& semestersHead, std::string semesterData, bool 
     if (semesterCourseFile.is_open() && courseCatagories != "") {
         semesterCourseFile.seekg(0);
         Course* semesterCourseList = nullptr;
-        createList(semesterCourseList, semesterCourseFile);
+        createList(semesterCourseList, semesterCourseFile, semestersHead->schoolYear, semestersHead->semester);
         semestersHead->semesterCourseHead = semesterCourseList;
     }
     semesterCourseFile.close();
 }
 
-void createList(Course*& courseHead, std::fstream& dataFile) {
+void createList(Course*& courseHead, std::fstream& dataFile, int schoolYear, int semester) {
     if (courseHead == nullptr) {
         Course* curr = nullptr;
         std::string categories;
         std::getline(dataFile, categories);
+        std::fstream courseStudentFile;
 
         while (!dataFile.eof()) {
             std::string currentLine;
@@ -429,6 +482,12 @@ void createList(Course*& courseHead, std::fstream& dataFile) {
                     readCourseData(courseHead, currentLine);
 
                     courseHead->nodeNext = nullptr;
+
+                    courseStudentFile.open(std::string("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(semester) + "/" + courseHead->courseId + "/student.csv"), std::ios::in);
+                    if (courseStudentFile.is_open()) {
+                        createStuCoList(courseHead->courseStudentHead, courseStudentFile);
+                    }
+
                     curr = courseHead;
                 }
                 else {
@@ -440,6 +499,10 @@ void createList(Course*& courseHead, std::fstream& dataFile) {
                     readCourseData(curr, currentLine);
                     
                     curr->nodeNext = nullptr;
+                    
+                    if (courseStudentFile.is_open()) {
+                        createStuCoList(curr->courseStudentHead, courseStudentFile);
+                    }
                 }
             }
         }
@@ -495,6 +558,41 @@ void readList(Course* courseHead, std::fstream& courseFile) {
 
     courseFile.clear();
     courseFile.seekg(0);
+}
+
+void createList(StudentCourse*& studentCourseHead, std::string courseData, int schoolYear) {
+    int count = 3;
+    StudentCourse* headCourse = new StudentCourse;
+    StudentCourse* curCourse = headCourse;
+
+    std::istringstream iss(courseData);
+    std::string item;
+    while (getline(iss, item, '|'))
+    {
+        if (count % 3 == 0)
+        {
+            if (count != 3)
+            {
+                curCourse -> nodeNext = new StudentCourse;
+                curCourse -> nodeNext -> nodePrev = curCourse;
+                curCourse = curCourse -> nodeNext;
+            }
+
+            curCourse -> schoolYear = schoolYear;
+            curCourse -> sem1Courses = item;
+        }
+
+        if (count % 3 == 1)
+        curCourse -> sem2Courses = item;
+
+        if (count % 3 == 2)
+        curCourse -> sem3Courses = item;
+
+        count++;
+    }
+
+    curCourse -> nodeNext = nullptr;
+    studentCourseHead = headCourse;
 }
 
 void createList(CourseReg*& courseRegHead, std::fstream& dataFile) {
