@@ -570,3 +570,43 @@ void viewScoreboardClass(Login data)
 
     return;
 }
+
+void viewMyScoreboard(Login& data) {
+    importScoreboard(data);
+
+    std::cout << std::left
+    << std::setw(15) << "Course"
+    << std::setw(10) << "Midterm"
+    << std::setw(10) << "Final"
+    << std::setw(10) << "Other"
+    << std::setw(10) << "Total" << std::endl;
+
+    Student* curStudent = data.student;
+    bool isValidUsername = 0;
+    while (curStudent != nullptr) {
+        if (curStudent->usr == data.username) {
+            isValidUsername = 1;
+            break;
+        }
+        curStudent = curStudent->nodeNext;
+    }
+
+    bool found = 0;
+    if (isValidUsername) {
+        CourseScore* curCourseScore = data.courseScore;
+        while (curCourseScore != nullptr)
+        {
+            if (curStudent->studentID == curCourseScore->studentID)
+            {
+                found = 1;
+                std::cout << std::setw(15) << curCourseScore -> courseID
+                << std::setw(10) << curCourseScore -> midterm
+                << std::setw(10) << curCourseScore -> final
+                << std::setw(10) << curCourseScore -> other
+                << std::setw(10) << curCourseScore -> total << std::endl;
+            }
+            curCourseScore = curCourseScore -> nodeNext;
+        }
+    }
+    if (!found) std::cout << "No scoreboard data found on student ID " << curStudent->studentID <<"\n";
+}

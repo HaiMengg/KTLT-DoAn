@@ -135,8 +135,8 @@ void printStudentMenu(std::string username, std::string currentDate, Semesters* 
     printCurrentDate(currentDate, semesterHead);
     std::cout << "----------------\n"
     "Welcome " << username << "!\n\n"
-    << "[1] View info\n[2] View my courses\n[3] Enroll in a course\n[4] Remove a course\n"
-    << "[5] Change password\n[6] Log out\n[7] Change current date\n[8] Exit program\n"
+    << "[1] View info\n[2] View my courses\n[3] Enroll in a course\n[4] Remove a course\n[5] View my scoreboard\n"
+    << "[6] Change password\n[7] Log out\n[8] Change current date\n[9] Exit program\n"
     << "----------------\n";
 }
 
@@ -285,18 +285,22 @@ void studentMenu(Login &data, Node& node, std::fstream& sY, std::fstream& cl, st
         removeCourse(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "5") {
-        changePassword(data, node, sY, cl, stu, sem, cR, currentDate);
+        viewMyScoreboard(data);
+        return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "6") {
-        logOut(data, node, sY, cl, stu, sem, cR, currentDate);
+        changePassword(data, node, sY, cl, stu, sem, cR, currentDate);
     }
     else if (option == "7") {
+        logOut(data, node, sY, cl, stu, sem, cR, currentDate);
+    }
+    else if (option == "8") {
         updateDate(currentDate);
         updateCourseHead(data.course, data.year, data.semester, currentDate, node.semesterHead);
         updateCourseScoreHead(data.courseScore, data.year, data.semester);
         return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
-    else if (option == "8") return;
+    else if (option == "9") return;
     else
     {
         std::cout << "Invalid input. Please try again.\n";

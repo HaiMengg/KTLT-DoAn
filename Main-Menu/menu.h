@@ -8,6 +8,7 @@
 #include "../Create-Classes/create.h"
 #include "../Create-School-Year/create.h"
 #include "../Create-Semester/create.h"
+#include "../View/view.h"
 #include "../Functions/func.h"
 
 void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::string& currentDate);
@@ -26,3 +27,8 @@ void createCourseRegMenu(CourseReg*& courseRegHead, std::fstream& courseRegData,
 
 int getCurrSemester(std::string, Semesters*);
 void printCurrDate(std::string, Semesters*);
+
+void viewClassMenu(Classes* classesHead, SchoolYear* schoolYearHead);
+void viewClassStudentMenu(Classes* classesHead, SchoolYear* schoolYearHead);
+void viewCourseMenu(Semesters* semestersHead, SchoolYear* schoolYearHead);
+void viewCourseStudentMenu(Semesters* semestersHead, SchoolYear* schoolYearHead);
