@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <direct.h>
+#include <windows.h>
 #include <ctime>
 
 #include "Login-Logout/struct.h"
@@ -9,6 +10,8 @@
 #include "Functions/func.h"
 
 int main() {
+    setMaximizedWindow();
+
     Node allData;
     std::fstream schoolYearData("data/schoolyear.csv", std::ios::in | std::ios::out | std::ios::app);
     std::fstream classData("data/class.csv", std::ios::in | std::ios::out | std::ios::app);

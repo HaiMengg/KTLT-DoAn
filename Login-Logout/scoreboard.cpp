@@ -20,6 +20,7 @@ void exportScoreboard(Login data)
     if (courseId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return;
     }
 
@@ -64,8 +65,98 @@ void exportScoreboard(Login data)
     return;
 }
 
+void exportScoreboardTeacher(Login data) {
+    std::cout << "Input ID of a course to export students (or input 0 to go back): ";
+    std::string courseId;
+    std::getline(std::cin, courseId);
+
+    if (courseId == "0")
+    {
+        std::cout << "----------------\n";
+        system("cls");
+        return;
+    }
+
+    std::cout << "Input the directory to the folder to export the scoreboard to (or input 0 to go back):\n";
+    std::string exDir;
+    std::getline(std::cin, exDir);
+    if (exDir == "0")
+    {
+        std::cout << "----------------\n";
+        system("cls");
+        return;
+    }
+    if (exDir[exDir.size() - 1] == '\\' && exDir[exDir.size() - 1] == '/') exDir.erase(exDir.begin() + exDir.size() - 1);
+
+    std::fstream output;
+    output.open(exDir + "/scoreboard.csv", std::ios::out);
+    if (!output.good() && !output.is_open()) {
+        std::cout << "Invalid export directory\n";
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    output << "no,studentID,fullname,midtermmark,finalmark,othermark,totalmark";
+
+    int count = 1;
+    Course* cur = data.course;
+    bool found = 0;
+    while (cur != nullptr)
+    {
+        if (cur -> courseId == courseId)
+        {
+            Student* curStudent = cur -> courseStudentHead;
+            if (curStudent != nullptr) output << std::endl;
+            while (curStudent != nullptr)
+            {
+                CourseScore* curCourseScore = data.courseScore;
+                while (curCourseScore != nullptr) {
+                    if (curCourseScore->studentID == curStudent->studentID) {
+                        output << count << ","
+                        << curStudent -> studentID << ","
+                        << curStudent -> firstName + " " + curStudent -> lastName << ","
+                        << curCourseScore->midterm << "," << curCourseScore->final << "," << curCourseScore->other << "," << curCourseScore->total;
+
+                        if (curStudent -> nodeNext != nullptr)
+                        output << std::endl;
+
+                        count++;
+                        curStudent = curStudent -> nodeNext;
+
+                        found = 1;
+                    }
+                    curCourseScore = curCourseScore->nodeNext;
+                }
+            }
+        }
+        cur = cur -> nodeNext;
+    }
+
+    if (found) std::cout << "File exported successfully!\n";
+    else std::cout << "Could not find that course.\n";
+}
+
+void importScoreboardTeacher() {
+    std::cout << "Input the directory of the \"scoreboard.csv\" to import the scoreboard FROM:\n";
+    std::string fromDir;
+    std::getline(std::cin, fromDir);
+    std::fstream fin(fromDir, std::ios::in);
+    if (fin.is_open()) {
+        std::cout << "File not found\n";
+        system("pause"); system("cls");
+        return;
+    }
+
+    std::cout << "Input the directory of the \"scoreboard.csv\" to import the scoreboard TO:\n";
+    std::string toDir;
+    std::getline(std::cin, toDir);
+    
+
+}
+
 // Update scoreboard of a course
-void updateScoreboard(Login data)
+void updateScoreboard(Login& data)
 {
     std::cout << "Input ID of a course to update scoreboard (or input 0 to go back): ";
     std::string courseId;
@@ -74,6 +165,7 @@ void updateScoreboard(Login data)
     if (courseId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return;
     }
 
@@ -81,8 +173,7 @@ void updateScoreboard(Login data)
     Course* curCourse = data.course;
     while (curCourse != nullptr)
     {
-        if (curCourse -> courseId == courseId
-        && curCourse -> teacherName == data.curTeacher -> firstName + " " + data.curTeacher -> lastName)
+        if (curCourse -> courseId == courseId)
         {
             check = true;
             break;
@@ -97,81 +188,54 @@ void updateScoreboard(Login data)
         return;
     }
 
-    std::fstream input, output;
+    std::string course, temp;
     std::string dir = "data/" + std::to_string(data.year) + "/semesters/"
-    + std::to_string(data.semester) + "/" + courseId + "/scoreboard.csv";
+    + std::to_string(data.semester);
 
-    input.open(dir, std::ios::in);
-
-    std::string str;
-    std::getline(input, str);
-
-    Student* head = new Student;
-    Student* cur = head;
-    while (true)
-    {
-        getline(input, str, ',');
-        getline(input, cur -> studentID, ',');
-        getline(input, cur -> firstName, ',');
-        getline(input, str, '\n');
-
-        if (input.eof())
-        {
-            cur -> nodeNext = nullptr;
-            break;
-        }
-
-        cur -> nodeNext = new Student;
-        cur -> nodeNext -> nodePrev = cur;
-        cur = cur -> nodeNext;
-    }
-
-    output.open(dir, std::ios::out);
-    output << "no,studentID,fullname,midtermmark,finalmark,othermark,totalmark\n";
+    std::fstream output;
+    output.open(dir + "/scoreboard.csv", std::ios::out);
+    output << "no,courseID,studentID,fullname,midtermmark,finalmark,othermark,totalmark\n";
 
     int count = 1;
-    cur = head;
-    while (cur != nullptr)
+    course = curCourse -> courseId;
+
+    std::fstream input;
+    input.open(dir + "/" + course + "/scoreboard.csv", std::ios::in);
+    if (!input.good()) {
+        std::cout << "No \"scoreboard.csv\" for course " << course << " found. Skipping...\n";
+        return;
+    }
+
+    getline(input, temp);
+
+    while (!input.eof())
     {
-        output << count << ","
-        << cur -> studentID << ","
-        << cur -> firstName << ",";
-
-        std::cout << cur -> studentID << " - " << cur -> firstName << std::endl;
-        float mid, final, other;
-
-        std::cout << "Input Midterm Mark: ";
-        std::cin >> mid;
-        output << mid << ",";
-
-        std::cout << "Input Final Mark: ";
-        std::cin >> final;
-        output << final << ",";
-
-        std::cout << "Input Other Mark: ";
-        std::cin >> other;
-        output << other << ",";
-
-        std::cin.ignore(10000, '\n');
-
-        output << getTotalMark(mid, final, other);
-
-        if (cur -> nodeNext != nullptr)
-        output << std::endl;
-
+        getline(input, temp, ',');
+        output << count << ",";
         count++;
-        cur = cur -> nodeNext;
+
+        output << course << ",";
+
+        for (int i = 0; i < 5; i++)
+        {
+            getline(input, temp, ',');
+            output << temp << ",";
+        }
+
+        getline(input, temp);
+        output << temp;
+
+        if (curCourse -> nodeNext != nullptr || !input.eof())
+        output << std::endl;
     }
 
-    cur = head;
-    while (cur != nullptr)
-    {
-        Student* temp = cur;
-        cur = cur -> nodeNext;
-        delete temp;
-    }
+    if (data.semester != -1) readScoreboard(data.courseSem1, data.year, data.semester);
+    if (data.semester == 1) data.courseScore = data.courseSem1;
+    else if (data.semester == 2) data.courseScore = data.courseSem2;
+    else if (data.semester == 3) data.courseScore = data.courseSem3;
+    else data.courseScore = nullptr;
 
-    std::cout << "Scoreboard updated!\n";
+    std::cout << "Scoreboard for course " << course << " successfully updated.\n";
     std::cout << "----------------\n";
     return;
 }
@@ -196,8 +260,8 @@ void importScoreboard(Login& data)
         std::fstream input;
         input.open(dir + "/" + course + "/scoreboard.csv", std::ios::in);
         if (!input.good()) {
-            std::cout << "No appropriate \"scoreboard.csv\" found. Consider exporting students from course " << course << " to \"scoreboard.csv\" first.\n";
-            return;
+            std::cout << "No \"scoreboard.csv\" for course " << course << " found. Skipping...\n";
+            continue;
         }
 
         getline(input, temp);
@@ -222,6 +286,7 @@ void importScoreboard(Login& data)
             if (curCourse -> nodeNext != nullptr || !input.eof())
             output << std::endl;
         }
+        std::cout << "\"scoreboard.csv\" for course " << course << " imported.\n";
 
         curCourse = curCourse -> nodeNext;
     }
@@ -242,6 +307,7 @@ void importScoreboard(Login& data)
 // View scoreboard of a course
 void viewScoreboardCourse(Login data)
 {
+	std::ios_base::fmtflags f(std::cout.flags());
     std::cout << "Input ID of a course to view (or input 0 to go back): ";
     std::string courseId;
     std::getline(std::cin, courseId);
@@ -249,6 +315,7 @@ void viewScoreboardCourse(Login data)
     if (courseId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return;
     }
 
@@ -286,7 +353,7 @@ void viewScoreboardCourse(Login data)
     std::getline(input, str);
 
     std::cout << "----------------\n";
-    std::cout << std::left
+    std::cout << std::left << std::setfill(' ')
     << std::setw(5) << "No"
     << std::setw(13) << "Student ID"
     << std::setw(20) << "Full Name"
@@ -320,6 +387,7 @@ void viewScoreboardCourse(Login data)
     }
 
     std::cout << "----------------\n";
+	std::cout.flags(f);
     return;
 }
 
@@ -336,6 +404,7 @@ void updateStudentResult(Login data)
     if (studentId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return;
     }
 
@@ -423,7 +492,8 @@ void updateStudentResult(Login data)
 // View scoreboard of a student
 void viewScoreboardStudent(Login data, std::string studentID)
 {
-    std::cout << std::left
+	std::ios_base::fmtflags f(std::cout.flags());
+    std::cout << std::left << std::setfill(' ')
     << std::setw(15) << "Course"
     << std::setw(10) << "Midterm"
     << std::setw(10) << "Final"
@@ -502,6 +572,7 @@ void viewScoreboardStudent(Login data, std::string studentID)
         }
         curCourseScore = curCourseScore -> nodeNext;
     }
+	std::cout.flags(f);
 
     std::cout << "Average: " << sum / count << std::endl
     << "GPA: " << (sum / (10 * count)) * 4 << std::endl
@@ -520,6 +591,7 @@ void viewScoreboardClass(Login data)
     if (classID == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return;
     }
 
@@ -548,6 +620,7 @@ void viewScoreboardClass(Login data)
     std::string studentPrinted;
 
     CourseScore* curCourseScore = data.courseScore;
+    bool found = 0;
     while (curCourseScore != nullptr)
     {
         curStudent = data.student;
@@ -560,6 +633,7 @@ void viewScoreboardClass(Login data)
                     studentPrinted += "-" + curCourseScore -> studentID;
                     std::cout << curCourseScore -> studentID << " - " << curCourseScore -> fullname << std::endl;
                     viewScoreboardStudent(data, curCourseScore -> studentID);
+                    found = 1;
                     break;
                 }
             }
@@ -568,13 +642,15 @@ void viewScoreboardClass(Login data)
         curCourseScore = curCourseScore -> nodeNext;
     }
 
+    if (!found) std::cout << "No student data found\n";
+
     return;
 }
 
 void viewMyScoreboard(Login& data) {
-    importScoreboard(data);
+	std::ios_base::fmtflags f(std::cout.flags());
 
-    std::cout << std::left
+    std::cout << std::left << std::setfill(' ')
     << std::setw(15) << "Course"
     << std::setw(10) << "Midterm"
     << std::setw(10) << "Final"
@@ -608,5 +684,6 @@ void viewMyScoreboard(Login& data) {
             curCourseScore = curCourseScore -> nodeNext;
         }
     }
-    if (!found) std::cout << "No scoreboard data found on student ID " << curStudent->studentID <<"\n";
+    if (!found) std::cout << "Scoreboard data on student ID " << curStudent->studentID <<" was either not found or not updated\n";
+	std::cout.flags(f);
 }

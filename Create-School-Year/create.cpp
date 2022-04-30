@@ -2,6 +2,7 @@
 
 //Print currently existing school years
 void viewSchoolYear(SchoolYear* schoolYearHead) {
+	std::cout << "\n";
 	std::cout << "Currently existing school years:\n";
     SchoolYear* schoolYearCurr = schoolYearHead;
 	if (schoolYearHead != nullptr) {
@@ -11,6 +12,7 @@ void viewSchoolYear(SchoolYear* schoolYearHead) {
 		} while (schoolYearCurr != schoolYearHead && schoolYearCurr != nullptr);
 	}
 	else std::cout << "No school year data found" << std::endl;
+	std::cout << "\n";
 }
 
 void inputSchoolYear(SchoolYear* schoolYearHead, std::string& inputYear) {

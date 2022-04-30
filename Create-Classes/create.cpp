@@ -254,8 +254,9 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
                     << "(enter \"0\" to return to previous menu)\n: ";
                     std::getline(std::cin, studentInput);
                     if (studentInput != "0") {
+                        studentInput = "1," + studentInput;
                         appendNewStudentList(totalStudentHead, studentInput, schoolYear, currentClass);
-                        appendNewStudentList(currentStudentsList, studentInput, schoolYear, currentClass, false);
+                        appendNewStudentList(currentStudentsList, studentInput, schoolYear, currentClass);
                         appendNewStudentFile(studentInput, totalFile, schoolYear, currentClass);
                         appendNewStudentFile(studentInput, currentStudents, schoolYear, currentClass, false);
 

@@ -59,12 +59,12 @@ bool isValidDate(std::string givenDate) {
 int getDateData(std::string givenDate, char mode) {
     int d, m, y;
 
-    int firstSlash = givenDate.find('/');
+    int firstSlash = givenDate.find('/'); if (firstSlash == std::string::npos) return -1;
     d = (givenDate.substr(0, firstSlash) != "" && isDigit_w(givenDate.substr(0, firstSlash))) ? stoi(givenDate.substr(0, firstSlash)) : -1;
     if (mode == 'd') return d;
     givenDate = givenDate.substr(firstSlash + 1);
 
-    firstSlash = givenDate.find('/');
+    firstSlash = givenDate.find('/'); if (firstSlash == std::string::npos) return -1;
     m = (givenDate.substr(0, firstSlash) != "" && isDigit_w(givenDate.substr(0, firstSlash))) ? stoi(givenDate.substr(0, firstSlash)) : -1;
     if (mode == 'm') return m;
     givenDate = givenDate.substr(firstSlash + 1);
@@ -82,7 +82,7 @@ void updateDate(std::string& currentDate) {
         return;
     }
     
-    while (!isValidDate(currentDate)) {
+    while (!isValidDate(inputDate)) {
         std::cout << "Invalid date. Re-enter (enter \"0\" or empty to return to previous menu): ";
         std::getline(std::cin, inputDate);
         if (inputDate == "0" || inputDate == "") {
@@ -125,4 +125,24 @@ bool isDateEarlierThanOrEqualTo(std::string date1, std::string date2) {
         else return 1;
     }
     else return 1;
+}
+
+int getTerminalWidth() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+}
+
+void setMaximizedWindow() {
+    HWND hwnd = GetConsoleWindow();
+    ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+}
+
+//Extract substrings of seqLength length from seq1 and search for it in seq2, returns true if found, false if otherwise or empty
+bool sequenceSearch(std::string seq1, std::string seq2, int seqLength) {
+    if (seq1 == "" || seq2 == "") return 0;
+    for (int i = 0; i < seq1.size() - seqLength; i++) {
+        if (seq2.find(seq1.substr(i, seqLength)) != std::string::npos) return 1;
+    }
+    return 0;
 }

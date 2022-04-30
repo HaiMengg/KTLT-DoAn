@@ -4,48 +4,50 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
     bool cont = 1;
     do {
         printCurrDate(currentDate, data.semesterHead);
-        std::cout << "\n";
+        std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << "\n";
 
         std::cout << "Which action do you want to take?\n"
-        << "create school year: create a new school year\n"
-        << "create class: create new class/classes\n"
-        << "add students: add new students to a class\n"
-        << "create semester: create new semester/semesters\n"
-        << "add course: add new course/courses to semester\n"
-        << "update course: update a course's information\n"
-        << "delete course: delete existing course/course\n"
-        << "create course registration: create a course registration session\n"
-        << "view: get access to the view feature (from which you can perform further actions)\n"
-        << "back: return to previous menu\n: ";
+        << "[1] create school year: create a new school year\n"
+        << "[2] create class: create new class/classes\n"
+        << "[3] add students: add new students to a class\n"
+        << "[4] create semester: create new semester/semesters\n"
+        << "[5] add course: add new course/courses to semester\n"
+        << "[6] update course: update a course's information\n"
+        << "[7] delete course: delete existing course/course\n"
+        << "[8] create course registration: create a course registration session\n"
+        << "[9] view: get access to the view feature (from which you can perform further actions)\n"
+        << "[0] back: return to previous menu\n";
+        std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << "\nInput: ";
 
         std::string choice;
         std::getline(std::cin, choice);
         choice = toLower_w(choice);
 
         // if (choice == "view") level = 1;
-        if (choice == "create school year")
+        if (choice == "1")
             createSchoolYearMenu(data.schoolYearHead, schoolYearData, currentDate);
-        else if (choice == "create class")
+        else if (choice == "2")
             createClassMenu(data.classesHead, classData, data.schoolYearHead);
-        else if (choice == "add students")
+        else if (choice == "3")
             addStudentMenu(data.studentHead, studentData, data.schoolYearHead, data.classesHead);
-        else if (choice == "create semester")
+        else if (choice == "4")
             createSemesterMenu(data.semesterHead, semesterData, data.schoolYearHead);
-        else if (choice == "add course")
+        else if (choice == "5")
             addCourseMenu(data.semesterHead, data.schoolYearHead);
-        else if (choice == "update course")
+        else if (choice == "6")
             updateCourseMenu(data.semesterHead, data.schoolYearHead);
-        else if (choice == "delete course")
+        else if (choice == "7")
             deleteCourseMenu(data.semesterHead, data.schoolYearHead);
-        else if (choice == "create course registration")
+        else if (choice == "8")
             createCourseRegMenu(data.courseRegHead, courseRegData, data.schoolYearHead, data.semesterHead);
-        else if (choice == "view")
-            viewMenu(data);
-        else if (choice == "back") cont = 0;
-        else std::cout << "Invalid action\n";
+        else if (choice == "9")
+            viewMenu(data, currentDate);
+        else if (choice == "0") cont = 0;
+        else {
+            system("pause");
+            std::cout << "Invalid action\n";
+        }
 
-        std::cout << std::endl << "================================================" << std::endl << std::endl;
-        system("pause");
         system("cls");
     } while (cont);
 }
@@ -54,10 +56,11 @@ void createSchoolYearMenu(SchoolYear*& schoolYearHead, std::fstream& schoolYearD
     if (getDateData(currentDate, 'm') != 9 || (getDateData(currentDate, 'm') == 8 && getDateData(currentDate, 'd') < 25) || (getDateData(currentDate, 'm') == 10 && getDateData(currentDate, 'd') > 25))
     {
         std::cout << "Not within the time range (usually around September) allowed for school year creation\n";
+        system("pause"); system("cls");
         return;
     }
     
-    std::cout << "\n\n";
+    std::cout << "\n";
     viewSchoolYear(schoolYearHead);
 
     bool valid = 0;
@@ -129,6 +132,7 @@ void addStudentMenu(Student*& studentHead, std::fstream& studentData, SchoolYear
 }
 
 void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, SchoolYear* schoolYearHead) {
+    std::ios_base::fmtflags f(std::cout.flags());
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
@@ -140,20 +144,24 @@ void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, Sc
         if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
-    std::cout << "\nExisting semesters in school year " << currentSchoolYear << ":\n";
+    std::cout << "\nExisting semesters in school year " << currentSchoolYear << ":";
     Semesters* curr = semesterHead;
     while (curr != nullptr) {
+        std::cout << std::setfill(' ');
         std::cout << "\n" << std::left << std::setw(15) << curr->semester
         << std::setw(15) << curr->schoolYear
         << std::setw(25) << curr->startDate
         << std::setw(25) << curr->endDate;   
         curr = curr->nodeNext;
     }
+    std::cout.flags(f);
+    std::cout << "\n";
 
     createSemester(semesterHead, semesterData, stoi(currentSchoolYear));
 }
 
 void addCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
+    std::ios_base::fmtflags f(std::cout.flags());
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
@@ -165,18 +173,23 @@ void addCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
         if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
-    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n";
+    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n\n" << std::left;
     std::cout << "First semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 1);
+	std::cout << "\n";
     std::cout << "Second semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 2);
+	std::cout << "\n";
     std::cout << "Third semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 3);
+	std::cout << "\n";
 
     addCourseToSemester(semesterHead, stoi(currentSchoolYear));
+    std::cout.flags(f);
 }
 
 void updateCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
+    std::ios_base::fmtflags f(std::cout.flags());
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
@@ -188,18 +201,23 @@ void updateCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
         if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
-    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n";
+    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n\n" << std::left;
     std::cout << "First semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 1);
+	std::cout << "\n";
     std::cout << "Second semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 2);
+	std::cout << "\n";
     std::cout << "Third semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 3);
+	std::cout << "\n";
 
     updateCourse(semesterHead, stoi(currentSchoolYear));
+    std::cout.flags(f);
 }
 
 void deleteCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
+    std::ios_base::fmtflags f(std::cout.flags());
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
@@ -211,15 +229,19 @@ void deleteCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
         if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
-    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n";
+    std::cout << "\nExisting courses in school year " << currentSchoolYear << ":\n\n" << std::left;
     std::cout << "First semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 1);
+	std::cout << "\n";
     std::cout << "Second semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 2);
+	std::cout << "\n";
     std::cout << "Third semester\n";
     viewCourse(semesterHead, stoi(currentSchoolYear), 3);
+	std::cout << "\n";
 
     deleteCourse(semesterHead, stoi(currentSchoolYear));
+    std::cout.flags(f);
 }
 
 void createCourseRegMenu(CourseReg*& courseRegHead, std::fstream& courseRegData, SchoolYear* schoolYearHead, Semesters* semestersHead) {
@@ -275,17 +297,21 @@ void printCurrDate(std::string givenDate, Semesters* semesterHead) {
     }
 }
 
-void viewMenu(Node allData) {
+void viewMenu(Node allData, std::string currentDate) {
     bool back = 0;
 
     do {
+        system("cls");
+        printCurrDate(currentDate, allData.semesterHead);
+        std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << "\n";
         std::cout << "Which do you want to view?\n"
         << "school year: view all school years\n"
         << "class: view single class/classes\n"
         << "class student: view all students of a class\n"
         << "course: view single course/courses\n"
         << "course student: view all students of a course\n"
-        << "back: back to previous menu\n: ";
+        << "back: back to previous menu\n";
+        std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << "\nInput: ";
         std::string choice;
         std::getline(std::cin, choice);
         choice = toLower_w(choice);
@@ -348,6 +374,7 @@ void viewCourseMenu(Semesters* semestersHead, SchoolYear* schoolYearHead) {
         std::getline(std::cin, currentSchoolYear);
         if (currentSchoolYear == "0") return;
         if (currentSchoolYear == "" || !isDigit_w(currentSchoolYear)) { std::cout << "Invalid format for year\n"; continue; }
+        if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
     std::string semester = "a";
@@ -377,6 +404,7 @@ void viewCourseStudentMenu(Semesters* semestersHead, SchoolYear* schoolYearHead)
         std::getline(std::cin, currentSchoolYear);
         if (currentSchoolYear == "0") return;
         if (currentSchoolYear == "" || !isDigit_w(currentSchoolYear)) { std::cout << "Invalid format for year\n"; continue; }
+        if (isDigit_w(currentSchoolYear) && schoolYearSearchBool(schoolYearHead, stoi(currentSchoolYear))) valid = 1;
     }
 
     std::string semester = "a";

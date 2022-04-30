@@ -115,6 +115,7 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                             Student* currentClassStudentList = nullptr;
                             createList(currentClassStudentList, currentClassStudent, classHead->startYear, classHead->classID);
                             classHead->classStudentHead = currentClassStudentList;
+                            currentClassStudent.close();
                         }
                     }
                     classHead->nodeNext = nullptr;
@@ -130,10 +131,12 @@ void createList(Classes*& classHead, std::fstream& dataFile) {
                         curr->startYear = stoi(currentLine.substr(currentLine.size() - 4));
                         
                         //Add current student list to current class node
+                        currentClassStudent.open(std::string("data/" + std::to_string(curr->startYear) + "/classes/" + curr->classID + "/student.csv"));
                         if (currentClassStudent.is_open()) {
                             Student* currentClassStudentList = nullptr;
-                            createList(currentClassStudentList, currentClassStudent, classHead->startYear, classHead->classID);
-                            classHead->classStudentHead = currentClassStudentList;
+                            createList(currentClassStudentList, currentClassStudent, curr->startYear, curr->classID);
+                            curr->classStudentHead = currentClassStudentList;
+                            currentClassStudent.close();
                         }
                     }
                     curr->nodeNext = nullptr;
@@ -294,9 +297,14 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
     level = 0;
     int previousComma = 0;
 
+    //Check if a total student.csv file is being read
+    bool readingTotal = 0;
+    if (isDigit_w(studentData.substr(0, 8)))
+        readingTotal = 1;
+
     //Only runs when reading a total student.csv file
     int commaCount = 0;
-    if (full) {
+    if (full && readingTotal) {
         for (int i = 0; i < studentData.size(); i++) {
             if (studentData[i] == ',') {
                 switch(commaCount) {
@@ -321,6 +329,7 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
     for (int i = previousComma; i < studentData.size(); i++) {
         if (studentData[i] == ',') {
             if (level == 0) { 
+                studentData = studentData.substr(i + 1);
                 level++;
                 continue; 
             }
@@ -347,7 +356,7 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
                 if (full && studentNode->pwd == "") studentNode->pwd = studentNode->dob;
                 break;
             }
-            if (full) {
+            if (full && readingTotal) {
                 switch(level) {
                     case 6:
                     studentNode->socialID = studentData.substr(previousComma + 1, i - previousComma - 1);
@@ -363,7 +372,7 @@ void readStudentData(Student*& studentNode, std::string studentData, bool full) 
             previousComma = i;
             level++;
         }
-        if (full && i == studentData.size() - 1) {
+        if (full && readingTotal && i == studentData.size() - 1) {
             createList(studentNode->studentCourseHead, studentData.substr(previousComma + 1), stoi(studentNode->startYear));
         }
         //Only runs when reading a class' student.csv file
@@ -585,15 +594,20 @@ void createList(StudentCourse*& studentCourseHead, std::string courseData, int s
             curCourse -> sem1Courses = item;
         }
 
-        if (count % 3 == 1)
-        curCourse -> sem2Courses = item;
+        if (count % 3 == 1) {
+            curCourse -> sem2Courses = item;
+            curCourse->schoolYear = schoolYear;
+        }
 
-        if (count % 3 == 2)
-        curCourse -> sem3Courses = item;
+        if (count % 3 == 2) {
+            curCourse -> sem3Courses = item;
+            curCourse->schoolYear = schoolYear;
+        }
 
         count++;
     }
 
+    curCourse -> schoolYear = schoolYear;
     curCourse -> nodeNext = nullptr;
     studentCourseHead = headCourse;
 }

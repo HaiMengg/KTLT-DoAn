@@ -13,7 +13,7 @@
 
 void currentMenu(Node&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::fstream&, std::string& currentDate);
 
-void viewMenu(Node allData);
+void viewMenu(Node allData, std::string currentDate);
 void createSchoolYearMenu(SchoolYear*& schoolYearHead, std::fstream& schoolYearData, std::string currentDate);
 
 void createClassMenu(Classes*& classHead, std::fstream& classData, SchoolYear* schoolYearHead);

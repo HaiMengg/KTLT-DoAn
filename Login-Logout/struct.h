@@ -80,10 +80,11 @@ void logOut(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std::fs
 
 float getTotalMark(float mid, float final, float other);
 void exportScoreboard(Login data);
-void updateScoreboard(Login data);
+void exportScoreboardTeacher(Login data);
+void updateScoreboard(Login& data);
 void importScoreboard(Login& data);
 void viewScoreboardCourse(Login data);
-void updateStudentResult(Login data);
+void updateStudentResult(Login& data);
 void viewScoreboardStudent(Login data, std::string studentID);
 void viewScoreboardClass(Login data);
 void viewMyScoreboard(Login& data);

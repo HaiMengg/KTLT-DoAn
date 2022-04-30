@@ -41,11 +41,13 @@ void loginInit(Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu
     data.course = courseData;
     data.year = schoolYear;
     data.semester = sem;
+    data.courseSem1 = courseSem1Data;
+    data.courseSem2 = courseSem2Data;
+    data.courseSem3 = courseSem3Data;
     if (sem == 1) data.courseScore = courseSem1Data;
     else if (sem == 2) data.courseScore = courseSem2Data;
     else if (sem == 3) data.courseScore = courseSem3Data;
     else data.courseScore = nullptr;
-    printCurrentDate(currentDate, node.semesterHead);
     loginCheck(data, node, sY, cl, stu, semes, cR, currentDate);
     deleteData(data);
 }

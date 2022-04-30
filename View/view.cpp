@@ -341,9 +341,10 @@ void replaceeAll(std::string& str, const std::string& from, const std::string& t
 }
 
 void viewClass(Classes* classesHead, int schoolYear) {
+	std::ios_base::fmtflags f(std::cout.flags());
 	bool found = 0;
-    std::cout << "----------------\n";
-	std::cout << std::left << std::setw(25) << "Class ID" << std::setw(25) << "Starting year";
+    std::cout  << std::setfill(' ') << "\n";
+	std::cout << std::left << std::setw(25) << "Class ID" << std::setw(25) << "Starting year\n";
 	while (classesHead != nullptr) {
 		if (classesHead->startYear == schoolYear) {
 			std::cout << "\n" << std::left << std::setw(25) << classesHead->classID << std::setw(25) << classesHead->startYear;
@@ -351,14 +352,15 @@ void viewClass(Classes* classesHead, int schoolYear) {
 		}
 		classesHead = classesHead->nodeNext;
 	}
-	if (!found) std::cout << "No class data found\n";
-	std::cout << std::setw(0);
+	if (!found) std::cout << std::left << std::setw(0) << "No class data found\n";
+	std::cout.flags(f);
 	
-    std::cout << "\n----------------\n";
+    std::cout << "\n";
 }
 void viewClassStudent(Classes* classesHead, int schoolYear, std::string classID) {
+	std::ios_base::fmtflags f(std::cout.flags());
 	bool found = 0;
-    std::cout << "----------------\n";
+    std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";
 	std::cout << std::left << std::setw(15) << "Student ID" 
 	<< std::setw(15) << "First name" 
 	<< std::setw(25) << "Last name" 
@@ -384,12 +386,14 @@ void viewClassStudent(Classes* classesHead, int schoolYear, std::string classID)
 		}
 		classesHead = classesHead->nodeNext;
 	}
+	std::cout.flags(f);
 	if (!found) std::cout << "No student found in this class\n";
 	std::cout << std::setw(0);
-    std::cout << "\n----------------\n";
+    std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";
 }
 void viewCourse(Semesters* semestersHead, int schoolYear, int semester)
 {
+	std::ios_base::fmtflags f(std::cout.flags());
     Semesters* semestersCurr = semestersHead;
 
 	bool found = 0;
@@ -405,36 +409,36 @@ void viewCourse(Semesters* semestersHead, int schoolYear, int semester)
 		return;
 	}
 
-    std::cout << "----------------\n";
-    std::cout << std::left
+    std::cout << std::setfill(' ') << std::left
     << std::setw(15) << "Course ID"
     << std::setw(22) << "Course name"
     << std::setw(25) << "Teacher name"
-    << std::setw(10) << "Number of credits"
-    << std::setw(20) << "Sessions" << std::setw(25) << std::endl;
+    << std::setw(30) << "Number of credits"
+    << std::setw(20) << "Sessions" << std::endl;
 
 	Course* courseHead = semestersCurr->semesterCourseHead;
 
 	while (courseHead != nullptr) {
-		replaceeAll(courseHead -> daySession, "|", ", ");
-		replaceeAll(courseHead -> daySession, "-S1", " (07:30-09:10)");
-		replaceeAll(courseHead -> daySession, "-S2", " (09:30-11:10)");
-		replaceeAll(courseHead -> daySession, "-S3", " (13:30-15:10)");
-		replaceeAll(courseHead -> daySession, "-S4", " (15:30-17:10)");
+		std::string daySession = courseHead->daySession;
+		replaceeAll(daySession, "|", ", ");
+		replaceeAll(daySession, "-S1", " (07:30-09:10)");
+		replaceeAll(daySession, "-S2", " (09:30-11:10)");
+		replaceeAll(daySession, "-S3", " (13:30-15:10)");
+		replaceeAll(daySession, "-S4", " (15:30-17:10)");
 
 		std::cout << std::setw(15) << courseHead -> courseId;
 		std::cout << std::setw(22) << courseHead -> courseName;
 		std::cout << std::setw(25) << courseHead -> teacherName;
-		std::cout << std::setw(10) << courseHead -> numOfCredits;
-		std::cout << std::setw(20) << courseHead -> daySession << std::setw(25) << std::endl;
+		std::cout << std::setw(30) << courseHead -> numOfCredits;
+		std::cout << std::setw(20) << daySession << std::endl;
 
 		courseHead = courseHead->nodeNext;
 	}
-
-    std::cout << "----------------\n";
+	std::cout.flags(f);
 }
 
 void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, std::string courseID) {
+	std::ios_base::fmtflags f(std::cout.flags());
 	Semesters* semestersCurr = semestersHead;
 
 	bool found = 0;
@@ -450,7 +454,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 		return;
 	}
 
-    std::cout << "----------------\n";
+    std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";
     std::cout << std::left << std::setw(15) << "Student ID" 
 	<< std::setw(15) << "First name" 
 	<< std::setw(25) << "Last name" 
@@ -468,6 +472,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 		}
 		courseHead = courseHead->nodeNext;
 	}
+	std::cout.flags(f);
 	if (!found) {
 		std::cout << "No course with matching ID found\n";
 		return;
@@ -490,5 +495,5 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 	if (!found) std::cout << "No student found in this course\n";
 	std::cout << std::setw(0);
 
-    std::cout << "----------------\n";
+    std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";
 }

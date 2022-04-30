@@ -201,8 +201,9 @@ void showCourseNode(Course* data)
 // Show available courses in a semester
 void showCourses(Course* data)
 {
+	std::ios_base::fmtflags f(std::cout.flags());
     std::cout << "----------------\n";
-    std::cout << std::left
+    std::cout << std::left << std::setfill(' ')
     << std::setw(15) << "ID"
     << std::setw(22) << "Course"
     << std::setw(25) << "Teacher"
@@ -218,6 +219,7 @@ void showCourses(Course* data)
     }
 
     std::cout << "----------------\n";
+	std::cout.flags(f);
 }
 
 // Enroll in a course
@@ -230,13 +232,14 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     if (enrollId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
 
     Course* cur = data.course;
     bool check = false;
-    std::string enrolled, sessions;
+    std::string enrolled, sessions = "";
     int amount = 0;
 
     StudentCourse* curCourse = data.curStudent -> studentCourseHead;
@@ -245,15 +248,23 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
         if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
         curCourse = curCourse -> nodeNext;
     }
+    if (curCourse == nullptr) {
+        std::cout << "No appropriate course data found\n";
+        system("pause"); system("cls");
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
+        return;
+    }
 
-    if (data.semester == 1)
+    if (data.semester == 1 && curCourse != nullptr)
     enrolled = curCourse -> sem1Courses;
 
-    else if (data.semester == 2)
+    else if (data.semester == 2 && curCourse != nullptr)
     enrolled = curCourse -> sem2Courses;
 
-    else
+    else if (data.semester == 3 && curCourse != nullptr)
     enrolled = curCourse -> sem3Courses;
+
+    else enrolled = "";
 
     if (enrolled != "")
     {
@@ -278,6 +289,7 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     {
         std::cout << "You have reached the maximum amount of courses to enroll in a semester.\n";
         std::cout << "----------------\n";
+        system("pause"); system("cls");
         studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
@@ -289,7 +301,7 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     {
         if (cur -> courseId == enrollId)
         {
-            if (sessions.find(cur -> daySession) != std::string::npos)
+            if (sequenceSearch(sessions, cur->daySession, 17))
             {
                 reason = false;
                 break;
@@ -338,6 +350,7 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
             writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
 
             std::cout << "Course enrolled!\n" << "----------------\n";
+            system("pause"); system("cls");
             studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
 
             return;
@@ -354,6 +367,7 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
 // View courses that are enrolled
 void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std::fstream& stu, std::fstream& sem, std::fstream& cR, std::string& currentDate)
 {
+	std::ios_base::fmtflags f(std::cout.flags());
     Course* cur;
     std::string enrolled;
 
@@ -363,27 +377,36 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
         if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
         curCourse = curCourse -> nodeNext;
     }
+    if (curCourse == nullptr) {
+        std::cout << "No appropriate course data found\n";
+        system("pause"); system("cls");
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
+        return;
+    }
 
-    if (data.semester == 1)
+    if (data.semester == 1 && curCourse != nullptr)
     enrolled = curCourse -> sem1Courses;
 
-    else if (data.semester == 2)
+    else if (data.semester == 2 && curCourse != nullptr)
     enrolled = curCourse -> sem2Courses;
 
-    else
+    else if (data.semester == 3 && curCourse != nullptr)
     enrolled = curCourse -> sem3Courses;
+
+    else enrolled = "";
 
     if (enrolled == "")
     {
         std::cout << "----------------\n"
         << "Nothing to see here.\n"
         << "----------------\n";
+        system("pause"); system("cls");
         studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         return;
     }
 
     std::cout << "----------------\n";
-    std::cout << std::left
+    std::cout << std::left << std::setfill(' ')
     << std::setw(15) << "ID"
     << std::setw(22) << "Course"
     << std::setw(25) << "Teacher"
@@ -405,6 +428,8 @@ void viewCourse(Login data, Node& node, std::fstream& sY, std::fstream& cl, std:
     }
 
     std::cout << "----------------\n";
+    system("pause"); system("cls");
+	std::cout.flags(f);
     studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
 }
 
@@ -418,6 +443,7 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     if (removeId == "0")
     {
         std::cout << "----------------\n";
+        system("cls");
         return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
     }
 
@@ -428,6 +454,12 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
         if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
         curCourse = curCourse -> nodeNext;
     }
+    if (curCourse == nullptr) {
+        std::cout << "No appropriate course data found\n";
+        system("pause"); system("cls");
+        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
+        return;
+    }
 
     if (data.semester == 1)
     enrolled = curCourse -> sem1Courses;
@@ -435,8 +467,10 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     else if (data.semester == 2)
     enrolled = curCourse -> sem2Courses;
 
-    else
+    else if (data.semester == 3)
     enrolled = curCourse -> sem3Courses;
+
+    else enrolled = "";
 
     std::istringstream iss(enrolled);
     std::string item;
@@ -489,6 +523,7 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
             writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
 
             std::cout << "Course removed!\n" << "----------------\n";
+            system("pause"); system("cls");
             studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
             return;
         }
