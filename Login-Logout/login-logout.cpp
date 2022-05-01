@@ -410,6 +410,7 @@ void changePassword(Login &data, Node& node, std::fstream& sY, std::fstream& cl,
     std::getline(std::cin, pass);
 
     if (pass == "0") {
+        system("cls");
         if (data.identity == 1) return staffMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         else if (data.identity == 2) return teacherMenu(data, node, sY, cl, stu, sem, cR, currentDate);
         else return studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
