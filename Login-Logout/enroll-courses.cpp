@@ -39,6 +39,10 @@ void updateCourseHead(Course*& currentCourseList, int& sY, int& sem, std::string
         if (curr->schoolYear == schoolYear && curr->semester == semester) {
             found = 1;
             std::fstream currentCourseFile("data/" + std::to_string(schoolYear) + "/semesters/" + std::to_string(semester) + "/course.csv", std::ios::in);
+            if (!currentCourseFile.is_open()) {
+                currentCourseList = nullptr;
+                return;
+            }
             createList(currentCourseList, currentCourseFile, sY, sem);
             break;
         }
@@ -110,18 +114,7 @@ int getSemester(std::fstream &input)
 int getCurrentSemester(std::string givenDate, Semesters* semesterHead) {
     Semesters* curr = semesterHead;
     while (curr != nullptr) {
-        if (getDateData(givenDate, 'y') == curr->schoolYear) {
-            if (getDateData(curr->startDate, 'y') == getDateData(curr->endDate, 'y') + 1) return curr->semester;
-            
-            if (getDateData(curr->startDate, 'y') == getDateData(curr->endDate, 'y')) {
-                if (getDateData(givenDate, 'm') >= getDateData(curr->startDate, 'm') && getDateData(givenDate, 'm') <= getDateData(curr->endDate, 'm')) {
-                    if (getDateData(curr->startDate, 'm') < getDateData(curr->endDate, 'm')) return curr->semester;
-                    else if ((getDateData(curr->startDate, 'm') == getDateData(curr->endDate, 'm'))) {
-                        if (getDateData(givenDate, 'd') >= getDateData(curr->startDate, 'd') && getDateData(givenDate, 'd') <= getDateData(curr->endDate, 'd')) return curr->semester;
-                    }
-                }
-            }
-        }
+        if (isDateLaterThanOrEqualTo(givenDate, curr->startDate) && isDateEarlierThanOrEqualTo(givenDate, curr->endDate)) return curr->semester;
         curr = curr->nodeNext;
     }
 
@@ -132,7 +125,8 @@ void printCurrentDate(std::string givenDate, Semesters* semesterHead) {
     std::cout << "Today is " << givenDate << std::endl;
     if (getCurrentSemester(givenDate, semesterHead) != -1) {
         std::cout << "It is currently semester " << getCurrentSemester(givenDate, semesterHead) << " of the school year " 
-        << getDateData(givenDate, 'y') << "-" << getDateData(givenDate, 'y') + 1 << std::endl;
+        << getCurrentSchoolYear(semesterHead, getCurrentSemester(givenDate, semesterHead), givenDate) << "-" 
+        << getCurrentSchoolYear(semesterHead, getCurrentSemester(givenDate, semesterHead), givenDate) + 1 << std::endl;
     }
 }
 
@@ -347,7 +341,7 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
                 newStudent -> nodePrev = curCourseStudent;
             }
 
-            writeCourseStudent(data.course, data.curStudent -> startYear, data.semester);
+            writeCourseStudent(data.course, std::to_string(getCurrentSchoolYear(node.semesterHead, data.semester, currentDate)), data.semester);
 
             std::cout << "Course enrolled!\n" << "----------------\n";
             system("pause"); system("cls");
@@ -508,8 +502,8 @@ void removeCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
                                 break;
                             }
 
-                            curCourseStudent -> nodePrev -> nodeNext = curCourseStudent -> nodeNext;
-                            curCourseStudent -> nodeNext -> nodePrev = curCourseStudent -> nodePrev;
+                            if (curCourseStudent -> nodePrev != nullptr) curCourseStudent -> nodePrev -> nodeNext = curCourseStudent -> nodeNext;
+                            if (curCourseStudent -> nodeNext != nullptr) curCourseStudent -> nodeNext -> nodePrev = curCourseStudent -> nodePrev;
                             delete curCourseStudent;
                             break;
                         }

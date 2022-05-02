@@ -37,8 +37,8 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
                     semesterInput = toLower_w(semesterInput);
                     if (semesterInput != "0") {
                         appendNewSemesterList(semestersHead, semesterInput, startYear, false);
-                        appendNewSemesterFile(dataFile, semesterInput, startYear, true);
-                        appendNewSemesterFile(currentSemesters, semesterInput, startYear);
+                        appendNewSemesterFile(currentSemesters, semesterInput, startYear, false, dataFile);
+                        appendNewSemesterFile(dataFile, semesterInput, startYear, true, dataFile);
                         inserted = 1;
                     }
                     else choice = "0";
@@ -58,8 +58,8 @@ void createSemester(Semesters*& semestersHead, std::fstream& dataFile, int start
 
                                 createList(fInputBatch, fileClass);
                                 appendBatchSemesterList(semestersHead, fInputBatch, startYear, false);
-                                appendBatchSemesterFile(dataFile, fInputBatch, startYear, true);
-                                appendBatchSemesterFile(currentSemesters, fInputBatch, startYear);
+                                appendBatchSemesterFile(currentSemesters, fInputBatch, startYear, false, dataFile);
+                                appendBatchSemesterFile(dataFile, fInputBatch, startYear, true, dataFile);
 
                                 destructList(fInputBatch);
 
@@ -104,7 +104,9 @@ void appendNewSemesterList(Semesters*& semestersHead, std::string newSemesterDat
 	nodeNew->nodeNext = nullptr;
 	nodeCurr->nodeNext = nodeNew;
 }
-void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, int schoolYear, bool full) {
+
+//Total file is only needed when "full" is false
+void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, int schoolYear, bool full, std::fstream& totalFile) {
     Semesters* semesterHead = nullptr;
     if (full) createList(semesterHead, dataFile);
     else createList(semesterHead, dataFile, schoolYear);
@@ -113,6 +115,17 @@ void appendNewSemesterFile(std::fstream& dataFile, std::string newSemesterData, 
         return;
     }
     destructList(semesterHead);
+
+    //Better check
+    semesterHead = nullptr;
+    if (!full) {
+        createList(semesterHead, totalFile);
+        if (!semesterCheckBool(newSemesterData, schoolYear, semesterHead)) {
+            destructList(semesterHead);
+            return;
+        }
+        destructList(semesterHead);
+    }
     
     if (semesterFileSearchBool(dataFile, stoi(newSemesterData.substr(0, 1)), schoolYear, full)) return;
 
@@ -143,10 +156,10 @@ void appendBatchSemesterList(Semesters*& semestersHead, SNode* batch , int schoo
         batchCurr = batchCurr->nodeNext;
     }
 }
-void appendBatchSemesterFile(std::fstream& dataFile, SNode* batch, int schoolYear, bool full) {
+void appendBatchSemesterFile(std::fstream& dataFile, SNode* batch, int schoolYear, bool full, std::fstream& totalFile) {
     SNode* batchCurr = batch;
     while (batchCurr != nullptr) {
-        appendNewSemesterFile(dataFile, batchCurr->value, schoolYear, full);
+        appendNewSemesterFile(dataFile, batchCurr->value, schoolYear, full, dataFile);
         batchCurr = batchCurr->nodeNext;
     }
 }
@@ -173,8 +186,9 @@ bool semesterFileSearchBool(std::fstream& semestersTotalFile, int semester, int 
     while (!semestersTotalFile.eof()) {
         std::string currentLine;
         std::getline(semestersTotalFile, currentLine);
-        if (currentLine.find(std::to_string(semester) + ",") == 0 && currentLine.find(std::to_string(startYear)) != std::string::npos) return 1;
-        if (currentLine.find(std::to_string(startYear) + ",") == 0 && !full) return 1;
+        if (currentLine.find(std::to_string(semester) + ",") == 0 && currentLine.find(std::to_string(startYear)) != std::string::npos 
+        && !(currentLine[currentLine.find(std::to_string(startYear)) - 1] == '/' || currentLine[currentLine.find(std::to_string(startYear)) - 1] == '\\')) return 1;
+        if (!full && currentLine.find(std::to_string(startYear) + ",") == 0) return 1;
     }
     return 0;
 }
@@ -206,7 +220,7 @@ bool semesterCheckBool(std::string semesterData, int schoolYear, Semesters* seme
                         if (semesterData[j] == '/') {
                             if (!isDigit_w(semesterData.substr(i, j - i))) return 0;
                             if (stoi(semesterData.substr(i, j - i)) < 1 && stoi(semesterData.substr(i, j - i)) > 31) return 0;
-                            else { i = j + 1; slashCount++; }
+                            else { i = j + 1; slashCount++; continue; }
                             if (slashCount == 1 && (stoi(semesterData.substr(i, j - i)) < 1 || stoi(semesterData.substr(i, j - i)) > 12)) return 0;
                             else { i = j + 1; slashCount++; }
                         }
@@ -268,30 +282,46 @@ bool isValidSemesterDate(std::string startDate, std::string endDate, Semesters* 
         if (curr->schoolYear == schoolYear) {
             //The current period can only exist either before or after
             bool checked = 0;
-            if (!checked && getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) return 0;
-            else if (!checked && getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
-                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) return 0;
+            if (!checked && getDateData(startDate, 'y') == getDateData(curr->endDate, 'y') && getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) {
+                return 0;
+            }
+            else if (!checked && getDateData(startDate, 'y') == getDateData(curr->endDate, 'y') && getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
+                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) {
+                    return 0;
+                }
                 else checked = 1;
             }
             else checked = 1;
 
-            if (!checked && getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) return 0;
-            else if (!checked && getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
-                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) return 0;
+            if (!checked && getDateData(curr->startDate, 'y') == getDateData(endDate, 'y') &&  getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) {
+                return 0;
+            }
+            else if (!checked && getDateData(curr->startDate, 'y') == getDateData(endDate, 'y') &&  getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
+                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) {
+                    return 0;
+                }
             }
         }
 
         if (curr->schoolYear - schoolYear == -1) {
-            if (getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) return 0;
-            else if (getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
-                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) return 0;
+            if (getDateData(startDate, 'y') == getDateData(curr->endDate, 'y') && getDateData(startDate, 'm') < getDateData(curr->endDate, 'm')) {
+                return 0;
+            }
+            else if (getDateData(startDate, 'y') == getDateData(curr->endDate, 'y') && getDateData(startDate, 'm') == getDateData(curr->endDate, 'm')) {
+                if (getDateData(startDate, 'd') < getDateData(curr->endDate, 'd')) {
+                    return 0;
+                }
             }
         }
 
         if (curr->schoolYear - schoolYear == 1) {
-            if (getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) return 0;
-            else if (getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
-                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) return 0;
+            if (getDateData(curr->startDate, 'y') == getDateData(endDate, 'y') && getDateData(curr->startDate, 'm') < getDateData(endDate, 'm')) {
+                return 0;
+            }
+            else if (getDateData(curr->startDate, 'y') == getDateData(endDate, 'y') && getDateData(curr->startDate, 'm') == getDateData(endDate, 'm')) {
+                if (getDateData(curr->startDate, 'd') < getDateData(endDate, 'd')) {
+                    return 0;
+                }
             }
         }
 
@@ -398,13 +428,13 @@ void appendNewCourse(Semesters*& semestersHead, std::string newCoursedata, int s
         return;
     }
 
-	if (semestersHead->semesterCourseHead == nullptr) {
+	if (semesterCurr->semesterCourseHead == nullptr) {
 		nodeNew->nodePrev = nullptr;
 		nodeNew->nodeNext = nullptr;
-		semestersHead->semesterCourseHead = nodeNew;
+	    semesterCurr->semesterCourseHead = nodeNew;
 	}
     else {
-        Course* nodeCurr = semestersHead->semesterCourseHead;
+        Course* nodeCurr = semesterCurr->semesterCourseHead;
         while (nodeCurr->nodeNext != nullptr) {
             nodeCurr = nodeCurr->nodeNext;
         }
@@ -807,6 +837,7 @@ void createCourseReg(CourseReg*& courseRegHead, std::fstream& dataFile, int scho
                 
             }
             else {
+                std::cout << "This semester already has a course registration session\n";
                 delete newNode;
             }
             break;
@@ -817,7 +848,6 @@ void createCourseReg(CourseReg*& courseRegHead, std::fstream& dataFile, int scho
             std::getline(std::cin, cont);
         }
         else {
-            delete newNode;
             break;
         }
     }

@@ -100,8 +100,8 @@ void exportScoreboardTeacher(Login data) {
     output << "no,studentID,fullname,midtermmark,finalmark,othermark,totalmark";
 
     int count = 1;
-    Course* cur = data.course;
-    bool found = 0;
+    Course* cur = data.course;      //Courses change each semester so there wont be no duplicates
+    bool foundCourse = 0, foundStudent = 0;
     while (cur != nullptr)
     {
         if (cur -> courseId == courseId)
@@ -122,19 +122,22 @@ void exportScoreboardTeacher(Login data) {
                         output << std::endl;
 
                         count++;
-                        curStudent = curStudent -> nodeNext;
 
-                        found = 1;
+                        foundStudent = 1;
                     }
                     curCourseScore = curCourseScore->nodeNext;
                 }
+                curStudent = curStudent -> nodeNext;
             }
+            foundCourse = 1;
+            if (!foundStudent) break;
         }
         cur = cur -> nodeNext;
     }
 
-    if (found) std::cout << "File exported successfully!\n";
-    else std::cout << "Could not find that course.\n";
+    if (!foundCourse) std::cout << "Could not find that course.\n";
+    else if (!foundStudent) std::cout << "Could not find student in course " << cur->courseId << "\n";
+    else std::cout << "File exported successfully!\n";
 }
 
 void importScoreboardTeacher() {
@@ -261,6 +264,7 @@ void importScoreboard(Login& data)
         input.open(dir + "/" + course + "/scoreboard.csv", std::ios::in);
         if (!input.good()) {
             std::cout << "No \"scoreboard.csv\" for course " << course << " found. Skipping...\n";
+            curCourse = curCourse->nodeNext;
             continue;
         }
 

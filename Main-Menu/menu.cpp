@@ -44,8 +44,8 @@ void currentMenu(Node& data, std::fstream& schoolYearData, std::fstream& classDa
             viewMenu(data, currentDate);
         else if (choice == "0") cont = 0;
         else {
-            system("pause");
             std::cout << "Invalid action\n";
+            system("pause");
         }
 
         system("cls");
@@ -146,15 +146,22 @@ void createSemesterMenu(Semesters*& semesterHead, std::fstream& semesterData, Sc
 
     std::cout << "\nExisting semesters in school year " << currentSchoolYear << ":";
     Semesters* curr = semesterHead;
+    bool found = 0;
     while (curr != nullptr) {
         std::cout << std::setfill(' ');
+        if (curr->schoolYear != std::stoi(currentSchoolYear)) {
+            curr = curr->nodeNext;
+            continue;
+        }
         std::cout << "\n" << std::left << std::setw(15) << curr->semester
-        << std::setw(15) << curr->schoolYear
         << std::setw(25) << curr->startDate
-        << std::setw(25) << curr->endDate;   
+        << std::setw(25) << curr->endDate;  
+        found = 1; 
         curr = curr->nodeNext;
     }
     std::cout.flags(f);
+
+    if (!found) std::cout << "\nNo semester found in school year " << currentSchoolYear;
     std::cout << "\n";
 
     createSemester(semesterHead, semesterData, stoi(currentSchoolYear));
@@ -245,20 +252,23 @@ void deleteCourseMenu(Semesters*& semesterHead, SchoolYear* schoolYearHead) {
 }
 
 void createCourseRegMenu(CourseReg*& courseRegHead, std::fstream& courseRegData, SchoolYear* schoolYearHead, Semesters* semestersHead) {
+    std::ios_base::fmtflags f(std::cout.flags());
     std::cout << "\nExisting course registration sessions" << ":\n";
     CourseReg* curr = courseRegHead;
     while (curr != nullptr) {
+        std::cout << std::setfill(' ');
         std::cout << "\n" << std::left << std::setw(15) << curr->semester
         << std::setw(15) << curr->schoolYear
         << std::setw(25) << curr->startDate
         << std::setw(25) << curr->endDate;   
         curr = curr->nodeNext;
     }
+    std::cout.flags(f);
 
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
-        std::cout << "Enter the school year to create new course for (enter \"0\" to return to previous menu): ";
+        std::cout << "\nEnter the school year to create new course for (enter \"0\" to return to previous menu): ";
         std::getline(std::cin, currentSchoolYear);
         if (currentSchoolYear == "0") return;
         if (currentSchoolYear == "" || !isDigit_w(currentSchoolYear)) { std::cout << "Invalid format for year\n"; continue; }
@@ -319,7 +329,7 @@ void viewMenu(Node allData, std::string currentDate) {
         else if (choice == "class") viewClassMenu(allData.classesHead, allData.schoolYearHead);
         else if (choice == "class student") viewClassStudentMenu(allData.classesHead, allData.schoolYearHead);
         else if (choice == "course") viewCourseMenu(allData.semesterHead, allData.schoolYearHead);
-        else if (choice == "course students") viewCourseStudentMenu(allData.semesterHead, allData.schoolYearHead);
+        else if (choice == "course student") viewCourseStudentMenu(allData.semesterHead, allData.schoolYearHead);
         else if (choice == "back") back = 1;
         else std::cout << "Invalid choice\n";
         system("pause");
@@ -424,8 +434,29 @@ void viewCourseStudentMenu(Semesters* semestersHead, SchoolYear* schoolYearHead)
         if (!semesterListSearchBool(semestersHead, stoi(semester), stoi(currentSchoolYear))) std::cout << "Class \"" + currentClass + "\" of year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
     }
 
+    bool foundCourse = 0;
     std::string courseID = "";
+
+    std::cout << "Enter the class to add new students (enter \"0\" to return to previous menu): ";
     std::getline(std::cin, courseID);
+    if (courseID == "0") return;
+
+    while (!foundCourse) {
+        Semesters* currSem = semestersHead;
+        while (currSem != nullptr) {
+            if (courseListSearchBool(currSem->semesterCourseHead, courseID)) foundCourse = 1;
+
+            currSem = currSem->nodeNext;
+        }
+
+        if (!foundCourse) {
+            std::cout << "Class \"" + currentClass + "\" of year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
+            std::cout << "Enter the course to view students (enter \"0\" to return to previous menu): ";
+            std::getline(std::cin, courseID);
+            if (courseID == "0") return;
+        }
+        else break;
+    }
 
     viewCourseStudent(semestersHead, stoi(currentSchoolYear), stoi(semester), courseID);
 }

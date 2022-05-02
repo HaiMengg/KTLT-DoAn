@@ -414,6 +414,7 @@ void viewCourse(Semesters* semestersHead, int schoolYear, int semester)
     << std::setw(22) << "Course name"
     << std::setw(25) << "Teacher name"
     << std::setw(30) << "Number of credits"
+	<< std::setw(30) << "Maximum amount of students"
     << std::setw(20) << "Sessions" << std::endl;
 
 	Course* courseHead = semestersCurr->semesterCourseHead;
@@ -430,6 +431,7 @@ void viewCourse(Semesters* semestersHead, int schoolYear, int semester)
 		std::cout << std::setw(22) << courseHead -> courseName;
 		std::cout << std::setw(25) << courseHead -> teacherName;
 		std::cout << std::setw(30) << courseHead -> numOfCredits;
+		std::cout << std::setw(30) << courseHead -> studentMax;
 		std::cout << std::setw(20) << daySession << std::endl;
 
 		courseHead = courseHead->nodeNext;
@@ -461,7 +463,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 	<< std::setw(25) << "Date of birth" 
 	<< std::setw(15) << "Gender" 
 	<< std::setw(15) << "Social ID" 
-	<< std::setw(15) << "Class ID" << "\n";
+	<< std::setw(15) << "Class ID";
 
 	Course* courseHead = semestersCurr->semesterCourseHead;
 	found = 0;
@@ -474,7 +476,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 	}
 	std::cout.flags(f);
 	if (!found) {
-		std::cout << "No course with matching ID found\n";
+		std::cout << "\nNo course with matching ID found\n";
 		return;
 	}
 
@@ -496,4 +498,5 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 	std::cout << std::setw(0);
 
     std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";
+	std::cout.flags(f);
 }
