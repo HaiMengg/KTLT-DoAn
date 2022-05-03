@@ -237,17 +237,17 @@ void enrollCourse(Login &data, Node& node, std::fstream& sY, std::fstream& cl, s
     int amount = 0;
 
     StudentCourse* curCourse = data.curStudent -> studentCourseHead;
-    while (curCourse != nullptr)
-    {
-        if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
-        curCourse = curCourse -> nodeNext;
-    }
-    if (curCourse == nullptr) {
-        std::cout << "No appropriate course data found\n";
-        system("pause"); system("cls");
-        studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
-        return;
-    }
+    // while (curCourse != nullptr)
+    // {
+    //     if (std::to_string(curCourse -> schoolYear) == data.curStudent -> startYear) break;
+    //     curCourse = curCourse -> nodeNext;
+    // }
+    // if (curCourse == nullptr) {
+    //     std::cout << "No appropriate course data found\n";
+    //     system("pause"); system("cls");
+    //     studentMenu(data, node, sY, cl, stu, sem, cR, currentDate);
+    //     return;
+    // }
 
     if (data.semester == 1 && curCourse != nullptr)
     enrolled = curCourse -> sem1Courses;

@@ -817,10 +817,14 @@ void createCourseReg(CourseReg*& courseRegHead, std::fstream& dataFile, int scho
                         if (isDateLaterThanOrEqualTo(newNode->startDate, currSem->startDate) && isDateEarlierThanOrEqualTo(newNode->endDate, currSem->endDate)) {
                             newNode->nodeNext = nullptr;
                             newNode->nodePrev = curr;
-                            if (courseRegHead != nullptr) curr->nodeNext = newNode;
+                            if (courseRegHead != nullptr) {
+                                curr->nodeNext = newNode;
+                                curr = curr->nodeNext;
+                            }
                             else courseRegHead = newNode;
                             readList(courseRegHead, dataFile);
                             std::cout << "Course registration session successfully created\n";
+                            newNode = nullptr;
                             system("pause");
                         }
                         else {

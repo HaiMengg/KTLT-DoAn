@@ -1,0 +1,3 @@
+courseid,coursename,teachername,numberofcredits,studentmax,daySession (ex: MON-S1|TUE-S4|....)
+VLDC10006,Vat Ly Dai Cuong,Nguyen Thi B,11,46,MON-S4|TUE-S4
+VLDC10007,Vat Ly Dai Cuong,Nguyen Thi B,11,46,MON-S3|THU-S1

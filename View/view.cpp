@@ -452,7 +452,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 		semestersCurr = semestersCurr->nodeNext;
 	}
 	if (!found) {
-		std::cout << "No matching school year and semester data found\n";
+		std::cout << "\nNo matching school year and semester data found\n";
 		return;
 	}
 
@@ -494,7 +494,7 @@ void viewCourseStudent(Semesters* semestersHead, int schoolYear, int semester, s
 
 		courseStudentHead = courseStudentHead->nodeNext;
 	}
-	if (!found) std::cout << "No student found in this course\n";
+	if (!found) std::cout << "\nNo student found in this course\n";
 	std::cout << std::setw(0);
 
     std::cout << std::setfill('_') << std::setw(getTerminalWidth()) << std::setfill(' ') << "\n";

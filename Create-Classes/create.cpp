@@ -305,7 +305,6 @@ void addStudentsToClass(Student*& totalStudentHead, std::fstream& totalFile, int
         }
     }
     appendClassStudentList(currentStudentsList, totalClassList, currentClass);
-    destructList(currentStudentsList);
 }
 
 //This appends a new student (containing new info) to the file

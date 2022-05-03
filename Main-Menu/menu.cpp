@@ -342,7 +342,7 @@ void viewClassMenu(Classes* classesHead, SchoolYear* schoolYearHead) {
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
-        std::cout << "Enter the school year to create new course for (enter \"0\" to return to previous menu): ";
+        std::cout << "Enter the school year to view classes (enter \"0\" to return to previous menu): ";
         std::getline(std::cin, currentSchoolYear);
         if (currentSchoolYear == "0") return;
         if (currentSchoolYear == "" || !isDigit_w(currentSchoolYear)) { std::cout << "Invalid format for year\n"; continue; }
@@ -356,7 +356,7 @@ void viewClassStudentMenu(Classes* classesHead, SchoolYear* schoolYearHead) {
     bool valid = 0;
     std::string currentSchoolYear = "a";
     while (!valid) {
-        std::cout << "Enter the school year in which a class was created (enter \"0\" to return to previous menu): ";
+        std::cout << "Enter the school year to class student (enter \"0\" to return to previous menu): ";
         std::getline(std::cin, currentSchoolYear);
         if (currentSchoolYear == "0") return;
         if (currentSchoolYear == "" || !isDigit_w(currentSchoolYear)) { std::cout << "Invalid format for year\n"; continue; }
@@ -366,7 +366,7 @@ void viewClassStudentMenu(Classes* classesHead, SchoolYear* schoolYearHead) {
     
     std::string currentClass = "";
     while (!classListSearchBool(classesHead, currentClass, stoi(currentSchoolYear))) {
-        std::cout << "Enter the class to add new students (enter \"0\" to return to previous menu): ";
+        std::cout << "Enter the class to view students (enter \"0\" to return to previous menu): ";
         std::getline(std::cin, currentClass);
         if (currentClass == "0") return;
         currentClass = toUpper_w(currentClass);
@@ -424,20 +424,11 @@ void viewCourseStudentMenu(Semesters* semestersHead, SchoolYear* schoolYearHead)
         if (semester == "0") return;
         if (semester == "" || !isDigit_w(semester)) { std::cout << "Invalid format for semester\n"; continue;}
     }
-    
-    std::string currentClass = "";
-    while (!semesterListSearchBool(semestersHead, stoi(semester), stoi(currentSchoolYear))) {
-        std::cout << "Enter the class to add new students (enter \"0\" to return to previous menu): ";
-        std::getline(std::cin, currentClass);
-        if (currentClass == "0") return;
-        currentClass = toUpper_w(currentClass);
-        if (!semesterListSearchBool(semestersHead, stoi(semester), stoi(currentSchoolYear))) std::cout << "Class \"" + currentClass + "\" of year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
-    }
 
     bool foundCourse = 0;
     std::string courseID = "";
 
-    std::cout << "Enter the class to add new students (enter \"0\" to return to previous menu): ";
+    std::cout << "Enter the course to view students (enter \"0\" to return to previous menu): ";
     std::getline(std::cin, courseID);
     if (courseID == "0") return;
 
@@ -450,7 +441,7 @@ void viewCourseStudentMenu(Semesters* semestersHead, SchoolYear* schoolYearHead)
         }
 
         if (!foundCourse) {
-            std::cout << "Class \"" + currentClass + "\" of year \"" + currentSchoolYear + "\" doesn't exist in current database\n";
+            std::cout << "Course " << courseID << " doesn't exist in current database\n";
             std::cout << "Enter the course to view students (enter \"0\" to return to previous menu): ";
             std::getline(std::cin, courseID);
             if (courseID == "0") return;

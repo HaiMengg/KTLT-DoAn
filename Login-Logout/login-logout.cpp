@@ -19,6 +19,8 @@ void loginCheck(Login &data, Node& node, std::fstream& sY, std::fstream& cl, std
     std::string option;
     std::getline(std::cin, option);
 
+    data.student = node.studentHead;    //Re-assign
+    
     if (option == "1" || option == "2" || option == "3")
     {
         std::cout << "Username: ";
